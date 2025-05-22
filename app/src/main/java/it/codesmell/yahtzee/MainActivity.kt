@@ -2,6 +2,7 @@ package it.codesmell.yahtzee
 
 import android.os.Build
 import android.os.Bundle
+import android.os.VibrationEffect
 import android.os.Vibrator
 import android.widget.Toast
 import androidx.activity.ComponentActivity
@@ -25,17 +26,24 @@ import androidx.compose.ui.input.pointer.PointerEventPass
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.tooling.preview.Preview
 import it.codesmell.yahtzee.ui.theme.YahtzeeTheme
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
+
 //sborra
 
-var vibrator : Vibrator? = null
+
 var gthis : MainActivity? = null
+var hfx : hapticEffects? = null
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
 
-        vibrator = initVibration()
+        hfx = hapticEffects(this)
         gthis = this
 
         setContent {
@@ -52,16 +60,7 @@ class MainActivity : ComponentActivity() {
         }
     }
 
-    fun initVibration(): Vibrator? {
-        var v: Vibrator? //il punto interrogativo indica che non è strettamente vibrator, può anche essere null
-        v = null
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) { //se sto su android >= 12
-            v = this.getSystemService(Vibrator::class.java) //prendo il servizio vibrazione
-        }
-
-        return v
-    }
 }
 
 @Composable
@@ -75,7 +74,7 @@ fun MyScreenContent(modifier: Modifier = Modifier) {
     }
 }
 
-@OptIn(ExperimentalMaterial3ExpressiveApi::class)
+
 @Composable
 fun btn1(){
     Button(
@@ -87,11 +86,8 @@ fun btn1(){
                         awaitPointerEvent(PointerEventPass.Main)
                     downEvent.changes.forEach {
                         if (it.pressed) {
-                            Toast.makeText(
-                                gthis,
-                                "Palle Premute",
-                                Toast.LENGTH_SHORT
-                            ).show()
+                            Toast.makeText(gthis, "Palle Premute", Toast.LENGTH_SHORT).show()
+                            hfx?.btnDown(50)
                         }
                     }
                     //loop che aspetta che il tasto venga rilasciato
@@ -102,11 +98,8 @@ fun btn1(){
                         if (event.changes.all { it.pressed.not() }) {
                             allUp = true
                             event.changes.forEach {
-                                Toast.makeText(
-                                    gthis,
-                                    "Palle Spremute",
-                                    Toast.LENGTH_SHORT
-                                ).show()
+                                Toast.makeText(gthis, "Palle Spremute", Toast.LENGTH_SHORT).show()
+                                hfx?.click(0.5f)
                             }
                         }
                     }
@@ -115,7 +108,7 @@ fun btn1(){
         onClick = {},
         shape = ButtonDefaults.shape,
     ){
-        Text("Porco Dio")
+        Text("Tasto Laico")
     }
 }
 
@@ -131,6 +124,6 @@ fun Greeting(name: String, modifier: Modifier = Modifier) {
 @Composable
 fun GreetingPreview() {
     YahtzeeTheme {
-        Greeting("Android")
+        Greeting("Moto")
     }
 }

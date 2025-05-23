@@ -69,6 +69,11 @@ fun provas(){
     Toast.makeText(gthis, "Szsszzziù!!!!", Toast.LENGTH_SHORT).show()
 }
 
+fun switchVibMode(){ //alterna tra le API di vibrazione, per provare
+    hfx?.hasRichHaptics = !hfx!!.hasRichHaptics //"!!" devo capire bene che è, lo vuole kotlin
+    Toast.makeText(gthis, "hasRichHaptics = " + hfx?.hasRichHaptics, Toast.LENGTH_SHORT).show()
+}
+
 @Composable
 fun MyScreenContent(modifier: Modifier = Modifier) {
     Column(
@@ -77,6 +82,7 @@ fun MyScreenContent(modifier: Modifier = Modifier) {
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         composables?.btn1(::provas, "Sbrisculo", 50)
+        composables?.btn1(::switchVibMode, "Cambia mod. vibrazione", 0)
     }
 }
 

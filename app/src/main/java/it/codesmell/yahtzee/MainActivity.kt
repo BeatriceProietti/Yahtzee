@@ -66,7 +66,7 @@ class MainActivity : ComponentActivity() {
 }
 
 fun provas(){
-    Toast.makeText(gthis, "Szsszzziù!!!!", Toast.LENGTH_SHORT).show()
+    //Toast.makeText(gthis, "Szsszzziù!!!!", Toast.LENGTH_SHORT).show()
 }
 
 fun switchVibMode(){ //alterna tra le API di vibrazione, per provare

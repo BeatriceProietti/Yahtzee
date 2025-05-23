@@ -3,6 +3,7 @@ package it.codesmell.yahtzee
 import android.os.Build
 import android.os.VibrationEffect
 import android.os.VibrationEffect.EFFECT_CLICK
+import android.os.VibrationEffect.EFFECT_HEAVY_CLICK
 import android.os.Vibrator
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -39,7 +40,7 @@ class hapticEffects constructor(mainActivity: MainActivity) {
                         .compose()
             )
         }else{
-            vib?.vibrate(VibrationEffect.createOneShot(depth, 128))
+            vib?.vibrate(VibrationEffect.createOneShot(depth, 48))
         }
         //fa partire una coroutine, in cui attende e poi fa partire la seconda parte dell'effetto
         CoroutineScope(Dispatchers.IO).launch {
@@ -53,7 +54,7 @@ class hapticEffects constructor(mainActivity: MainActivity) {
                             .compose()
                     )
                 }else{
-                    vib?.vibrate(VibrationEffect.createPredefined(EFFECT_CLICK))
+                    vib?.vibrate(VibrationEffect.createPredefined(EFFECT_HEAVY_CLICK))
                 }
             }
         }

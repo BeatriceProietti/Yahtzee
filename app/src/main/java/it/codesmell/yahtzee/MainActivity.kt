@@ -53,19 +53,16 @@ class MainActivity : ComponentActivity() {
         //val screens = Screens()
 
         setContent {
-            // roba navigazione ---------------------------------------------------------------------------------
-            val navController = rememberNavController()
-            NavHost(navController = navController, startDestination = "Screen2", builder ={
-                composable("MainScreen"){MainScreen(navController)} //associa il route "MainScreen" al composable MainScreen
-                composable("Screen2"){Screen2(navController)}
-            })
-            // --------------------------------------------------------------------------------------------------
             YahtzeeTheme {
                 Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-
-
                     Greeting(name = "Moto", modifier = Modifier.padding(innerPadding))
-                    MainScreen(navController)
+                    // roba navigazione ---------------------------------------------------------------------------------
+                    val navController = rememberNavController()
+                    NavHost(navController = navController, startDestination = "MainScreen", builder ={
+                        composable("MainScreen"){MainScreen(navController)} //associa il route "MainScreen" al composable MainScreen
+                        composable("Screen2"){Screen2(navController)}
+                    })
+                    // --------------------------------------------------------------------------------------------------
                 }
             }
         }

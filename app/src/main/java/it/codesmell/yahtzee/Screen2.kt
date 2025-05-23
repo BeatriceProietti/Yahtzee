@@ -1,2 +1,0 @@
-package it.codesmell.yahtzee
-

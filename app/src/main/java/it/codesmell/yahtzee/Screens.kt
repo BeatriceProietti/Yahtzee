@@ -11,8 +11,6 @@ import androidx.navigation.NavController
 
 // qua mettiamo tutte le schermate dell'app
 
-
-
     @Composable
     fun MainScreen(navController: NavController) {
         Column(

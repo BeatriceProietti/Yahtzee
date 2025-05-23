@@ -25,6 +25,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.pointer.PointerEventPass
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.rememberNavController
 import it.codesmell.yahtzee.ui.theme.YahtzeeTheme
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -34,10 +37,10 @@ import kotlinx.coroutines.withContext
 
 //sborra
 
-
 var gthis : MainActivity? = null
 var hfx : hapticEffects? = null
 var composables : Composables? = null
+
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -47,16 +50,22 @@ class MainActivity : ComponentActivity() {
         gthis = this
         hfx = hapticEffects(this)
         composables = Composables()
+        //val screens = Screens()
 
         setContent {
+            // roba navigazione ---------------------------------------------------------------------------------
+            val navController = rememberNavController()
+            NavHost(navController = navController, startDestination = "Screen2", builder ={
+                composable("MainScreen"){MainScreen(navController)} //associa il route "MainScreen" al composable MainScreen
+                composable("Screen2"){Screen2(navController)}
+            })
+            // --------------------------------------------------------------------------------------------------
             YahtzeeTheme {
                 Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-                    Greeting(
-                        name = "Moto",
-                        modifier = Modifier
-                            .padding(innerPadding)
-                    )
-                    MyScreenContent()
+
+
+                    Greeting(name = "Moto", modifier = Modifier.padding(innerPadding))
+                    MainScreen(navController)
                 }
             }
         }

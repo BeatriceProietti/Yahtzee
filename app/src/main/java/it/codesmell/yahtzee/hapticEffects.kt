@@ -39,7 +39,7 @@ class hapticEffects constructor(mainActivity: MainActivity) {
                         .addPrimitive(VibrationEffect.Composition.PRIMITIVE_SLOW_RISE)
                         .compose()
             )
-        }else{
+        }else if(depth > 0){
             vib?.vibrate(VibrationEffect.createOneShot(depth, 48))
         }
         //fa partire una coroutine, in cui attende e poi fa partire la seconda parte dell'effetto

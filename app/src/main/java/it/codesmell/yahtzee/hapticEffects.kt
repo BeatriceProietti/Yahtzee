@@ -2,6 +2,7 @@ package it.codesmell.yahtzee
 
 import android.os.Build
 import android.os.VibrationEffect
+import android.os.VibrationEffect.EFFECT_CLICK
 import android.os.Vibrator
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -15,10 +16,13 @@ import kotlinx.coroutines.withContext
 class hapticEffects constructor(mainActivity: MainActivity) {
 
     var vib : Vibrator? = null
+    var hasRichHaptics : Boolean = false
 
     init{
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) { //se sto su android >= 12. sta cosa falla in base al supporto invece
-            vib = mainActivity.getSystemService(Vibrator::class.java) //prendo il servizio vibrazione
+        vib = mainActivity.getSystemService(Vibrator::class.java) //prendo il servizio vibrazione
+
+        if(vib?.areAllPrimitivesSupported() == true){
+            hasRichHaptics = true
         }
 
     }
@@ -27,21 +31,30 @@ class hapticEffects constructor(mainActivity: MainActivity) {
 
 //Depth: "profondità" del tasto, quanto tempo ci mette ad arrivare a fine corsa (in ms)
     fun btnDown(depth : Long) {
-        vib?.vibrate( // ?
-            VibrationEffect.startComposition()
-                .addPrimitive(VibrationEffect.Composition.PRIMITIVE_SLOW_RISE)
-                .compose()
-        )
+
+        if(hasRichHaptics == true){
+            vib?.vibrate(
+                    VibrationEffect.startComposition()
+                        .addPrimitive(VibrationEffect.Composition.PRIMITIVE_SLOW_RISE)
+                        .compose()
+            )
+        }else{
+            vib?.vibrate(VibrationEffect.createOneShot(depth, 128))
+        }
         //fa partire una coroutine, in cui attende e poi fa partire la seconda parte dell'effetto
         CoroutineScope(Dispatchers.IO).launch {
             delay(depth)
             withContext(Dispatchers.Main) {
                 vib?.cancel()
-                vib?.vibrate(
-                    VibrationEffect.startComposition()
-                        .addPrimitive(VibrationEffect.Composition.PRIMITIVE_CLICK)
-                        .compose()
-                )
+                if(hasRichHaptics == true) {
+                    vib?.vibrate(
+                        VibrationEffect.startComposition()
+                            .addPrimitive(VibrationEffect.Composition.PRIMITIVE_CLICK)
+                            .compose()
+                    )
+                }else{
+                    vib?.vibrate(VibrationEffect.createPredefined(EFFECT_CLICK))
+                }
             }
         }
     }

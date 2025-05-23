@@ -1,0 +1,54 @@
+package it.codesmell.yahtzee
+
+import android.widget.Toast
+import androidx.compose.foundation.gestures.awaitEachGesture
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.input.pointer.PointerEventPass
+import androidx.compose.ui.input.pointer.pointerInput
+
+//mettiamo qui i composable, per avere un po' di ordine e per averli standardizzati per tutte le activity
+//possiamo fare dei composable ad uso generico, si possono passare le funzioni come argomenti
+
+class Composables {
+
+    @Composable                           // vv Unit sarebbe void. funzione che prende nulla e restituisce nulla
+    fun btn1(onClick : () -> Unit, text : String, depth : Long){
+        Button(
+            modifier = Modifier
+                .pointerInput(Unit) {
+                    awaitEachGesture {
+                        //evento pressione del tasto
+                        val downEvent =
+                            awaitPointerEvent(PointerEventPass.Main)
+                        downEvent.changes.forEach {
+                            if (it.pressed) {
+                                hfx?.btnDown(50)
+                                onClick() //eseguo la funzione passata come argomento
+                            }
+                        }
+                        //loop che aspetta che il tasto venga rilasciato
+                        var allUp = false
+                        while (!allUp) {
+                            val event =
+                                awaitPointerEvent(PointerEventPass.Main)
+                            if (event.changes.all { it.pressed.not() }) {
+                                allUp = true
+                                event.changes.forEach {
+                                    hfx?.click(0.5f)
+                                }
+                            }
+                        }
+                    }
+                },
+            onClick = {},
+            shape = ButtonDefaults.shape,
+        ){
+            Text(text)
+        }
+    }
+
+}

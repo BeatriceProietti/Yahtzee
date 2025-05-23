@@ -41,17 +41,18 @@ var gthis : MainActivity? = null
 var hfx : hapticEffects? = null
 var composables : Composables? = null
 
+private lateinit var mozione : motionManager
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
+        mozione = motionManager(this)
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
-
         gthis = this
         hfx = hapticEffects(this)
         composables = Composables()
         //val screens = Screens()
-
+        mozione.start()
         setContent {
             YahtzeeTheme {
                 Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
@@ -70,6 +71,8 @@ class MainActivity : ComponentActivity() {
 
 
 }
+
+
 
 fun provas(){
     //Toast.makeText(gthis, "Szsszzziù!!!!", Toast.LENGTH_SHORT).show()

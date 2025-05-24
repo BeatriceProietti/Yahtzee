@@ -37,7 +37,7 @@ class motionManager(private val context: Context) : SensorEventListener {
         Log.d("MotionManager", "Accelerometer listener unregistered")
     }
 
-    override fun onSensorChanged(event: SensorEvent?) {
+    override fun onSensorChanged(event: SensorEvent?) {// da modificare poi quando facciamo il lancio dei dadi
         event?.let {
             val x = it.values[0]
             val y = it.values[1]

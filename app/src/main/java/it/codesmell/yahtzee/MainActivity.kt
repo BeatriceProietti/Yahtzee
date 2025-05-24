@@ -1,5 +1,6 @@
 package it.codesmell.yahtzee
 
+import android.content.res.Configuration
 import android.os.Bundle
 import android.widget.Toast
 import androidx.activity.ComponentActivity
@@ -25,7 +26,7 @@ var gthis : MainActivity? = null
 
 var hfx : hapticEffects? = null
 var composables : Composables? = null
-
+var themeValue = false
 private lateinit var mozione : motionManager
 
 class MainActivity : ComponentActivity() {
@@ -39,7 +40,7 @@ class MainActivity : ComponentActivity() {
         //val screens = Screens()
         mozione.start()
         setContent {
-            YahtzeeTheme {
+            YahtzeeTheme(darkTheme = themeValue) {
                 Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
                     Greeting(name = "Moto", modifier = Modifier.padding(innerPadding)) //possiamo lasciare roba fuori dalla navigazione, in modo che rimanga fissa tra le schermate
                     // roba navigazione ---------------------------------------------------------------------------------
@@ -51,15 +52,14 @@ class MainActivity : ComponentActivity() {
                             route = "MainScreen",
                             //enterTransition = slideInHorizontally{ fullWidth -> fullWidth }
                         ){MainScreen(navCon)} //associa il route "MainScreen" al composable MainScreen
-
+                        /*
                         composable(
                             route = "Screen2"
                         ){Screen2(navCon)}
-
                         composable(
                             route = "GameScreen"
                         ){GameScreen(navCon)}
-
+                        */
                     })
                     // --------------------------------------------------------------------------------------------------
                 }
@@ -74,6 +74,12 @@ class MainActivity : ComponentActivity() {
 
 fun provas(){
     //Toast.makeText(gthis, "Szsszzziù!!!!", Toast.LENGTH_SHORT).show()
+}
+
+
+fun switchTheme(){
+
+   themeValue = !themeValue
 }
 
 fun switchVibMode(){ //alterna tra le API di vibrazione, per provare

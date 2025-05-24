@@ -28,9 +28,11 @@ import androidx.navigation.compose.rememberNavController
             Text("Benvenuto allo Yahtzeello")
             composables?.funButton(::provas, "Sbrisculo Aptico", 50)
             composables?.funButton(::switchVibMode, "Cambia mod. vibrazione", 0)
-            composables?.funButton({navController.navigate("GameScreen")}, "Gioca", 0)
+            composables?.funButton({ navController.navigate("GameScreen") }, "Gioca", 0)
+            composables?.funButton(::switchTheme, "cambia il tema", 0)
         }
     }
+
 
     @Composable
     fun Screen2(navController: NavController) {

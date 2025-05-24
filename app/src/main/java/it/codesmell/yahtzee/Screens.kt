@@ -27,6 +27,11 @@ import androidx.navigation.NavController
 
     @Composable
     fun Screen2(navController: NavController) {
+
+        fun navBack(){
+            navController.navigateUp()
+        }
+
         Column(
             modifier = Modifier.fillMaxSize(),
             verticalArrangement = Arrangement.Center,
@@ -34,9 +39,12 @@ import androidx.navigation.NavController
         ) {
             Text("Screen2: Zilling Off")
             composables?.btn1(::provas, "Zill Off", 300)
-            composables?.sceneSwitchBtn(navController, "MainScreen", "Vai alla schermata principale", 0)
+            composables?.btn1(::navBack, "Torna Indietro", 0)
+            //composables?.sceneSwitchBtn(navController, "MainScreen", "Vai alla schermata principale", 0)
         }
+
     }
+
 
 // -----
 

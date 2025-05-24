@@ -1,5 +1,6 @@
 package it.codesmell.yahtzee
 
+import android.annotation.SuppressLint
 import android.os.Build
 import android.os.Bundle
 import android.os.VibrationEffect
@@ -26,6 +27,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.pointer.PointerEventPass
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.navigation.NavController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
@@ -39,6 +41,7 @@ import kotlinx.coroutines.withContext
 //sborra
 
 var gthis : MainActivity? = null
+
 var hfx : hapticEffects? = null
 var composables : Composables? = null
 
@@ -59,16 +62,18 @@ class MainActivity : ComponentActivity() {
                 Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
                     Greeting(name = "Moto", modifier = Modifier.padding(innerPadding)) //possiamo lasciare roba fuori dalla navigazione, in modo che rimanga fissa tra le schermate
                     // roba navigazione ---------------------------------------------------------------------------------
-                    val navController = rememberNavController()
-                    NavHost(navController = navController, startDestination = "MainScreen", builder ={
+                    var navCon = rememberNavController()
+                    NavHost(navController = navCon, startDestination = "MainScreen", builder ={
                         //qua i route, animazioni entrata/uscita delle varie schermate
                         composable(
                             route = "MainScreen",
                             //enterTransition = slideInHorizontally{ fullWidth -> fullWidth }
-                        ){MainScreen(navController)} //associa il route "MainScreen" al composable MainScreen
+                        ){MainScreen(navCon)} //associa il route "MainScreen" al composable MainScreen
+
                         composable(
                             route = "Screen2"
-                        ){Screen2(navController)}
+                        ){Screen2(navCon)}
+
                     })
                     // --------------------------------------------------------------------------------------------------
                 }
@@ -89,6 +94,8 @@ fun switchVibMode(){ //alterna tra le API di vibrazione, per provare
     hfx?.hasRichHaptics = !hfx!!.hasRichHaptics //"!!" devo capire bene che è, lo vuole kotlin
     Toast.makeText(gthis, "hasRichHaptics = " + hfx?.hasRichHaptics, Toast.LENGTH_SHORT).show()
 }
+
+
 
 @Composable
 fun MyScreenContent(modifier: Modifier = Modifier) {

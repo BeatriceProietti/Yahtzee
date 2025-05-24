@@ -15,6 +15,9 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
+import it.codesmell.yahtzee.gameLogic
+
+val gameLogic : GameLogic = GameLogic()
 
 // qua mettiamo tutte le schermate dell'app
 
@@ -59,12 +62,21 @@ import androidx.navigation.compose.rememberNavController
             composables?.funButton(::provas, "Zill Off", 300)
             composables?.funButton({navController.navigateUp()}, "Torna Indietro", 0)
             Spacer(Modifier.size(50.dp))
-            composables?.diceRow()
-            composables?.funButton({navController.navigateUp()}, "Tira Dadi", 0)
+            composables?.diceRow(
+                die1 = gameLogic.die1.toString(),
+                die2 = "0",
+                die3 = "0",
+                die4 = "0",
+                die5 = "0"
+            )
+
+            composables?.funButton({gameLogic.rollDie(6)}, "Tira Dadi", 0)
 
         }
 
     }
+
+
 
 
 // -----

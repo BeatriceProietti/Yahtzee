@@ -62,13 +62,13 @@ class Composables {
     // ⚀⚁⚂⚃⚄⚅
 
     @Composable
-    fun diceRow(){
-        val die1 by remember{mutableStateOf("dado1")}
-        val die2 by remember{mutableStateOf("dado2")}
-        val die3 by remember{mutableStateOf("dado3")}
-        val die4 by remember{mutableStateOf("dado4")}
-        val die5 by remember{mutableStateOf("dado5")}
-
+    fun diceRow(
+        die1 : String,
+        die2 : String,
+        die3 : String,
+        die4 : String,
+        die5 : String
+    ){
         Row(
             Modifier
                 .padding(16.dp),

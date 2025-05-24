@@ -28,7 +28,7 @@ var gthis : MainActivity? = null
 
 var hfx : hapticEffects? = null
 var composables : Composables? = null
-var darkTheme by mutableStateOf(false)
+var darkTheme by mutableStateOf(true)
 
 private lateinit var mozione : motionManager
 

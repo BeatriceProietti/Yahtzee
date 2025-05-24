@@ -11,9 +11,6 @@ import androidx.navigation.NavController
 
 // qua mettiamo tutte le schermate dell'app
 
-    fun navBack(navController : NavController){
-        navController.navigateUp()
-    }
 
     @Composable
     fun MainScreen(navController: NavController) {
@@ -23,9 +20,9 @@ import androidx.navigation.NavController
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Text("MainScreen, palle estremamente spigolari")
-            composables?.btn1(::provas, "Sbrisculo Aptico", 50)
-            composables?.btn1(::switchVibMode, "Cambia mod. vibrazione", 0)
-            composables?.sceneSwitchBtn(navController, "Screen2", "Vai a schermata 2", 0)
+            composables?.funButton(::provas, "Sbrisculo Aptico", 50)
+            composables?.funButton(::switchVibMode, "Cambia mod. vibrazione", 0)
+            composables?.funButton({navController.navigate("Screen2")}, "Vai a schermata 2s", 0)
         }
     }
 
@@ -37,9 +34,8 @@ import androidx.navigation.NavController
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Text("Screen2: Zilling Off")
-            composables?.btn1(::provas, "Zill Off", 300)
-            composables?.btn1({navBack(navController)}, "Torna Indietro", 0)
-            //composables?.sceneSwitchBtn(navController, "MainScreen", "Vai alla schermata principale", 0)
+            composables?.funButton(::provas, "Zill Off", 300)
+            composables?.funButton({navController.navigateUp()}, "Torna Indietro", 0)
         }
 
     }

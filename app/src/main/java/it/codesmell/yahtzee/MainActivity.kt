@@ -65,6 +65,7 @@ class MainActivity : ComponentActivity() {
                     var navCon = rememberNavController()
                     NavHost(navController = navCon, startDestination = "MainScreen", builder ={
                         //qua i route, animazioni entrata/uscita delle varie schermate
+
                         composable(
                             route = "MainScreen",
                             //enterTransition = slideInHorizontally{ fullWidth -> fullWidth }

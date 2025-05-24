@@ -9,51 +9,54 @@ import android.util.Log
 import android.widget.Toast
 import kotlin.math.abs
 
-
-//cerchiamo di capire come cazzo si fa sta roba
-
 class motionManager(private val context: Context) : SensorEventListener {
 
     private var sensorManager: SensorManager? = null
-    private var accelerometer: Sensor? = null
+    private var gyroscope: Sensor? = null
+
+    private var lastEventTime = 0L
+    private val rotationThreshold = 1.0f // soglia di rotazione (rad/s)
+    private val cooldown = 1000L // 1 secondo tra due trigger
 
     fun start() {
-        sensorManager = context.getSystemService(SensorManager::class.java)//boh??
-        accelerometer = sensorManager?.getDefaultSensor(Sensor.TYPE_ACCELEROMETER)
+        sensorManager = context.getSystemService(SensorManager::class.java)
+        gyroscope = sensorManager?.getDefaultSensor(Sensor.TYPE_GYROSCOPE)
 
-        if (accelerometer != null) {
+        if (gyroscope != null) {
             sensorManager?.registerListener(
                 this,
-                accelerometer,
+                gyroscope,
                 SensorManager.SENSOR_DELAY_NORMAL
             )
-            Log.d("MotionManager", "Accelerometer listener registered")
+            Log.d("MotionManager", "Gyroscope listener registered")
         } else {
-            Log.w("MotionManager", "Accelerometer not available")
+            Log.w("MotionManager", "Gyroscope not available")
         }
     }
 
-    //sburzo
     fun stop() {
         sensorManager?.unregisterListener(this)
-        Log.d("MotionManager", "Accelerometer listener unregistered")
+        Log.d("MotionManager", "Gyroscope listener unregistered")
     }
 
-    override fun onSensorChanged(event: SensorEvent?) {// da modificare poi quando facciamo il lancio dei dadi
+    override fun onSensorChanged(event: SensorEvent?) {
         event?.let {
-            val x = it.values[0]
-            val y = it.values[1]
-            val z = it.values[2]
-            Log.d("MotionManager", "Accel: x=$x, y=$y, z=$z")//per ora mi sputa fuori la posizione
-            if(abs(x).toInt() > 2 && abs(y).toInt() > 2){
+            val x = it.values[0] // rotazione attorno all'asse X
+            val y = it.values[1] // rotazione attorno all'asse Y
+            val z = it.values[2] // rotazione attorno all'asse Z
 
-                Log.d("vibratore", "vibrotutto");
-                Toast.makeText(gthis, "VIBRO TUTTO",Toast.LENGTH_SHORT).show()
+            Log.d("MotionManager", "Gyro: x=$x, y=$y, z=$z")
+
+            val now = System.currentTimeMillis()
+            if (abs(y) > rotationThreshold && now - lastEventTime > cooldown) {
+                lastEventTime = now
+                Log.d("MotionManager", "💥 ROTAZIONE DETECTED")
+                Toast.makeText(context, "ROTATION DETECTED", Toast.LENGTH_SHORT).show()
             }
         }
     }
 
     override fun onAccuracyChanged(sensor: Sensor?, accuracy: Int) {
-        // Sbirgma
+        // non usato in questo caso
     }
 }

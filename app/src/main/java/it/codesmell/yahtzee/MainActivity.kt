@@ -1,6 +1,5 @@
 package it.codesmell.yahtzee
 
-import android.content.res.Configuration
 import android.os.Bundle
 import android.widget.Toast
 import androidx.activity.ComponentActivity
@@ -13,6 +12,9 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.navigation.compose.NavHost
@@ -26,21 +28,25 @@ var gthis : MainActivity? = null
 
 var hfx : hapticEffects? = null
 var composables : Composables? = null
-var themeValue = false
+var darkTheme by mutableStateOf(false)
+
 private lateinit var mozione : motionManager
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
-        mozione = motionManager(this)
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
+
         gthis = this
         hfx = hapticEffects(this)
         composables = Composables()
-        //val screens = Screens()
+
+        mozione = motionManager(this)
         mozione.start()
+
         setContent {
-            YahtzeeTheme(darkTheme = themeValue) {
+            //var theme by remember{mutableStateOf(false)}
+            YahtzeeTheme(darkTheme = darkTheme) {
                 Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
                     Greeting(name = "Moto", modifier = Modifier.padding(innerPadding)) //possiamo lasciare roba fuori dalla navigazione, in modo che rimanga fissa tra le schermate
                     // roba navigazione ---------------------------------------------------------------------------------
@@ -52,14 +58,15 @@ class MainActivity : ComponentActivity() {
                             route = "MainScreen",
                             //enterTransition = slideInHorizontally{ fullWidth -> fullWidth }
                         ){MainScreen(navCon)} //associa il route "MainScreen" al composable MainScreen
-                        /*
+
                         composable(
                             route = "Screen2"
                         ){Screen2(navCon)}
+
                         composable(
                             route = "GameScreen"
                         ){GameScreen(navCon)}
-                        */
+
                     })
                     // --------------------------------------------------------------------------------------------------
                 }
@@ -76,10 +83,9 @@ fun provas(){
     //Toast.makeText(gthis, "Szsszzziù!!!!", Toast.LENGTH_SHORT).show()
 }
 
-
 fun switchTheme(){
-
-   themeValue = !themeValue
+    darkTheme = !darkTheme
+    Toast.makeText(gthis, "darkTheme = $darkTheme", Toast.LENGTH_SHORT).show()
 }
 
 fun switchVibMode(){ //alterna tra le API di vibrazione, per provare

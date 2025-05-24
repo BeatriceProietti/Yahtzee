@@ -65,14 +65,19 @@ val gameLogic : GameLogic = GameLogic()
             composables?.funButton({navController.navigateUp()}, "Torna Indietro", 0)
             Spacer(Modifier.size(50.dp))
             composables?.diceRow(
-                die1 = gameLogic.die1.toString(),
-                die2 = "0",
-                die3 = "0",
-                die4 = "0",
-                die5 = "0"
+                die0 = gameLogic.dice[0].toString(),
+                die1 = gameLogic.dice[1].toString(),
+                die2 = gameLogic.dice[2].toString(),
+                die3 = gameLogic.dice[3].toString(),
+                die4 = gameLogic.dice[4].toString()
             )
 
-            composables?.funButton({gameLogic.rollDie(6)}, "Tira Dadi", 0)
+            composables?.funButton({
+                for(i in 0..4){
+                    gameLogic.rollDie(i,6)
+                }
+            }, "Tira Dadi", 0)
+
 
         }
 

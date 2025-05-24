@@ -10,11 +10,12 @@ val rng = Random(System.currentTimeMillis()) //prendo come seed l'ora attuale
 
 class GameLogic : ViewModel() {
 
-    var die1 by mutableStateOf(1)
+    var dice by mutableStateOf(List(5){0}) //lista di 5 mutable state = 0
 
-    fun rollDie(size : Int): Int {
-        die1 = (1..size).random(rng) //numero random tra 1 e size
-        return 0
+    fun rollDie(which : Int, size : Int) { //quale dado da tirare, dimensione del dado
+        val newList = dice.toMutableList()
+        newList[which] = (1..size).random(rng) //numero random tra 1 e size
+        dice = newList
     }
 
 }

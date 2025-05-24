@@ -72,11 +72,11 @@ class Composables {
 
     @Composable
     fun diceRow(
+        die0 : String,
         die1 : String,
         die2 : String,
         die3 : String,
-        die4 : String,
-        die5 : String
+        die4 : String
     ){
         Row(
             Modifier
@@ -84,11 +84,11 @@ class Composables {
             Arrangement
                 .spacedBy(16.dp)
         ){
+            Text(die0)
             Text(die1)
             Text(die2)
             Text(die3)
             Text(die4)
-            Text(die5)
         }
     }
 

@@ -1,6 +1,8 @@
 package it.codesmell.yahtzee
 
 import androidx.compose.foundation.gestures.awaitEachGesture
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Text
@@ -8,6 +10,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.pointer.PointerEventPass
 import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.unit.dp
 
 //mettiamo qui i composable, per avere un po' di ordine e per averli standardizzati per tutte le schermate
 //possiamo fare dei composable ad uso generico, si possono passare le funzioni come argomenti
@@ -49,6 +52,20 @@ class Composables {
             shape = ButtonDefaults.shape,
         ){
             Text(text)
+        }
+    }
+
+    @Composable
+    fun diceRow(){
+        Row(
+            Modifier
+                .padding(5.dp,5.dp,5.dp,5.dp)
+        ){
+            Text("Dado1")
+            Text("Dado2")
+            Text("Dado3")
+            Text("Dado4")
+            Text("Dado5")
         }
     }
 

@@ -2,15 +2,18 @@ package it.codesmell.yahtzee
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
 import androidx.compose.material3.Text
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.NavController
+import androidx.navigation.compose.rememberNavController
 
 // qua mettiamo tutte le schermate dell'app
-
 
     @Composable
     fun MainScreen(navController: NavController) {
@@ -19,10 +22,10 @@ import androidx.navigation.NavController
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Text("MainScreen, palle estremamente spigolari")
+            Text("Benvenuto allo Yahtzeello")
             composables?.funButton(::provas, "Sbrisculo Aptico", 50)
             composables?.funButton(::switchVibMode, "Cambia mod. vibrazione", 0)
-            composables?.funButton({navController.navigate("Screen2")}, "Vai a schermata 2s", 0)
+            composables?.funButton({navController.navigate("GameScreen")}, "Gioca", 0)
         }
     }
 
@@ -36,6 +39,22 @@ import androidx.navigation.NavController
             Text("Screen2: Zilling Off")
             composables?.funButton(::provas, "Zill Off", 300)
             composables?.funButton({navController.navigateUp()}, "Torna Indietro", 0)
+        }
+
+    }
+
+    @Composable
+    fun GameScreen(navController: NavController) {
+        Column(
+            modifier = Modifier.fillMaxSize(),
+            verticalArrangement = Arrangement.Center,
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            Text("Gaming")
+            composables?.funButton(::provas, "Zill Off", 300)
+            composables?.funButton({navController.navigateUp()}, "Torna Indietro", 0)
+            composables?.diceRow()
+
         }
 
     }

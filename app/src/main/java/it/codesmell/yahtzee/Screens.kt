@@ -33,6 +33,7 @@ val gameLogic : GameLogic = GameLogic()
             composables?.funButton(::switchVibMode, "Cambia mod. vibrazione", 0)
             composables?.funButton({ navController.navigate("GameScreen") }, "Gioca", 0)
             composables?.funButton(::switchTheme, "cambia il tema", 0)
+            composables?.funButton({ navController.navigate("Screen2") }, "schermata di prova delle applicazioni", 0)
         }
     }
 
@@ -47,6 +48,7 @@ val gameLogic : GameLogic = GameLogic()
             Text("Screen2: Zilling Off")
             composables?.funButton(::provas, "Zill Off", 300)
             composables?.funButton({navController.navigateUp()}, "Torna Indietro", 0)
+            composables?.animationSquare(Modifier.size(200.dp))
         }
 
     }

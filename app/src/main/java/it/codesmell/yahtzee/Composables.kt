@@ -1,6 +1,8 @@
 package it.codesmell.yahtzee
 
+import android.util.Log
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.awaitEachGesture
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -10,6 +12,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Text
@@ -18,6 +21,8 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Canvas
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.PointerEventPass
@@ -97,14 +102,18 @@ class Composables {
 
     @Composable
     fun animationSquare(
-        modifier: Modifier = Modifier,
-        size: Dp = 120.dp,
-        color: Color = Color.Green) {
-
-        Box(modifier = modifier.size(size).background(color)){
-
-
+        size: Dp = 100.dp,
+        color: Color = Color.Cyan,
+        logTag: String = "ClickableSquare",
+        logMessage: String = "Square clicked!"
+    ) {
+        Box(
+            modifier = Modifier
+                .size(size)
+                .background(color)
+                .clickable {
+                    Log.d(logTag, logMessage)
+                }
+        )
         }
     }
-
-}

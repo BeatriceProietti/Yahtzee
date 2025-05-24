@@ -6,6 +6,8 @@ import android.hardware.SensorEvent
 import android.hardware.SensorEventListener
 import android.hardware.SensorManager
 import android.util.Log
+import android.widget.Toast
+import kotlin.math.abs
 
 
 //cerchiamo di capire come cazzo si fa sta roba
@@ -43,6 +45,11 @@ class motionManager(private val context: Context) : SensorEventListener {
             val y = it.values[1]
             val z = it.values[2]
             Log.d("MotionManager", "Accel: x=$x, y=$y, z=$z")//per ora mi sputa fuori la posizione
+            if(abs(x).toInt() > 2 && abs(y).toInt() > 2){
+
+                Log.d("vibratore", "vibrotutto");
+                Toast.makeText(gthis, "VIBRO TUTTO",Toast.LENGTH_SHORT).show()
+            }
         }
     }
 

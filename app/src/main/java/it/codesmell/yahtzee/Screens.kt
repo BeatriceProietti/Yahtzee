@@ -11,6 +11,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.material3.Text
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
@@ -48,7 +49,10 @@ val gameLogic : GameLogic = GameLogic()
             Text("Screen2: Zilling Off")
             composables?.funButton(::provas, "Zill Off", 300)
             composables?.funButton({navController.navigateUp()}, "Torna Indietro", 0)
-            composables?.animationSquare(Modifier.size(200.dp))
+            composables?.animationSquare(size = 150.dp,
+                color = Color.Magenta,
+                logTag = "MyApp",
+                logMessage = "Hai cliccato il quadrato!")
         }
 
     }

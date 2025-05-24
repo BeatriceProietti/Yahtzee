@@ -1,12 +1,16 @@
 package it.codesmell.yahtzee
 
 import androidx.compose.foundation.gestures.awaitEachGesture
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.pointer.PointerEventPass
 import androidx.compose.ui.input.pointer.pointerInput
@@ -55,17 +59,27 @@ class Composables {
         }
     }
 
+    // ⚀⚁⚂⚃⚄⚅
+
     @Composable
     fun diceRow(){
+        val die1 by remember{mutableStateOf("dado1")}
+        val die2 by remember{mutableStateOf("dado2")}
+        val die3 by remember{mutableStateOf("dado3")}
+        val die4 by remember{mutableStateOf("dado4")}
+        val die5 by remember{mutableStateOf("dado5")}
+
         Row(
             Modifier
-                .padding(5.dp,5.dp,5.dp,5.dp)
+                .padding(16.dp),
+            Arrangement
+                .spacedBy(16.dp)
         ){
-            Text("Dado1")
-            Text("Dado2")
-            Text("Dado3")
-            Text("Dado4")
-            Text("Dado5")
+            Text(die1)
+            Text(die2)
+            Text(die3)
+            Text(die4)
+            Text(die5)
         }
     }
 

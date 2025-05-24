@@ -8,6 +8,7 @@ import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.compose.animation.slideInHorizontally
 import androidx.compose.foundation.gestures.awaitEachGesture
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -56,12 +57,18 @@ class MainActivity : ComponentActivity() {
         setContent {
             YahtzeeTheme {
                 Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-                    Greeting(name = "Moto", modifier = Modifier.padding(innerPadding))
+                    Greeting(name = "Moto", modifier = Modifier.padding(innerPadding)) //possiamo lasciare roba fuori dalla navigazione, in modo che rimanga fissa tra le schermate
                     // roba navigazione ---------------------------------------------------------------------------------
                     val navController = rememberNavController()
                     NavHost(navController = navController, startDestination = "MainScreen", builder ={
-                        composable("MainScreen"){MainScreen(navController)} //associa il route "MainScreen" al composable MainScreen
-                        composable("Screen2"){Screen2(navController)}
+                        //qua i route, animazioni entrata/uscita delle varie schermate
+                        composable(
+                            route = "MainScreen",
+                            //enterTransition = slideInHorizontally{ fullWidth -> fullWidth }
+                        ){MainScreen(navController)} //associa il route "MainScreen" al composable MainScreen
+                        composable(
+                            route = "Screen2"
+                        ){Screen2(navController)}
                     })
                     // --------------------------------------------------------------------------------------------------
                 }

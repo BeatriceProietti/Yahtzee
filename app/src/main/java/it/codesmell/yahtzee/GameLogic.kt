@@ -34,8 +34,8 @@ class GameLogic : ViewModel() {
         for(i in 1..rolls){
             //animazione dado che gira prima di ogni roll, durante il delay
             rollDie(which, size)
-            delay(delay)
             hfx?.click(1f)
+            delay(delay)
             if(i>rolls-5){delay += 35}
         }
     }

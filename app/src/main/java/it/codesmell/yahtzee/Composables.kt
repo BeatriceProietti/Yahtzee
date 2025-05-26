@@ -73,15 +73,14 @@ class Composables {
         }
     }
 
-    // ⚀⚁⚂⚃⚄⚅
 
     @Composable
     fun diceRow(
-        die0 : String,
-        die1 : String,
-        die2 : String,
-        die3 : String,
-        die4 : String
+        die0 : Int,
+        die1 : Int,
+        die2 : Int,
+        die3 : Int,
+        die4 : Int
     ){
         Row(
             Modifier
@@ -89,14 +88,27 @@ class Composables {
             Arrangement
                 .spacedBy(16.dp)
         ){
-            Text(die0)
-            Text(die1)
-            Text(die2)
-            Text(die3)
-            Text(die4)
+            funButton({gameLogic.selectDie(0)},numToDie(die0),0)
+            funButton({gameLogic.selectDie(1)},numToDie(die1),0)
+            funButton({gameLogic.selectDie(2)},numToDie(die2),0)
+            funButton({gameLogic.selectDie(3)},numToDie(die3),0)
+            funButton({gameLogic.selectDie(4)},numToDie(die4),0)
         }
     }
 
+    //da rifare con dadi fighi
+    fun numToDie(num : Int) : String{
+        var newString : String = num.toString()
+        /*
+        if(num == 1){newString = "⚀"}
+        else if(num == 2){newString = "⚁"}
+        else if(num == 3){newString = "⚂"}
+        else if(num == 4){newString = "⚃"}
+        else if(num == 5){newString = "⚄"}
+        else if(num == 6){newString = "⚅"}
+        */
+        return newString
+    }
 
     //---------------------------------
 

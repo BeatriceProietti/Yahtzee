@@ -18,7 +18,6 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import it.codesmell.yahtzee.gameLogic
 
-val gameLogic : GameLogic = GameLogic()
 
 // qua mettiamo tutte le schermate dell'app
 
@@ -47,7 +46,6 @@ val gameLogic : GameLogic = GameLogic()
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Text("Screen2: Zilling Off")
-            composables?.funButton(::provas, "Zill Off", 300)
             composables?.funButton({navController.navigateUp()}, "Torna Indietro", 0)
             composables?.animationSquare(size = 150.dp,
                 color = Color.Magenta,
@@ -65,15 +63,14 @@ val gameLogic : GameLogic = GameLogic()
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Text("Gaming")
-            composables?.funButton(::provas, "Zill Off", 300)
             composables?.funButton({navController.navigateUp()}, "Torna Indietro", 0)
             Spacer(Modifier.size(50.dp))
             composables?.diceRow(
-                die0 = gameLogic.dice[0].toString(),
-                die1 = gameLogic.dice[1].toString(),
-                die2 = gameLogic.dice[2].toString(),
-                die3 = gameLogic.dice[3].toString(),
-                die4 = gameLogic.dice[4].toString()
+                die0 = gameLogic.dice[0],
+                die1 = gameLogic.dice[1],
+                die2 = gameLogic.dice[2],
+                die3 = gameLogic.dice[3],
+                die4 = gameLogic.dice[4]
             )
 
             composables?.funButton({

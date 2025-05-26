@@ -25,6 +25,7 @@ import it.codesmell.yahtzee.ui.theme.YahtzeeTheme
 //sborra
 
 var gthis : MainActivity? = null
+val gameLogic : GameLogic = GameLogic()
 
 var hfx : hapticEffects? = null
 var composables : Composables? = null

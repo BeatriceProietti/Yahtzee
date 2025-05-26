@@ -44,11 +44,11 @@ class motionManager(private val context: Context) : SensorEventListener {
             val x = it.values[0]
             val y = it.values[1]
             val z = it.values[2]
-            Log.d("MotionManager", "Accel: x=$x, y=$y, z=$z")//per ora mi sputa fuori la posizione
+            //Log.d("MotionManager", "Accel: x=$x, y=$y, z=$z")//per ora mi sputa fuori la posizione
             if(abs(x).toInt() > 2 && abs(y).toInt() > 2){
 
-                Log.d("vibratore", "vibrotutto");
-                Toast.makeText(gthis, "VIBRO TUTTO",Toast.LENGTH_SHORT).show()
+                //Log.d("vibratore", "vibrotutto");
+                //Toast.makeText(gthis, "VIBRO TUTTO",Toast.LENGTH_SHORT).show()
             }
         }
     }

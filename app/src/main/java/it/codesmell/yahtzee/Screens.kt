@@ -17,6 +17,9 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import it.codesmell.yahtzee.gameLogic
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 
 // qua mettiamo tutte le schermate dell'app
@@ -73,11 +76,7 @@ import it.codesmell.yahtzee.gameLogic
                 die4 = gameLogic.dice[4]
             )
 
-            composables?.funButton({
-                for(i in 0..4){
-                    gameLogic.rollDie(i,6)
-                }
-            }, "Tira Dadi", 0)
+            composables?.funButton({gameLogic.rollSelectedDice()}, "Tira Dadi", 0)
 
 
         }

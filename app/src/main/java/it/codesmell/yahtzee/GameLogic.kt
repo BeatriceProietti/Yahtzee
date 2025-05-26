@@ -5,6 +5,10 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.selects.select
 import kotlin.random.Random
 
@@ -22,6 +26,26 @@ class GameLogic : ViewModel() {
         val newList = dice.toMutableList()
         newList[which] = (1..size).random(rng) //numero random tra 1 e size
         dice = newList
+    }
+
+    suspend fun rollDieAnimated(which : Int, size : Int){
+        var rolls : Int = (3..13).random(rng)
+        var delay : Long = 50 //millisecondi
+        for(i in 1..rolls){
+            //animazione dado che gira prima di ogni roll, durante il delay
+            rollDie(which, size)
+            delay(delay)
+            hfx?.click(1f)
+            if(i>rolls-5){delay += 35}
+        }
+    }
+
+    fun rollSelectedDice(){
+        for(i in 0..selectedDice.size-1){
+            CoroutineScope(Dispatchers.IO).launch {
+                gameLogic.rollDieAnimated(selectedDice[i],6)
+            }
+        }
     }
 
     //Aggiungi un dado alla lista dei dadi da tenere

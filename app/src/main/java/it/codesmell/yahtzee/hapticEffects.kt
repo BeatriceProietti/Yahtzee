@@ -42,7 +42,7 @@ class hapticEffects constructor(mainActivity: MainActivity) {
         }else if(depth > 0){
             vib?.vibrate(VibrationEffect.createOneShot(depth, 48))
         }
-        //fa partire una coroutine, in cui attende e poi fa partire la seconda parte dell'effetto
+        //fa partire un altro thread, che attende e poi fa partire la seconda parte dell'effetto
         CoroutineScope(Dispatchers.IO).launch {
             delay(depth)
             withContext(Dispatchers.Main) {
@@ -67,6 +67,8 @@ class hapticEffects constructor(mainActivity: MainActivity) {
                 .compose()
         )
     }
+
+
 
 
 }

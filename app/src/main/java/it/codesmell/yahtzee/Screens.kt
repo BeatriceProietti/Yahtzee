@@ -55,11 +55,7 @@ import kotlinx.coroutines.launch
         ) {
             Text("Screen2: Zilling Off")
             composables?.funButton({navController.navigateUp()}, "Torna Indietro", 0)
-            composables?.animationSquare(
-                color = Color.Magenta,
-                logTag = "MyApp",
-                logMessage = "Hai cliccato il quadrato!")
-
+            composables?.animationSquare({},"Palle Sudatissime")
         }
 
     }

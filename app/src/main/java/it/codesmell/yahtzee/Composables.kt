@@ -104,7 +104,7 @@ class Composables {
                 .spacedBy(16.dp)
         ){
             for(i in 0..diceAmount-1){
-                funButton({gameLogic.selectDie(i)},numToDie(dice[i]),0)
+                animationSquare({gameLogic.selectDie(i)},numToDie(dice[i]))
             }
         }
     }
@@ -126,11 +126,7 @@ class Composables {
     //---------------------------------
 
     @Composable
-    fun animationSquare( // il dado
-        color: Color = Color.Cyan,
-        logTag: String = "ClickableSquare",
-        logMessage: String = "Square clicked!"
-    ) {
+    fun animationSquare(onClick : () -> Unit, text : String) {
         val context = LocalContext.current
         var isMoved by remember { mutableStateOf(false) }
 
@@ -155,21 +151,37 @@ class Composables {
             Log.d("duce2", "booooh$rotationZ")
         }
 
-
-        Column(
-            verticalArrangement = Arrangement.Center,
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
-
-
             Box(
                 modifier = Modifier
                     .offset { IntOffset(0, offsetY.value.roundToInt()) }
-                    .size(100.dp)
+                    .size(30.dp)
                     .rotate(rotationZ.toFloat())
                     .clickable { isMoved = !isMoved }
-                    .background(color)
-            )
-        }
+                    .background(Color.Cyan)
+                    .pointerInput(Unit) {
+                        awaitEachGesture {
+                            //evento pressione del tasto
+                            val downEvent =
+                                awaitPointerEvent(PointerEventPass.Main)
+                            downEvent.changes.forEach {
+                                if (it.pressed) {
+                                    onClick() //eseguo la funzione passata come argomento
+                                }
+                            }
+                            //loop che aspetta che il tasto venga rilasciato
+                            var allUp = false
+                            while (!allUp) {
+                                val event =
+                                    awaitPointerEvent(PointerEventPass.Main)
+                                if (event.changes.all { it.pressed.not() }) {
+                                    allUp = true
+                                    event.changes.forEach {
+                                        hfx?.click(0.5f)
+                                    }
+                                }
+                            }
+                        }
+                    }
+            ){Text(text)}
     }
 }

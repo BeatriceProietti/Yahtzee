@@ -1,6 +1,12 @@
 package it.codesmell.yahtzee
 
+import android.content.Context
 import android.util.Log
+import android.widget.Toast
+import androidx.compose.animation.core.Spring
+import androidx.compose.animation.core.animateIntAsState
+import androidx.compose.animation.core.animateIntSizeAsState
+import androidx.compose.animation.core.spring
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.awaitEachGesture
@@ -20,6 +26,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
@@ -27,6 +34,7 @@ import androidx.compose.ui.graphics.Canvas
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.PointerEventPass
 import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 
@@ -114,18 +122,27 @@ class Composables {
 
     @Composable
     fun animationSquare(
-        size: Dp = 100.dp,
         color: Color = Color.Cyan,
         logTag: String = "ClickableSquare",
         logMessage: String = "Square clicked!"
     ) {
+        val context = LocalContext.current
+        var isMoved by remember {
+            mutableStateOf(false)
+        }
+        val borderRadius by animateIntAsState(
+            targetValue = if(isMoved) 30 else 10,
+            animationSpec = spring(
+                dampingRatio = Spring.DampingRatioHighBouncy
+            )
+        )
+        Log.d("duce", "value$borderRadius")
+        Button(onClick ={isMoved = !isMoved}) { Text(text = "toggle") }
         Box(
             modifier = Modifier
-                .size(size)
-                .background(color)
-                .clickable {
-                    Log.d(logTag, logMessage)
-                }
+                .size(200.dp)
+                .clip(RoundedCornerShape(borderRadius))
+                .background(color)//porcodeddisse mai mettere questo prima sennò si rompe tutto
         )
         }
     }

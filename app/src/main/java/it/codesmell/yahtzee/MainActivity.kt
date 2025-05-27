@@ -21,11 +21,6 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import it.codesmell.yahtzee.ui.theme.YahtzeeTheme
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 
 //sborra
 
@@ -36,7 +31,7 @@ var hfx : hapticEffects? = null
 var composables : Composables? = null
 var darkTheme by mutableStateOf(true)
 
-private lateinit var mozione : motionManager
+lateinit var mozione : MotionManager
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -47,8 +42,7 @@ class MainActivity : ComponentActivity() {
         hfx = hapticEffects(this)
         composables = Composables()
 
-        mozione = motionManager(this)
-        mozione.start()
+
 
         setContent {
             //var theme by remember{mutableStateOf(false)}

@@ -1,5 +1,6 @@
 package it.codesmell.yahtzee
 
+import android.hardware.SensorEvent
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -50,7 +51,7 @@ import kotlinx.coroutines.launch
         ) {
             Text("Screen2: Zilling Off")
             composables?.funButton({navController.navigateUp()}, "Torna Indietro", 0)
-            composables?.animationSquare(size = 150.dp,
+            composables?.animationSquare(
                 color = Color.Magenta,
                 logTag = "MyApp",
                 logMessage = "Hai cliccato il quadrato!")
@@ -60,6 +61,8 @@ import kotlinx.coroutines.launch
 
     @Composable
     fun GameScreen(navController: NavController) {
+
+
         Column(
             modifier = Modifier.fillMaxSize(),
             verticalArrangement = Arrangement.Center,
@@ -77,7 +80,6 @@ import kotlinx.coroutines.launch
             )
 
             composables?.funButton({gameLogic.rollSelectedDice()}, "Tira Dadi", 0)
-
 
         }
 

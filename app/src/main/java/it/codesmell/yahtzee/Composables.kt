@@ -1,8 +1,11 @@
 package it.codesmell.yahtzee
 
+
+import kotlin.math.roundToInt
 import android.content.Context
 import android.util.Log
 import android.widget.Toast
+import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.animateIntAsState
 import androidx.compose.animation.core.animateIntSizeAsState
@@ -12,9 +15,11 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.awaitEachGesture
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
@@ -23,10 +28,13 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
@@ -36,6 +44,7 @@ import androidx.compose.ui.input.pointer.PointerEventPass
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 
 //mettiamo qui i composable, per avere un po' di ordine e per averli standardizzati per tutte le schermate
@@ -121,22 +130,48 @@ class Composables {
         logMessage: String = "Square clicked!"
     ) {
         val context = LocalContext.current
-        var isMoved by remember {
-            mutableStateOf(false)
-        }
+        var isMoved by remember { mutableStateOf(false) }
+
+        // Animazione del bordo
         val borderRadius by animateIntAsState(
-            targetValue = if(isMoved) 30 else 10,
+            targetValue = if (isMoved) 30 else 10,
             animationSpec = spring(
                 dampingRatio = Spring.DampingRatioHighBouncy
             )
         )
-        Log.d("duce", "value$borderRadius")
-        Button(onClick ={isMoved = !isMoved}) { Text(text = "toggle") }
-        Box(
-            modifier = Modifier
-                .size(200.dp)
-                .clip(RoundedCornerShape(borderRadius))
-                .background(color)//porcodeddisse mai mettere questo prima sennò si rompe tutto
-        )
+
+        // Animazione dell'offset Y/z
+        val offsetY = remember { Animatable(0f) }
+        val rotationZ = remember { Animatable(0f) }
+        val scope = rememberCoroutineScope()
+
+        LaunchedEffect(isMoved) {
+            val targetY = if (isMoved) 300f else 0f
+            offsetY.animateTo(
+                targetY,
+                animationSpec = spring(
+                    dampingRatio = Spring.DampingRatioHighBouncy,
+                    stiffness = Spring.StiffnessLow
+                )
+            )
+        }
+
+        Log.d("duce", "value $borderRadius")
+
+        Column(
+            verticalArrangement = Arrangement.Center,
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+
+
+            Box(
+                modifier = Modifier
+                    .offset { IntOffset(0, offsetY.value.roundToInt()) }
+                    .size(200.dp)
+                    .clip(RoundedCornerShape(borderRadius))
+                    .clickable { isMoved =! isMoved }
+                    .background(color)
+            )
         }
     }
+}

@@ -126,7 +126,7 @@ class Composables {
     //---------------------------------
 
     @Composable
-    fun animationSquare(
+    fun animationSquare( // il dado
         color: Color = Color.Cyan,
         logTag: String = "ClickableSquare",
         logMessage: String = "Square clicked!"

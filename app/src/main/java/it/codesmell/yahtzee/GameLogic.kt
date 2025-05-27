@@ -83,7 +83,7 @@ class GameLogic : ViewModel() {
     fun resetDie(index : Int){
         Log.d("GameLogic", "abbasso il dado $index")
         selectedDice[index] = false
-        statusText = "Dadi selezionati: $selectedDice"
+       // statusText = "Dadi selezionati: $selectedDice"
     }
 
 
@@ -94,13 +94,13 @@ class GameLogic : ViewModel() {
                 if(selectedDice[which] == true){
                     selectedDice[which] = false
                     Log.d("GameLogic", "abbasso il dado $which")
-                    statusText = "Dadi selezionati: $selectedDice"
+                    //statusText = "Dadi selezionati: $selectedDice"
                     return
                 }
             }
         Log.d("GameLogic", "alzo il dado $which")
         selectedDice[which] = true
-        statusText = "Dadi selezionati: $selectedDice"
+        //statusText = "Dadi selezionati: $selectedDice"
     }
 
     //Aggiorna l'aspetto dei dadi in base a quale è selezionato (in futuro anche al tipo di dado)

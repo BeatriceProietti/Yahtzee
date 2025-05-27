@@ -55,6 +55,7 @@ import kotlinx.coroutines.launch
                 color = Color.Magenta,
                 logTag = "MyApp",
                 logMessage = "Hai cliccato il quadrato!")
+
         }
 
     }

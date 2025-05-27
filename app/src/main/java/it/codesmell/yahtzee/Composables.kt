@@ -10,6 +10,7 @@ import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.animateIntAsState
 import androidx.compose.animation.core.animateIntSizeAsState
 import androidx.compose.animation.core.spring
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.awaitEachGesture
@@ -37,6 +38,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Canvas
 import androidx.compose.ui.graphics.Color
@@ -132,21 +134,16 @@ class Composables {
         val context = LocalContext.current
         var isMoved by remember { mutableStateOf(false) }
 
-        // Animazione del bordo
-        val borderRadius by animateIntAsState(
-            targetValue = if (isMoved) 30 else 10,
-            animationSpec = spring(
-                dampingRatio = Spring.DampingRatioHighBouncy
-            )
+        val rotationZ by animateIntAsState( //animazione che si occupa della rotazione
+            targetValue = if (isMoved) 360 else 0,
+            animationSpec = tween(1000),
         )
-
         // Animazione dell'offset Y/z
         val offsetY = remember { Animatable(0f) }
-        val rotationZ = remember { Animatable(0f) }
         val scope = rememberCoroutineScope()
 
         LaunchedEffect(isMoved) {
-            val targetY = if (isMoved) 300f else 0f
+            val targetY = if (isMoved) -290f else 0f
             offsetY.animateTo(
                 targetY,
                 animationSpec = spring(
@@ -154,9 +151,9 @@ class Composables {
                     stiffness = Spring.StiffnessLow
                 )
             )
+            Log.d("duce2", "booooh$rotationZ")
         }
 
-        Log.d("duce", "value $borderRadius")
 
         Column(
             verticalArrangement = Arrangement.Center,
@@ -167,8 +164,9 @@ class Composables {
             Box(
                 modifier = Modifier
                     .offset { IntOffset(0, offsetY.value.roundToInt()) }
-                    .size(200.dp)
-                    .clip(RoundedCornerShape(borderRadius))
+                    .size(100.dp)
+                    .rotate(rotationZ.toFloat())
+                    .offset { IntOffset(0, -offsetY.value.roundToInt()) }
                     .clickable { isMoved =! isMoved }
                     .background(color)
             )

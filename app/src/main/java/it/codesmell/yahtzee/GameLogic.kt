@@ -30,7 +30,7 @@ var selectedDice : MutableList<Boolean> = mutableStateListOf<Boolean>(false,fals
 
 class GameLogic : ViewModel() {
 
-    var dice by mutableStateOf(List(diceAmount){0}) //lista di 5 mutable state = 0
+    var dice by mutableStateOf(List(diceAmount){0}) //lista di 5 mutable state = 0s
 
     //Tira un dado a scelta. which: quale dado tirare. size: numero massimo del dado
     fun rollDie(which : Int, size : Int) { //quale dado da tirare, dimensione del dado
@@ -87,7 +87,7 @@ class GameLogic : ViewModel() {
 
     }
 
-    fun balatro(dice: Array<Int>): String{
+    /*fun balatro(dice: Array<Int>): String{
 
         val counts = dice.groupingBy{it}.eachCount().values.sortedDescending()
 
@@ -107,7 +107,7 @@ class GameLogic : ViewModel() {
 
         val sorted = dice.distinct().sorted()
         return sorted.size == 5 && sorted.last() - sorted.first() == 4
-    }
+    }*/
     //Aggiungi un dado alla lista dei dadi da tenere
     fun selectDie(which : Int){
         //Controlla se è già tra i selezionati. se si, rimuovilo.
@@ -121,7 +121,6 @@ class GameLogic : ViewModel() {
             }
         Log.d("GameLogic", "alzo il dado $which")
         selectedDice[which] = true
-
         statusText = "Dadi selezionati: $selectedDice"
     }
 

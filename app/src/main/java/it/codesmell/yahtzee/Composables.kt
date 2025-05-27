@@ -61,6 +61,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import it.codesmell.yahtzee.ui.theme.YahtzeeTheme
 
 //mettiamo qui i composable, per avere un po' di ordine e per averli standardizzati per tutte le schermate
@@ -109,7 +110,7 @@ class Composables {
 
     @Composable
     fun diceRow(
-        dice : Array<Int> //i dadi ricevuti da gameLogic
+        dice : Array<Int>, //i dadi ricevuti da gameLogic
     ){
         Row(
             Modifier
@@ -118,7 +119,7 @@ class Composables {
                 .spacedBy(16.dp)
         ){
             for(i in 0..diceAmount-1){
-                animationSquare({gameLogic.selectDie(i)},numToDie(dice[i]))
+                animationSquare({gameLogic.selectDie(i)},numToDie(dice[i]),i)
             }
         }
     }
@@ -140,9 +141,9 @@ class Composables {
     //---------------------------------
 
     @Composable
-    fun animationSquare(onClick : () -> Unit, text : String) {
+    fun animationSquare(onClick : () -> Unit, text : String, index : Int) { //index: indice all'interno di upDice
         val context = LocalContext.current
-        var isMoved by remember { mutableStateOf(false) }
+        var isMoved = upDice[index]
 
         val rotationZ by animateIntAsState( //animazione che si occupa della rotazione
             targetValue = if (isMoved) 360 else 0,
@@ -169,8 +170,7 @@ class Composables {
                     .offset { IntOffset(0, offsetY.value.roundToInt()) }
                     .size(55.dp)
                     .rotate(rotationZ.toFloat())
-                    .clickable { isMoved = !isMoved }
-                    .background(MaterialTheme.colorScheme.primary)
+                    //.clickable { upDice[index] = !upDice[index] }
                     .pointerInput(Unit) {
                         awaitEachGesture {
                             //evento pressione del tasto
@@ -198,7 +198,8 @@ class Composables {
             ){
                 Text(
                     text = text,
-                    color = MaterialTheme.colorScheme.onPrimary,
+                    color = MaterialTheme.colorScheme.primary,
+                    fontSize = 50.sp
                 )
             }
     }

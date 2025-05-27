@@ -24,6 +24,9 @@ var firstPhase = true //primo tiro, e poi i reroll
 var rerollAmount : Int = 2 //quanti reroll si possono fare
 var selectedDice : ArrayList<Int> = ArrayList()
 
+var upDice : MutableList<Boolean> = mutableListOf<Boolean>(false,false,false,false,false) //TODO inizializzalo col numero dinamico
+
+
 class GameLogic : ViewModel() {
 
     var dice by mutableStateOf(List(diceAmount){0}) //lista di 5 mutable state = 0
@@ -53,7 +56,7 @@ class GameLogic : ViewModel() {
         for(i in 0..selectedDice.size-1){
             CoroutineScope(Dispatchers.IO).launch {
                 rollDieAnimated(selectedDice[i],6)
-                selectedDice = ArrayList() //svuoto la selezione
+                resetDice()
                 statusText = ""
             }
         }
@@ -64,7 +67,7 @@ class GameLogic : ViewModel() {
         for(i in 0..diceAmount-1){
             CoroutineScope(Dispatchers.IO).launch {
                 rollDieAnimated(i,6)
-                selectedDice = ArrayList() //svuoto la selezione
+                resetDice()
             }
         }
     }
@@ -74,17 +77,27 @@ class GameLogic : ViewModel() {
 
     }
 
+    fun resetDice(){
+        for(i in 0..upDice.size-1){
+            upDice[i] = false
+        }
+        selectedDice = ArrayList() //svuoto la selezione
+    }
+
+
     //Aggiungi un dado alla lista dei dadi da tenere
     fun selectDie(which : Int){
         //Controlla se è già tra i selezionati. se si, rimuovilo.
             for(i in 0..selectedDice.size-1){
                 if(which == selectedDice[i]){
                     selectedDice.removeAt(i)
+                    upDice[which] = false
                     statusText = "Dadi selezionati: $selectedDice"
                     return
                 }
             }
         selectedDice.add(which)
+        upDice[which] = true
         statusText = "Dadi selezionati: $selectedDice"
     }
 

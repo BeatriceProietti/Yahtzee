@@ -95,7 +95,7 @@ class Composables {
 
     @Composable
     fun diceRow(
-        dice : Array<Int>
+        dice : Array<Int> //i dadi ricevuti da gameLogic
     ){
         Row(
             Modifier

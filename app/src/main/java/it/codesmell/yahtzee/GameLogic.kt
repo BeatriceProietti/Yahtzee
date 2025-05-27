@@ -3,6 +3,7 @@ package it.codesmell.yahtzee
 import android.widget.Toast
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import kotlinx.coroutines.CoroutineScope
@@ -14,8 +15,13 @@ import kotlin.random.Random
 
 val rng = Random(System.currentTimeMillis()) //prendo come seed l'ora attuale
 
+
+
 var diceAmount : Int = 5
-var rerollsLeft : Int = 2
+
+var statusText by mutableStateOf("status")
+var firstPhase = true //primo tiro, e poi i reroll
+var rerollAmount : Int = 2 //quanti reroll si possono fare
 var selectedDice : ArrayList<Int> = ArrayList()
 
 class GameLogic : ViewModel() {
@@ -47,8 +53,25 @@ class GameLogic : ViewModel() {
         for(i in 0..selectedDice.size-1){
             CoroutineScope(Dispatchers.IO).launch {
                 rollDieAnimated(selectedDice[i],6)
+                selectedDice = ArrayList() //svuoto la selezione
+                statusText = ""
             }
         }
+    }
+
+    //Tira tutti i dadi. per la prima fase
+    fun rollAllDice(){
+        for(i in 0..diceAmount-1){
+            CoroutineScope(Dispatchers.IO).launch {
+                rollDieAnimated(i,6)
+                selectedDice = ArrayList() //svuoto la selezione
+            }
+        }
+    }
+
+    //Gi
+    fun playPhase(){
+
     }
 
     //Aggiungi un dado alla lista dei dadi da tenere
@@ -57,10 +80,12 @@ class GameLogic : ViewModel() {
             for(i in 0..selectedDice.size-1){
                 if(which == selectedDice[i]){
                     selectedDice.removeAt(i)
+                    statusText = "Dadi selezionati: $selectedDice"
                     return
                 }
             }
         selectedDice.add(which)
+        statusText = "Dadi selezionati: $selectedDice"
     }
 
     //Aggiorna l'aspetto dei dadi in base a quale è selezionato (in futuro anche al tipo di dado)

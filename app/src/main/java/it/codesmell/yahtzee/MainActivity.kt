@@ -31,7 +31,7 @@ var hfx : hapticEffects? = null
 var composables : Composables? = null
 var darkTheme by mutableStateOf(true)
 
-lateinit var mozione : MotionManager
+lateinit var mozione : motionManager
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -94,18 +94,6 @@ fun switchVibMode(){ //alterna tra le API di vibrazione, per provare
 }
 
 
-
-@Composable
-fun MyScreenContent(modifier: Modifier = Modifier) {
-    Column(
-        modifier = modifier.fillMaxSize(),
-        verticalArrangement = Arrangement.Center,
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
-        composables?.funButton(::provas, "Sbrisculo", 50)
-        composables?.funButton(::switchVibMode, "Cambia mod. vibrazione", 0)
-    }
-}
 
 @Composable
 fun Greeting(name: String, modifier: Modifier = Modifier) {

@@ -71,13 +71,17 @@ import kotlinx.coroutines.launch
             Text("Gaming")
             composables?.funButton({navController.navigateUp()}, "Torna Indietro", 0)
             Spacer(Modifier.size(50.dp))
+
+            //riga dadi -----------------------------------------------
+            //compongo la lista di dadi da mandare al composable diceRow
+            var dr = IntArray(diceAmount)
+            for(i in 0..diceAmount-1){
+                dr[i] = gameLogic.dice[i] //i dadi presi da gameLogic, da mandare all'interfaccia
+            }
             composables?.diceRow(
-                die0 = gameLogic.dice[0],
-                die1 = gameLogic.dice[1],
-                die2 = gameLogic.dice[2],
-                die3 = gameLogic.dice[3],
-                die4 = gameLogic.dice[4]
+                dice = dr.toTypedArray() //soluzione brutta //mando i dadi all'interfaccia
             )
+            //---------------------------------------------------------
 
             composables?.funButton({gameLogic.rollSelectedDice()}, "Tira Dadi", 0)
 

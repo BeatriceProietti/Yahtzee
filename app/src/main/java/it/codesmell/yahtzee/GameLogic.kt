@@ -14,14 +14,15 @@ import kotlin.random.Random
 
 val rng = Random(System.currentTimeMillis()) //prendo come seed l'ora attuale
 
+var diceAmount : Int = 5
 var rerollsLeft : Int = 2
 var selectedDice : ArrayList<Int> = ArrayList()
 
 class GameLogic : ViewModel() {
 
-    var dice by mutableStateOf(List(5){0}) //lista di 5 mutable state = 0
+    var dice by mutableStateOf(List(diceAmount){0}) //lista di 5 mutable state = 0
 
-    //Tira un dado a scelta
+    //Tira un dado a scelta. which: quale dado tirare. size: numero massimo del dado
     fun rollDie(which : Int, size : Int) { //quale dado da tirare, dimensione del dado
         val newList = dice.toMutableList()
         newList[which] = (1..size).random(rng) //numero random tra 1 e size
@@ -61,5 +62,15 @@ class GameLogic : ViewModel() {
             }
         selectedDice.add(which)
     }
+
+    //Aggiorna l'aspetto dei dadi in base a quale è selezionato (in futuro anche al tipo di dado)
+    fun updateDiceColors(){ //Per ora è solo colori, dopo sostituiamo con una grafica carina
+        for(i in 0..diceAmount){
+            if(i == selectedDice[i]){
+
+            }
+        }
+    }
+
 
 }

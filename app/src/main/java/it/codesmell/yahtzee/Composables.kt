@@ -84,11 +84,7 @@ class Composables {
 
     @Composable
     fun diceRow(
-        die0 : Int,
-        die1 : Int,
-        die2 : Int,
-        die3 : Int,
-        die4 : Int
+        dice : Array<Int>
     ){
         Row(
             Modifier
@@ -96,11 +92,9 @@ class Composables {
             Arrangement
                 .spacedBy(16.dp)
         ){
-            funButton({gameLogic.selectDie(0)},numToDie(die0),0)
-            funButton({gameLogic.selectDie(1)},numToDie(die1),0)
-            funButton({gameLogic.selectDie(2)},numToDie(die2),0)
-            funButton({gameLogic.selectDie(3)},numToDie(die3),0)
-            funButton({gameLogic.selectDie(4)},numToDie(die4),0)
+            for(i in 0..diceAmount-1){
+                funButton({gameLogic.selectDie(i)},numToDie(dice[i]),0)
+            }
         }
     }
 

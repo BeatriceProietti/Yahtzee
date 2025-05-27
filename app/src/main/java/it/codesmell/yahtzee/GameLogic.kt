@@ -24,9 +24,8 @@ var diceAmount : Int = 5
 var statusText by mutableStateOf("status")
 var firstPhase = true //primo tiro, e poi i reroll
 var rerollAmount : Int = 2 //quanti reroll si possono fare
-var selectedDice : ArrayList<Int> = ArrayList()
 
-var upDice : MutableList<Boolean> = mutableStateListOf<Boolean>(false,false,false,false,false) //TODO inizializzalo col numero dinamico
+var selectedDice : MutableList<Boolean> = mutableStateListOf<Boolean>(false,false,false,false,false) //TODO inizializzalo col numero dinamico
 
 
 class GameLogic : ViewModel() {
@@ -57,8 +56,11 @@ class GameLogic : ViewModel() {
     fun rollSelectedDice(){
         for(i in 0..selectedDice.size-1){
             CoroutineScope(Dispatchers.IO).launch {
-                rollDieAnimated(selectedDice[i],6)
-                resetDie(selectedDice[i])
+                if(selectedDice[i] == true) {
+                    rollDieAnimated(i,6)
+                    resetDie(i)
+                }
+
             }
         }
     }
@@ -80,9 +82,8 @@ class GameLogic : ViewModel() {
 
     fun resetDie(index : Int){
         Log.d("GameLogic", "abbasso il dado $index")
-        upDice[index] = false
-        selectedDice.removeAt(index)
-        statusText = "Dadi selezionati: $upDice"
+        selectedDice[index] = false
+        statusText = "Dadi selezionati: $selectedDice"
     }
 
 
@@ -90,26 +91,22 @@ class GameLogic : ViewModel() {
     fun selectDie(which : Int){
         //Controlla se è già tra i selezionati. se si, rimuovilo.
             for(i in 0..selectedDice.size-1){
-                if(which == selectedDice[i]){
-                    selectedDice.removeAt(i)
-                    upDice[which] = false
+                if(selectedDice[which] == true){
+                    selectedDice[which] = false
                     Log.d("GameLogic", "abbasso il dado $which")
-                    statusText = "Dadi selezionati: $upDice"
+                    statusText = "Dadi selezionati: $selectedDice"
                     return
                 }
             }
-        selectedDice.add(which)
         Log.d("GameLogic", "alzo il dado $which")
-        upDice[which] = true
-        statusText = "Dadi selezionati: $upDice"
+        selectedDice[which] = true
+        statusText = "Dadi selezionati: $selectedDice"
     }
 
     //Aggiorna l'aspetto dei dadi in base a quale è selezionato (in futuro anche al tipo di dado)
     fun updateDiceColors(){ //Per ora è solo colori, dopo sostituiamo con una grafica carina
         for(i in 0..diceAmount){
-            if(i == selectedDice[i]){
 
-            }
         }
     }
 

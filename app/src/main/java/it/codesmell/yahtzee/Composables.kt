@@ -143,7 +143,7 @@ class Composables {
     @Composable
     fun animationSquare(onClick : () -> Unit, text : String, index : Int) { //index: indice all'interno di upDice
         val context = LocalContext.current
-        var isMoved = upDice[index]
+        var isMoved = selectedDice[index]
 
         val rotationZ by animateIntAsState( //animazione che si occupa della rotazione
             targetValue = if (isMoved) 360 else 0,
@@ -200,10 +200,6 @@ class Composables {
                     text = text,
                     color = MaterialTheme.colorScheme.primary,
                     fontSize = 50.sp
-                )
-                Text(
-                    text = upDice[index].toString(),
-                    color = MaterialTheme.colorScheme.primary
                 )
             }
     }

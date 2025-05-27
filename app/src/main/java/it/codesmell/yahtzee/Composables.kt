@@ -126,7 +126,7 @@ class Composables {
     //---------------------------------
 
     @Composable
-    fun animationSquare(
+    fun animationSquare( // il dado
         color: Color = Color.Cyan,
         logTag: String = "ClickableSquare",
         logMessage: String = "Square clicked!"
@@ -136,14 +136,14 @@ class Composables {
 
         val rotationZ by animateIntAsState( //animazione che si occupa della rotazione
             targetValue = if (isMoved) 360 else 0,
-            animationSpec = tween(1000),
+            animationSpec = tween(800),
         )
         // Animazione dell'offset Y/z
         val offsetY = remember { Animatable(0f) }
         val scope = rememberCoroutineScope()
 
         LaunchedEffect(isMoved) {
-            val targetY = if (isMoved) -290f else 0f
+            var targetY = if (isMoved) -290f else 0f
             offsetY.animateTo(
                 targetY,
                 animationSpec = spring(
@@ -151,6 +151,7 @@ class Composables {
                     stiffness = Spring.StiffnessLow
                 )
             )
+
             Log.d("duce2", "booooh$rotationZ")
         }
 
@@ -166,8 +167,7 @@ class Composables {
                     .offset { IntOffset(0, offsetY.value.roundToInt()) }
                     .size(100.dp)
                     .rotate(rotationZ.toFloat())
-                    .offset { IntOffset(0, -offsetY.value.roundToInt()) }
-                    .clickable { isMoved =! isMoved }
+                    .clickable { isMoved = !isMoved }
                     .background(color)
             )
         }

@@ -1,5 +1,6 @@
 package it.codesmell.yahtzee
 
+import android.util.Log
 import android.widget.Toast
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -56,7 +57,7 @@ class GameLogic : ViewModel() {
         for(i in 0..selectedDice.size-1){
             CoroutineScope(Dispatchers.IO).launch {
                 rollDieAnimated(selectedDice[i],6)
-                resetDice()
+                resetDie(i)
                 statusText = ""
             }
         }
@@ -67,7 +68,7 @@ class GameLogic : ViewModel() {
         for(i in 0..diceAmount-1){
             CoroutineScope(Dispatchers.IO).launch {
                 rollDieAnimated(i,6)
-                resetDice()
+                resetDie(i)
             }
         }
     }
@@ -77,10 +78,10 @@ class GameLogic : ViewModel() {
 
     }
 
-    fun resetDice(){
-        for(i in 0..upDice.size-1){
-            upDice[i] = false
-        }
+    fun resetDie(index : Int){
+
+        Log.d("GameLogic", "abbasso il dado $index")
+        upDice[index] = false
         selectedDice = ArrayList() //svuoto la selezione
     }
 
@@ -92,13 +93,15 @@ class GameLogic : ViewModel() {
                 if(which == selectedDice[i]){
                     selectedDice.removeAt(i)
                     upDice[which] = false
-                    statusText = "Dadi selezionati: $selectedDice"
+                    Log.d("GameLogic", "abbasso il dado $which")
+                    statusText = "Dadi selezionati: $upDice"
                     return
                 }
             }
         selectedDice.add(which)
+        Log.d("GameLogic", "alzo il dado $which")
         upDice[which] = true
-        statusText = "Dadi selezionati: $selectedDice"
+        statusText = "Dadi selezionati: $upDice"
     }
 
     //Aggiorna l'aspetto dei dadi in base a quale è selezionato (in futuro anche al tipo di dado)

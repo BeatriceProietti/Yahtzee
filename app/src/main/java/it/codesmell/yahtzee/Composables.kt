@@ -201,6 +201,10 @@ class Composables {
                     color = MaterialTheme.colorScheme.primary,
                     fontSize = 50.sp
                 )
+                Text(
+                    text = upDice[index].toString(),
+                    color = MaterialTheme.colorScheme.primary
+                )
             }
     }
 

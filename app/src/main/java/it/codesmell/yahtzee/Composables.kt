@@ -135,8 +135,23 @@ class Composables {
         else if(num == 5){newString = "⚄"}
         else if(num == 6){newString = "⚅"}
         else if(num == 0){newString = "□"}
+
         return newString
     }
+
+
+
+    //---------------------------------
+
+
+    //funzione che detecta le combinazioni del poker
+
+
+
+
+
+
+
 
     //---------------------------------
 

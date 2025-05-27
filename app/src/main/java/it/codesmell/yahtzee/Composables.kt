@@ -6,7 +6,9 @@ import android.content.Context
 import android.util.Log
 import android.widget.Toast
 import androidx.compose.animation.core.Animatable
+import androidx.compose.animation.core.LinearEasing
 import androidx.compose.animation.core.Spring
+import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.animateIntAsState
 import androidx.compose.animation.core.animateIntSizeAsState
 import androidx.compose.animation.core.spring
@@ -18,6 +20,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
@@ -27,6 +30,8 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.ColorScheme
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -40,14 +45,23 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Canvas
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.Path
+import androidx.compose.ui.graphics.drawscope.DrawScope
+import androidx.compose.ui.graphics.drawscope.rotate
+import androidx.compose.ui.graphics.drawscope.translate
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.input.pointer.PointerEventPass
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
+import it.codesmell.yahtzee.ui.theme.YahtzeeTheme
 
 //mettiamo qui i composable, per avere un po' di ordine e per averli standardizzati per tutte le schermate
 //possiamo fare dei composable ad uso generico, si possono passare le funzioni come argomenti
@@ -112,14 +126,14 @@ class Composables {
     //da rifare con dadi fighi
     fun numToDie(num : Int) : String{
         var newString : String = num.toString()
-        /*
+
         if(num == 1){newString = "⚀"}
         else if(num == 2){newString = "⚁"}
         else if(num == 3){newString = "⚂"}
         else if(num == 4){newString = "⚃"}
         else if(num == 5){newString = "⚄"}
         else if(num == 6){newString = "⚅"}
-        */
+
         return newString
     }
 
@@ -143,21 +157,20 @@ class Composables {
             offsetY.animateTo(
                 targetY,
                 animationSpec = spring(
-                    dampingRatio = Spring.DampingRatioHighBouncy,
+                    dampingRatio = 0.4f,
                     stiffness = Spring.StiffnessLow
                 )
             )
-
-            Log.d("duce2", "booooh$rotationZ")
         }
 
             Box(
+                contentAlignment = Alignment.Center,
                 modifier = Modifier
                     .offset { IntOffset(0, offsetY.value.roundToInt()) }
-                    .size(30.dp)
+                    .size(55.dp)
                     .rotate(rotationZ.toFloat())
                     .clickable { isMoved = !isMoved }
-                    .background(Color.Cyan)
+                    .background(MaterialTheme.colorScheme.primary)
                     .pointerInput(Unit) {
                         awaitEachGesture {
                             //evento pressione del tasto
@@ -182,6 +195,17 @@ class Composables {
                             }
                         }
                     }
-            ){Text(text)}
+            ){
+                Text(
+                    text = text,
+                    color = MaterialTheme.colorScheme.onPrimary,
+                )
+            }
     }
+
+//-------------------------------------
+
+
 }
+
+

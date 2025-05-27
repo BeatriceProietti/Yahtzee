@@ -3,6 +3,7 @@ package it.codesmell.yahtzee
 import android.util.Log
 import android.widget.Toast
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -25,7 +26,7 @@ var firstPhase = true //primo tiro, e poi i reroll
 var rerollAmount : Int = 2 //quanti reroll si possono fare
 var selectedDice : ArrayList<Int> = ArrayList()
 
-var upDice : MutableList<Boolean> = mutableListOf<Boolean>(false,false,false,false,false) //TODO inizializzalo col numero dinamico
+var upDice : MutableList<Boolean> = mutableStateListOf<Boolean>(false,false,false,false,false) //TODO inizializzalo col numero dinamico
 
 
 class GameLogic : ViewModel() {
@@ -57,8 +58,7 @@ class GameLogic : ViewModel() {
         for(i in 0..selectedDice.size-1){
             CoroutineScope(Dispatchers.IO).launch {
                 rollDieAnimated(selectedDice[i],6)
-                resetDie(i)
-                statusText = ""
+                resetDie(selectedDice[i])
             }
         }
     }
@@ -79,10 +79,10 @@ class GameLogic : ViewModel() {
     }
 
     fun resetDie(index : Int){
-
         Log.d("GameLogic", "abbasso il dado $index")
         upDice[index] = false
-        selectedDice = ArrayList() //svuoto la selezione
+        selectedDice.removeAt(index)
+        statusText = "Dadi selezionati: $upDice"
     }
 
 

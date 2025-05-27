@@ -28,6 +28,7 @@ class GameLogic : ViewModel() {
         dice = newList
     }
 
+    //Tira un dado a scelta, con animazione
     suspend fun rollDieAnimated(which : Int, size : Int){
         var rolls : Int = (3..13).random(rng)
         var delay : Long = 50 //millisecondi
@@ -40,10 +41,11 @@ class GameLogic : ViewModel() {
         }
     }
 
+    //Tira i dadi appartenenti a selectedDice
     fun rollSelectedDice(){
         for(i in 0..selectedDice.size-1){
             CoroutineScope(Dispatchers.IO).launch {
-                gameLogic.rollDieAnimated(selectedDice[i],6)
+                rollDieAnimated(selectedDice[i],6)
             }
         }
     }

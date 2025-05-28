@@ -71,7 +71,7 @@ import kotlinx.coroutines.launch
             composables?.funButton({navController.navigateUp()}, "Torna Indietro", 0)
             Spacer(Modifier.size(50.dp))
 
-            //Text(statusText)
+            Text(statusText)
             //riga dadi -----------------------------------------------
             //compongo la lista di dadi da mandare al composable diceRow
             var dr = IntArray(diceAmount)

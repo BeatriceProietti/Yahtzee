@@ -22,7 +22,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import it.codesmell.yahtzee.ui.theme.YahtzeeTheme
 
-//sborra
+//sborras
 
 var gthis : MainActivity? = null
 val gameLogic : GameLogic = GameLogic()

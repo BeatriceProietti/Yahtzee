@@ -95,12 +95,12 @@ class GameLogic : ViewModel() {
         //compongo la lista di dadi selezionati
         for(i in 0..dice.size-1){
             if(selectedDice[i] == true){
-                selectedDiceValues.add(dice[i])
+                if(dice[i] in 1..6) selectedDiceValues.add(dice[i])
             }
         }
 
         for(i in 0..selectedDiceValues.size-1){
-            if(){ valueAmounts[selectedDiceValues[i - 1]]++ }
+            valueAmounts[selectedDiceValues[i]-1]++
         }
 
         statusText = valueAmounts[0].toString() + valueAmounts[1].toString() + valueAmounts[2].toString() + valueAmounts[3].toString() + valueAmounts[4].toString() + valueAmounts[5].toString()

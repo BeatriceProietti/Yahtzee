@@ -87,27 +87,32 @@ class GameLogic : ViewModel() {
 
     }
 
-    /*fun balatro(dice: Array<Int>): String{
+    fun balatro(): String{
 
-        val counts = dice.groupingBy{it}.eachCount().values.sortedDescending()
+        var valueAmounts : Array<Int> = arrayOf(0, 0, 0, 0, 0, 0)
+        var selectedDiceValues : MutableList<Int> = mutableListOf()
 
-        return when{
-
-            counts == listOf(5) -> "Yahtzee!"
-            counts == listOf(4, 1) -> "Four of a kind"
-            counts == listOf(3, 2) -> "Full house"
-            counts == listOf(3, 1, 1) -> "three of a kind"
-            counts == listOf(2, 2, 1) -> "double pair"
-            counts == listOf(2, 1, 1, 1) -> "pair"
-            straight(dice) -> "straight"
-            else -> "high card"
+        //compongo la lista di dadi selezionati
+        for(i in 0..dice.size-1){
+            if(selectedDice[i] == true){
+                selectedDiceValues.add(dice[i])
+            }
         }
+
+        for(i in 0..selectedDiceValues.size-1){
+            if(){ valueAmounts[selectedDiceValues[i - 1]]++ }
+        }
+
+        statusText = valueAmounts[0].toString() + valueAmounts[1].toString() + valueAmounts[2].toString() + valueAmounts[3].toString() + valueAmounts[4].toString() + valueAmounts[5].toString()
+        return "Palle Enormi"
     }
     fun straight(dice: Array<Int>): Boolean{
 
         val sorted = dice.distinct().sorted()
         return sorted.size == 5 && sorted.last() - sorted.first() == 4
-    }*/
+    }
+
+
     //Aggiungi un dado alla lista dei dadi da tenere
     fun selectDie(which : Int){
         //Controlla se è già tra i selezionati. se si, rimuovilo.
@@ -116,19 +121,14 @@ class GameLogic : ViewModel() {
                     selectedDice[which] = false
                     Log.d("GameLogic", "abbasso il dado $which")
                     //statusText = "Dadi selezionati: $selectedDice"
+                    balatro()
                     return
                 }
             }
         Log.d("GameLogic", "alzo il dado $which")
         selectedDice[which] = true
         statusText = "Dadi selezionati: $selectedDice"
-    }
-
-    //Aggiorna l'aspetto dei dadi in base a quale è selezionato (in futuro anche al tipo di dado)
-    fun updateDiceColors(){ //Per ora è solo colori, dopo sostituiamo con una grafica carina
-        for(i in 0..diceAmount){
-
-        }
+        balatro()
     }
 
     //pisello e palle

@@ -99,28 +99,24 @@ class GameLogic : ViewModel() {
             }
         }
 
+        //conto le occorrenze di ciascun valore
         for(i in 0..selectedDiceValues.size-1){
             valueAmounts[selectedDiceValues[i]-1]++
         }
         statusText = valueAmounts[0].toString() + valueAmounts[1].toString() + valueAmounts[2].toString() + valueAmounts[3].toString() + valueAmounts[4].toString() + valueAmounts[5].toString()
 
 
-
-        if(2 in valueAmounts){ statusText = "Pair" }
-        if(3 in valueAmounts){ statusText = "three of a kind" }
-        if(4 in valueAmounts){ statusText = "Four of a kind" }
-        if(3 in valueAmounts && 2 in valueAmounts){ statusText = "Full House" }
+        if(2 in valueAmounts) return "Pair"
+        if(3 in valueAmounts) return "Three of a kind"
+        if(4 in valueAmounts) return "Four of a kind"
+        if(3 in valueAmounts && 2 in valueAmounts) return "Full House"
         var counter = 0
         for (i in 0..valueAmounts.size-1) {
-            if (valueAmounts[i] == 2) {
-                counter++
-            }
-            if (counter == 2) {
-                statusText = "Double Pair"
-            }
+            if (valueAmounts[i] == 2) counter++
+            if (counter == 2) return "Two Pair"
         }
-        if(5 in valueAmounts ){ statusText = "Yahtzee!" }
-        return "palle giganti"
+        if(5 in valueAmounts ) return "Yahtzee!"
+        return "Zillo!"
     }
 
 
@@ -139,7 +135,7 @@ class GameLogic : ViewModel() {
         Log.d("GameLogic", "alzo il dado $which")
         selectedDice[which] = true
         statusText = "Dadi selezionati: $selectedDice"
-        balatro()
+        statusText = balatro()
     }
 
     //pisello e palle

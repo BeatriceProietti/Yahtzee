@@ -109,10 +109,10 @@ class GameLogic : ViewModel() {
         if(2 in valueAmounts){ statusText = "Pair" }
         if(3 in valueAmounts){ statusText = "three of a kind" }
         if(4 in valueAmounts){ statusText = "Four of a kind" }
-        if(3 in valueAmounts && 3 in valueAmounts){ statusText = "Full House" }
+        if(3 in valueAmounts && 2 in valueAmounts){ statusText = "Full House" }
         var counter = 0
-        for (i in valueAmounts) {
-            if (2 in valueAmounts) {
+        for (i in 0..valueAmounts.size-1) {
+            if (valueAmounts[i] == 2) {
                 counter++
             }
             if (counter == 2) {

@@ -87,7 +87,7 @@ class GameLogic : ViewModel() {
 
     }
 
-    fun balatro(): String{
+    fun balatro(): String{// funzione che fa il detecting delle combinazioni del poker
 
         var valueAmounts : Array<Int> = arrayOf(0, 0, 0, 0, 0, 0)
         var selectedDiceValues : MutableList<Int> = mutableListOf()
@@ -114,6 +114,18 @@ class GameLogic : ViewModel() {
         for (i in 0..valueAmounts.size-1) {
             if (valueAmounts[i] == 2) counter++
             if (counter == 2) return "Two Pair"
+        }
+        var counterStraight = 0
+        var gymbo = selectedDice.sort()
+        for (i in 0..selectedDice.size-1){
+
+            if(selectedDice.sort()[i] < selectedDice.sort()[i+1] && i < selectedDice.size){
+                counterStraight++
+                if (counterStraight == 5){return "Straight"}
+            }
+            else {
+                if (counterStraight == 4){return "Small Straight"}
+            }
         }
         if(5 in valueAmounts ) return "Yahtzee!"
         return "Zillo!"

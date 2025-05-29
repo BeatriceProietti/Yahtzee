@@ -102,14 +102,26 @@ class GameLogic : ViewModel() {
         for(i in 0..selectedDiceValues.size-1){
             valueAmounts[selectedDiceValues[i]-1]++
         }
-
         statusText = valueAmounts[0].toString() + valueAmounts[1].toString() + valueAmounts[2].toString() + valueAmounts[3].toString() + valueAmounts[4].toString() + valueAmounts[5].toString()
-        return "Palle Enormi"
-    }
-    fun straight(dice: Array<Int>): Boolean{
 
-        val sorted = dice.distinct().sorted()
-        return sorted.size == 5 && sorted.last() - sorted.first() == 4
+
+
+        if(2 in valueAmounts){
+
+            statusText = "coppia"
+
+        }
+        if(3 in valueAmounts){
+
+            statusText = "Tris"
+
+        }
+        if(4 in valueAmounts){
+
+            statusText = "Tris"
+
+        }
+         return "palle giganti"
     }
 
 

@@ -106,22 +106,21 @@ class GameLogic : ViewModel() {
 
 
 
-        if(2 in valueAmounts){
-
-            statusText = "coppia"
-
+        if(2 in valueAmounts){ statusText = "Pair" }
+        if(3 in valueAmounts){ statusText = "three of a kind" }
+        if(4 in valueAmounts){ statusText = "Four of a kind" }
+        if(3 in valueAmounts && 3 in valueAmounts){ statusText = "Full House" }
+        var counter = 0
+        for (i in valueAmounts) {
+            if (2 in valueAmounts) {
+                counter++
+            }
+            if (counter == 2) {
+                statusText = "Double Pair"
+            }
         }
-        if(3 in valueAmounts){
-
-            statusText = "Tris"
-
-        }
-        if(4 in valueAmounts){
-
-            statusText = "Tris"
-
-        }
-         return "palle giganti"
+        if(5 in valueAmounts ){ statusText = "Yahtzee!" }
+        return "palle giganti"
     }
 
 

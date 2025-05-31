@@ -1,6 +1,8 @@
 package it.codesmell.yahtzee
 
 
+import android.app.Notification
+import android.app.Notification.MessagingStyle.Message
 import kotlin.math.roundToInt
 import android.content.Context
 import android.util.Log
@@ -62,7 +64,9 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.breens.beetablescompose.BeeTablesCompose
 import it.codesmell.yahtzee.ui.theme.YahtzeeTheme
+import kotlinx.serialization.descriptors.StructureKind
 
 //mettiamo qui i composable, per avere un po' di ordine e per averli standardizzati per tutte le schermate
 //possiamo fare dei composable ad uso generico, si possono passare le funzioni come argomenti
@@ -141,16 +145,15 @@ class Composables {
 
 
 
-    //---------------------------------
-
-
-    //funzione che detecta le combinazioni del poker
+    //--------------------------------- tabella dei punteggi del gioco
 
 
 
-
-
-
+    @Composable
+    fun countingTable(tableData: List<TableData>) {
+        val tableHeaders = listOf("Upper section","How to score","game #1","game #2","game #3","game #4","game #5","game #6")
+        BeeTablesCompose(data = tableRows, headerTableTitles = tableHeaders )
+    }
 
 
     //---------------------------------

@@ -21,6 +21,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
+import com.breens.beetablescompose.BeeTablesCompose
 import it.codesmell.yahtzee.gameLogic
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -55,6 +56,8 @@ import kotlinx.coroutines.launch
         ) {
             Text("Screen2: Zilling Off")
             composables?.funButton({navController.navigateUp()}, "Torna Indietro", 0)
+            val tableData = listOf(TableData(infos = "pisello", howToScore = "palle", game1 = 3, game2 = 4, game3 = 5, game4 = 6, game5 = 7, game6 = 8))
+            composables?.countingTable(tableData)
         }
 
     }

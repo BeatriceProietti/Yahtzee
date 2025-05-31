@@ -70,7 +70,9 @@ import com.breens.beetablescompose.BeeTablesCompose
 import it.codesmell.yahtzee.ui.theme.YahtzeeTheme
 import kotlinx.serialization.descriptors.StructureKind
 import android.content.res.Configuration
+import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.zIndex
 
 //mettiamo qui i composable, per avere un po' di ordine e per averli standardizzati per tutte le schermate
 //possiamo fare dei composable ad uso generico, si possono passare le funzioni come argomenti
@@ -247,6 +249,69 @@ class Composables {
 //-------------------------------------
 
 
+    @Composable
+    fun swappingCards() {
+
+        var isFirstOnTop by remember { mutableStateOf(true) }
+
+        // Animazioni di offset
+        val firstOffset by animateDpAsState(
+            targetValue = if (isFirstOnTop) 0.dp else 10.dp,
+            animationSpec = spring(
+                dampingRatio = Spring.DampingRatioMediumBouncy,
+                stiffness = Spring.StiffnessMediumLow
+            ), label = "FirstCardOffset"
+        )
+
+        val secondOffset by animateDpAsState(
+            targetValue = if (isFirstOnTop) 10.dp else 0.dp,
+            animationSpec = spring(
+                dampingRatio = Spring.DampingRatioMediumBouncy,
+                stiffness = Spring.StiffnessMediumLow
+            ), label = "SecondCardOffset"
+        )
+
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(32.dp),
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            Box(
+                modifier = Modifier
+                    .weight(1f)
+                    .fillMaxWidth(),
+                contentAlignment = Alignment.CenterStart
+            ) {
+                // Second card
+                Box(
+                    modifier = Modifier
+                        .offset(x = secondOffset, y = secondOffset)
+                        .zIndex(if (isFirstOnTop) 0f else 1f)
+                        .size(150.dp, 100.dp)
+                        .clip(RoundedCornerShape(12.dp))
+                        .background(Color.Blue)
+                )
+
+                // First card
+                Box(
+                    modifier = Modifier
+                        .offset(x = firstOffset, y = firstOffset)
+                        .zIndex(if (isFirstOnTop) 1f else 0f)
+                        .size(150.dp, 100.dp)
+                        .clip(RoundedCornerShape(12.dp))
+                        .background(Color.Red)
+                )
+            }
+
+            Button(
+                onClick = { isFirstOnTop = !isFirstOnTop },
+                modifier = Modifier.padding(top = 16.dp)
+            ) {
+                Text("Scambia con rimbalzo")
+            }
+        }
+    }
 }
 
 

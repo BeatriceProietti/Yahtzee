@@ -58,6 +58,8 @@ import kotlinx.coroutines.launch
         ) {
             Text("Screen2: Zilling Off")
             composables?.funButton({navController.navigateUp()}, "Torna Indietro", 0)
+            composables?.swappingCards()
+
         }
 
     }
@@ -73,7 +75,7 @@ import kotlinx.coroutines.launch
         composables?.combosGrid(2,3)
         composables?.combosGrid(1,1)
 
-        Text(statusText)
+        //Text(statusText)
         //riga dadi -----------------------------------------------
         //compongo la lista di dadi da mandare al composable diceRow
         var dr = IntArray(diceAmount)

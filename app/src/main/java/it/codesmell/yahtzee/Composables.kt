@@ -285,7 +285,7 @@ class Composables {
                     modifier = Modifier
                         .offset(x = secondOffset, y = secondOffset)
                         .zIndex(if (isFirstOnTop) 0f else 1f)
-                        .size(150.dp, 100.dp)
+                        .size(300.dp, 200.dp)
                         .clip(RoundedCornerShape(12.dp))
                         .background(Color.Blue)
                 )
@@ -295,7 +295,7 @@ class Composables {
                     modifier = Modifier
                         .offset(x = firstOffset, y = firstOffset)
                         .zIndex(if (isFirstOnTop) 1f else 0f)
-                        .size(150.dp, 100.dp)
+                        .size(300.dp, 200.dp)
                         .clip(RoundedCornerShape(12.dp))
                         .background(Color.Red)
                 )

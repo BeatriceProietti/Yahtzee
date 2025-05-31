@@ -43,8 +43,6 @@ class MainActivity : ComponentActivity() {
         composables = Composables()
 
 
-
-
         setContent {
             //var theme by remember{mutableStateOf(false)}
             YahtzeeTheme(darkTheme = darkTheme) {

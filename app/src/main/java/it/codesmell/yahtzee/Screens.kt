@@ -1,5 +1,6 @@
 package it.codesmell.yahtzee
 
+import android.content.res.Configuration
 import android.hardware.SensorEvent
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -17,6 +18,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
@@ -61,38 +63,58 @@ import kotlinx.coroutines.launch
     }
 
     @Composable
+    fun gameScreenContent(){
+        var navController = rememberNavController()
+        Text("Gaming")
+        composables?.funButton({navController.navigateUp()}, "Torna Indietro", 0)
+        Spacer(Modifier.size(50.dp))
+
+        composables?.combosGrid(1,1)
+        composables?.combosGrid(2,3)
+        composables?.combosGrid(1,1)
+
+        Text(statusText)
+        //riga dadi -----------------------------------------------
+        //compongo la lista di dadi da mandare al composable diceRow
+        var dr = IntArray(diceAmount)
+        for(i in 0..diceAmount-1){
+            dr[i] = gameLogic.dice[i] //i dadi presi da gameLogic, da mandare all'interfaccia
+        }
+        composables?.diceRow(
+            dice = dr.toTypedArray() //soluzione brutta //mando i dadi all'interfaccia
+        )
+        //---------------------------------------------------------
+
+        composables?.funButton({gameLogic.rollSelectedDice()}, "Tira Dadi", 0)
+    }
+
+    @Composable
     fun GameScreen(navController: NavController) {
 
-        Column(
-            modifier = Modifier.fillMaxSize(),
-            verticalArrangement = Arrangement.Center,
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
-            Text("Gaming")
-            composables?.funButton({navController.navigateUp()}, "Torna Indietro", 0)
-            Spacer(Modifier.size(50.dp))
-
-            composables?.combosGrid(1,1)
-            composables?.combosGrid(2,3)
-            composables?.combosGrid(1,1)
-
-            Text(statusText)
-            //riga dadi -----------------------------------------------
-            //compongo la lista di dadi da mandare al composable diceRow
-            var dr = IntArray(diceAmount)
-            for(i in 0..diceAmount-1){
-                dr[i] = gameLogic.dice[i] //i dadi presi da gameLogic, da mandare all'interfaccia
+        if(LocalConfiguration.current.orientation == Configuration.ORIENTATION_PORTRAIT){
+            Column(
+                modifier = Modifier.fillMaxSize(),
+                verticalArrangement = Arrangement.Center,
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                gameScreenContent()
             }
-            composables?.diceRow(
-                dice = dr.toTypedArray() //soluzione brutta //mando i dadi all'interfaccia
-            )
-            //---------------------------------------------------------
-
-            composables?.funButton({gameLogic.rollSelectedDice()}, "Tira Dadi", 0)
-
+        }else{
+            Row(
+                modifier = Modifier.fillMaxSize(),
+                horizontalArrangement = Arrangement.Center,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                gameScreenContent()
+            }
         }
 
+
+
+
     }
+
+
 
 
 

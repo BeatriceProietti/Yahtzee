@@ -68,6 +68,7 @@ class MainActivity : ComponentActivity() {
 
                     })
                     // --------------------------------------------------------------------------------------------------
+                    composables?.funButton({navCon.navigateUp()}, "Torna Indietro", 0)
                 }
             }
         }

@@ -158,27 +158,25 @@ class Composables {
     fun combosGrid(rows: Int, cols: Int) {
         Box(
             modifier = Modifier
-                .size(width = (cols * 52).dp, height = (rows * 52).dp) // fixed size containe
-        ) {
-            Column {
-                repeat(rows) {
-                    Row {
-                        repeat(cols) {
-                            Box(
-                                modifier = Modifier
-                                    .size(50.dp)
-                                    .padding(1.dp)
-                                    .clip(RoundedCornerShape(20.dp))
-                                    .background(Color.White)
-                            )
-                        }
-                    }
+                //.width()
+        ){
+            FlowRow(
+                modifier = Modifier.padding(4.dp),
+                horizontalArrangement = Arrangement.spacedBy(4.dp),
+                maxItemsInEachRow = rows
+            ) {
+                val itemModifier = Modifier
+                    .padding(4.dp)
+                    .height(80.dp)
+                    .weight(1f)
+                    .clip(RoundedCornerShape(8.dp))
+                    .background(Color.White)
+                repeat(rows * cols) {
+                    Spacer(modifier = itemModifier)
                 }
             }
         }
     }
-
-
 
     //---------------------------------
 

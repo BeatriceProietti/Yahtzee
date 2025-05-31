@@ -252,7 +252,6 @@ class Composables {
 
         var isFirstOnTop by remember { mutableStateOf(true) }
 
-        // Animazioni di offset
         val firstOffset by animateDpAsState(
             targetValue = if (isFirstOnTop) 0.dp else 10.dp,
             animationSpec = spring(

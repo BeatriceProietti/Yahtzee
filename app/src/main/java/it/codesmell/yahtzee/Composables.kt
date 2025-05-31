@@ -21,6 +21,7 @@ import androidx.compose.foundation.gestures.awaitEachGesture
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -148,11 +149,27 @@ class Composables {
     //--------------------------------- tabella dei punteggi del gioco
 
 
-
     @Composable
-    fun countingTable(tableData: List<TableData>) {
-        val tableHeaders = listOf("Upper section","How to score","game #1","game #2","game #3","game #4","game #5","game #6")
-        BeeTablesCompose(data = tableRows, headerTableTitles = tableHeaders )
+    fun combosGrid(rows : Int, cols : Int){
+
+        val rows = rows
+        val columns = cols
+        FlowRow(
+            modifier = Modifier.padding(4.dp),
+            horizontalArrangement = Arrangement.spacedBy(4.dp),
+            maxItemsInEachRow = rows
+        ) {
+            val itemModifier = Modifier
+                .padding(4.dp)
+                .height(80.dp)
+                .weight(1f)
+                .clip(RoundedCornerShape(8.dp))
+                .background(Color.Green)
+            repeat(rows * columns) {
+                Spacer(modifier = itemModifier)
+            }
+        }
+
     }
 
 

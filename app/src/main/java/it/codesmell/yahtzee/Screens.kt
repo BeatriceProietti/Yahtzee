@@ -56,8 +56,6 @@ import kotlinx.coroutines.launch
         ) {
             Text("Screen2: Zilling Off")
             composables?.funButton({navController.navigateUp()}, "Torna Indietro", 0)
-            val tableData = listOf(TableData(infos = "pisello", howToScore = "palle", game1 = 3, game2 = 4, game3 = 5, game4 = 6, game5 = 7, game6 = 8))
-            composables?.countingTable(tableData)
         }
 
     }
@@ -73,6 +71,10 @@ import kotlinx.coroutines.launch
             Text("Gaming")
             composables?.funButton({navController.navigateUp()}, "Torna Indietro", 0)
             Spacer(Modifier.size(50.dp))
+
+            composables?.combosGrid(1,1)
+            composables?.combosGrid(2,3)
+            composables?.combosGrid(1,1)
 
             Text(statusText)
             //riga dadi -----------------------------------------------

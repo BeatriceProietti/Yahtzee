@@ -63,29 +63,44 @@ import kotlinx.coroutines.launch
     }
 
     @Composable
-    fun gameScreenContent(){
-        var navController = rememberNavController()
-        Text("Gaming")
-        composables?.funButton({navController.navigateUp()}, "Torna Indietro", 0)
-        Spacer(Modifier.size(50.dp))
+    fun gameScreenContent(navController : NavController){
 
-        composables?.combosGrid(1,1)
-        composables?.combosGrid(2,3)
-        composables?.combosGrid(1,1)
+        //Spacer(Modifier.size(50.dp))
 
-        Text(statusText)
+        //Display punteggio -------------------------------------
+        Text("123456789")
+        //---------------------------------------------------------
+
+        //Griglia combinazioni -------------------------------------
+        Column(
+            verticalArrangement = Arrangement.Center,
+            horizontalAlignment = Alignment.CenterHorizontally
+        ){
+            composables?.combosGrid(1,1)
+            composables?.combosGrid(2,3)
+            composables?.combosGrid(1,1)
+        }
+        //---------------------------------------------------------
+
+        //Text(statusText)
         //riga dadi -----------------------------------------------
         //compongo la lista di dadi da mandare al composable diceRow
         var dr = IntArray(diceAmount)
         for(i in 0..diceAmount-1){
             dr[i] = gameLogic.dice[i] //i dadi presi da gameLogic, da mandare all'interfaccia
         }
-        composables?.diceRow(
-            dice = dr.toTypedArray() //soluzione brutta //mando i dadi all'interfaccia
-        )
+        Column(
+            verticalArrangement = Arrangement.Center,
+            horizontalAlignment = Alignment.CenterHorizontally
+        ){
+            composables?.diceRow(
+                dice = dr.toTypedArray() //soluzione brutta //mando i dadi all'interfaccia
+            )
+            composables?.funButton({gameLogic.rollSelectedDice()}, "Tira Dadi", 0)
+        }
         //---------------------------------------------------------
 
-        composables?.funButton({gameLogic.rollSelectedDice()}, "Tira Dadi", 0)
+
     }
 
     @Composable
@@ -97,7 +112,7 @@ import kotlinx.coroutines.launch
                 verticalArrangement = Arrangement.Center,
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                gameScreenContent()
+                gameScreenContent(navController)
             }
         }else{
             Row(
@@ -105,7 +120,7 @@ import kotlinx.coroutines.launch
                 horizontalArrangement = Arrangement.Center,
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                gameScreenContent()
+                gameScreenContent(navController)
             }
         }
 

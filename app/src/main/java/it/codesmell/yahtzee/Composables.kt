@@ -253,7 +253,7 @@ class Composables {
         var isFirstOnTop by remember { mutableStateOf(true) }
 
         val firstOffset by animateDpAsState(
-            targetValue = if (isFirstOnTop) 0.dp else 10.dp,
+            targetValue = if (isFirstOnTop) 0.dp else 20.dp,
             animationSpec = spring(
                 dampingRatio = Spring.DampingRatioMediumBouncy,
                 stiffness = Spring.StiffnessMediumLow
@@ -261,7 +261,7 @@ class Composables {
         )
 
         val secondOffset by animateDpAsState(
-            targetValue = if (isFirstOnTop) 10.dp else 0.dp,
+            targetValue = if (isFirstOnTop) 20.dp else 0.dp,
             animationSpec = spring(
                 dampingRatio = Spring.DampingRatioMediumBouncy,
                 stiffness = Spring.StiffnessMediumLow

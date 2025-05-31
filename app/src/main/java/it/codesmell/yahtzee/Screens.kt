@@ -58,6 +58,7 @@ import kotlinx.coroutines.launch
         ) {
             Text("Screen2: Zilling Off")
             composables?.funButton({navController.navigateUp()}, "Torna Indietro", 0)
+            composables?.swappingCards()
         }
 
     }

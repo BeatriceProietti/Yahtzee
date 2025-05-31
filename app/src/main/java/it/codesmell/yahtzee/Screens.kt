@@ -77,9 +77,13 @@ import kotlinx.coroutines.launch
         //---------------------------------------------------------
 
         //Griglia combinazioni -------------------------------------
+        val configuration = LocalConfiguration.current
+        val isLandscape = configuration.orientation == Configuration.ORIENTATION_LANDSCAPE
+        val boxWidth = if (isLandscape) 460.dp else 400.dp
+
         Box(
             modifier = Modifier
-                .width(400.dp)
+                .width(boxWidth)
         ){
             Column(
                 verticalArrangement = Arrangement.Center,
@@ -100,7 +104,7 @@ import kotlinx.coroutines.launch
             dr[i] = gameLogic.dice[i] //i dadi presi da gameLogic, da mandare all'interfaccia
         }
         Column(
-            verticalArrangement = Arrangement.Center,
+            verticalArrangement = Arrangement.Bottom,
             horizontalAlignment = Alignment.CenterHorizontally
         ){
             composables?.diceRow(

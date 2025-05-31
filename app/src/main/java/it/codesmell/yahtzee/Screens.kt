@@ -3,12 +3,16 @@ package it.codesmell.yahtzee
 import android.content.res.Configuration
 import android.hardware.SensorEvent
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.runtime.Composable
 import androidx.compose.material3.Text
 import androidx.compose.runtime.getValue
@@ -73,13 +77,18 @@ import kotlinx.coroutines.launch
         //---------------------------------------------------------
 
         //Griglia combinazioni -------------------------------------
-        Column(
-            verticalArrangement = Arrangement.Center,
-            horizontalAlignment = Alignment.CenterHorizontally
+        Box(
+            modifier = Modifier
+                .width(400.dp)
         ){
-            composables?.combosGrid(1,1)
-            composables?.combosGrid(2,3)
-            composables?.combosGrid(1,1)
+            Column(
+                verticalArrangement = Arrangement.Center,
+                horizontalAlignment = Alignment.CenterHorizontally
+            ){
+                composables?.combosGrid(1,1)
+                composables?.combosGrid(2,3)
+                composables?.combosGrid(1,1)
+            }
         }
         //---------------------------------------------------------
 

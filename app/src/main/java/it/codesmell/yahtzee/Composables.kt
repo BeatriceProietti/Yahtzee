@@ -71,6 +71,9 @@ import it.codesmell.yahtzee.ui.theme.YahtzeeTheme
 import kotlinx.serialization.descriptors.StructureKind
 import android.content.res.Configuration
 import androidx.compose.animation.core.animateDpAsState
+import androidx.compose.foundation.layout.IntrinsicSize
+import androidx.compose.foundation.layout.defaultMinSize
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.zIndex
 
@@ -156,24 +159,21 @@ class Composables {
 
     @Composable
     fun combosGrid(rows: Int, cols: Int) {
-        Box(
+        FlowRow(
             modifier = Modifier
-                //.width()
-        ){
-            FlowRow(
-                modifier = Modifier.padding(4.dp),
-                horizontalArrangement = Arrangement.spacedBy(4.dp),
-                maxItemsInEachRow = rows
-            ) {
-                val itemModifier = Modifier
-                    .padding(4.dp)
-                    .height(80.dp)
-                    .weight(1f)
-                    .clip(RoundedCornerShape(8.dp))
-                    .background(Color.White)
-                repeat(rows * cols) {
-                    Spacer(modifier = itemModifier)
-                }
+                .padding(4.dp),
+            horizontalArrangement = Arrangement.spacedBy(4.dp),
+            maxItemsInEachRow = rows
+        ) {
+            val itemModifier = Modifier
+                .padding(4.dp)
+                .defaultMinSize(minHeight = 40.dp, minWidth = 60.dp)
+                .fillMaxSize()
+                .weight(1f)
+                .clip(RoundedCornerShape(8.dp))
+                .background(Color.White)
+            repeat(rows * cols) {
+                Spacer(modifier = itemModifier)
             }
         }
     }

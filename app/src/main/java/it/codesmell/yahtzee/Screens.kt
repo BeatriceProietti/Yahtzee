@@ -78,20 +78,24 @@ import kotlinx.coroutines.launch
 
         //Griglia combinazioni -------------------------------------
         val configuration = LocalConfiguration.current
+        val isPortrait = configuration.orientation == Configuration.ORIENTATION_PORTRAIT
         val isLandscape = configuration.orientation == Configuration.ORIENTATION_LANDSCAPE
-        val boxWidth = if (isLandscape) 460.dp else 400.dp
+        val boxWidth = if (isLandscape) 350.dp else 300.dp
+        val boxHeight = if (isPortrait) 500.dp else 300.dp
+        val heightMod = if (isPortrait) 30 else 0
 
         Box(
             modifier = Modifier
+                .height(boxHeight)
                 .width(boxWidth)
         ){
             Column(
                 verticalArrangement = Arrangement.Center,
                 horizontalAlignment = Alignment.CenterHorizontally
             ){
-                composables?.combosGrid(1,1)
-                composables?.combosGrid(2,3)
-                composables?.combosGrid(1,1)
+                composables?.combosGrid(1,1,heightMod)
+                composables?.combosGrid(2,3,heightMod)
+                composables?.combosGrid(1,1,heightMod)
             }
         }
         //---------------------------------------------------------

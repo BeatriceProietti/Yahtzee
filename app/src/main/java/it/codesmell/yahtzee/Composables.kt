@@ -158,7 +158,7 @@ class Composables {
 
 
     @Composable
-    fun combosGrid(rows: Int, cols: Int) {
+    fun combosGrid(rows: Int, cols: Int, heightMod : Int) {
         FlowRow(
             modifier = Modifier
                 .padding(4.dp),
@@ -167,7 +167,7 @@ class Composables {
         ) {
             val itemModifier = Modifier
                 .padding(4.dp)
-                .defaultMinSize(minHeight = 40.dp, minWidth = 60.dp)
+                .defaultMinSize(minHeight = 40.dp + heightMod.dp, minWidth = 60.dp)
                 .fillMaxSize()
                 .weight(1f)
                 .clip(RoundedCornerShape(8.dp))

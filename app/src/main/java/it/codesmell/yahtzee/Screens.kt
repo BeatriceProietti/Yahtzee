@@ -82,14 +82,6 @@ import kotlinx.coroutines.launch
     @SuppressLint("ConfigurationScreenWidthHeight")
     @Composable
     fun gameScreenContent(navController : NavController){
-
-        //Spacer(Modifier.size(50.dp))
-
-        //Display punteggio -------------------------------------
-        Text("123456789")
-        //---------------------------------------------------------
-
-        //Griglia combinazioni -------------------------------------
         val configuration = LocalConfiguration.current
         val isPortrait = configuration.orientation == Configuration.ORIENTATION_PORTRAIT
         val isLandscape = configuration.orientation == Configuration.ORIENTATION_LANDSCAPE
@@ -97,9 +89,16 @@ import kotlinx.coroutines.launch
         val screenHeight = configuration.screenHeightDp.dp
         val screenWidth = configuration.screenWidthDp.dp
 
+        Spacer(Modifier.size(screenHeight*0.03f))
+        //Display punteggio -------------------------------------
+        Text("123456789")
+        //---------------------------------------------------------
+        Spacer(Modifier.size(screenHeight*0.03f))
+
+        //Griglia combinazioni -------------------------------------
         val boxWidth = if (isPortrait) screenWidth*0.95f else screenWidth*0.4f
         val boxHeight = if (isPortrait) screenHeight*0.5f else screenHeight*0.85f
-        val heightMod = if (isPortrait) 30 else 10
+        val heightMod = if (isPortrait) 25 else 10
 
         Box(
             contentAlignment = Alignment.CenterStart,
@@ -108,8 +107,8 @@ import kotlinx.coroutines.launch
                 .width(boxWidth)
         ){
             Column(
-                verticalArrangement = Arrangement.Center,
-                horizontalAlignment = Alignment.CenterHorizontally
+                verticalArrangement = Arrangement.SpaceBetween,
+                horizontalAlignment = Alignment.CenterHorizontally,
             ){
                 composables?.combosGrid(1,1,heightMod)
                 composables?.combosGrid(2,3,heightMod)
@@ -117,8 +116,8 @@ import kotlinx.coroutines.launch
             }
         }
         //---------------------------------------------------------
+        Spacer(Modifier.size(screenHeight*0.01f))
 
-        //Text(statusText)
         //riga dadi -----------------------------------------------
         //compongo la lista di dadi da mandare al composable diceRow
         var dr = IntArray(diceAmount)
@@ -126,8 +125,8 @@ import kotlinx.coroutines.launch
             dr[i] = gameLogic.dice[i] //i dadi presi da gameLogic, da mandare all'interfaccia
         }
         Column(
-            verticalArrangement = Arrangement.Bottom,
-            horizontalAlignment = Alignment.CenterHorizontally
+            //verticalArrangement = Arrangement.Bottom, //non funziona
+            horizontalAlignment = Alignment.CenterHorizontally,
         ){
             composables?.diceRow(
                 dice = dr.toTypedArray() //soluzione brutta //mando i dadi all'interfaccia

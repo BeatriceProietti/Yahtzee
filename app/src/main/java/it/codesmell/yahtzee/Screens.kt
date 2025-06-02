@@ -23,6 +23,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.platform.LocalWindowInfo
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
@@ -80,9 +81,13 @@ import kotlinx.coroutines.launch
         val configuration = LocalConfiguration.current
         val isPortrait = configuration.orientation == Configuration.ORIENTATION_PORTRAIT
         val isLandscape = configuration.orientation == Configuration.ORIENTATION_LANDSCAPE
-        val boxWidth = if (isLandscape) 350.dp else 300.dp
-        val boxHeight = if (isPortrait) 500.dp else 300.dp
-        val heightMod = if (isPortrait) 30 else 0
+
+        val screenHeight = LocalWindowInfo.current.containerSize.height.dp
+        val screenWidth = LocalWindowInfo.current.containerSize.width.dp
+
+        val boxWidth = if (isPortrait) screenWidth*0.35f else screenHeight*0.3f
+        val boxHeight = if (isPortrait) screenHeight*0.2f else screenWidth*0.2f
+        val heightMod = if (isPortrait) 30 else 15
 
         Box(
             modifier = Modifier

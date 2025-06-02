@@ -56,6 +56,16 @@ import kotlinx.coroutines.launch
 
     @Composable
     fun Screen2(navController: NavController) {
+        val configuration = LocalConfiguration.current
+        val isPortrait = configuration.orientation == Configuration.ORIENTATION_PORTRAIT
+        val isLandscape = configuration.orientation == Configuration.ORIENTATION_LANDSCAPE
+
+        val screenHeight = LocalWindowInfo.current.containerSize.height.dp
+        val screenWidth = LocalWindowInfo.current.containerSize.width.dp
+
+        val boxWidth = if (isPortrait) screenWidth*0.35f else screenHeight*0.3f
+        val boxHeight = if (isPortrait) screenHeight*0.2f else screenWidth*0.2f
+        val heightMod = if (isPortrait) 30 else 15
         Column(
             modifier = Modifier.fillMaxSize(),
             verticalArrangement = Arrangement.Center,
@@ -63,7 +73,7 @@ import kotlinx.coroutines.launch
         ) {
             Text("Screen2: Zilling Off")
             composables?.funButton({navController.navigateUp()}, "Torna Indietro", 0)
-            composables?.swappingCards()
+            composables?.swappingCards(heightMod)
         }
 
     }

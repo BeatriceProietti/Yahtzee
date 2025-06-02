@@ -211,7 +211,7 @@ class Composables {
         val scope = rememberCoroutineScope()
 
         LaunchedEffect(isMoved) {
-            var targetY = if (isMoved) -290f else 0f
+            var targetY = if (isMoved) -100f else 0f
             offsetY.animateTo(
                 targetY,
                 animationSpec = spring(

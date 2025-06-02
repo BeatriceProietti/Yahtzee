@@ -76,6 +76,8 @@ import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.Shapes
+import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.zIndex
 
@@ -295,7 +297,8 @@ class Composables {
         Column(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(32.dp),
+                .padding(32.dp)
+                .height(390.dp),// questa deve essere l'altezza di merda
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Box(
@@ -312,6 +315,7 @@ class Composables {
                         .size(boxWidth, boxHeight)
                         .clip(RoundedCornerShape(12.dp))
                         .background(Color.LightGray) // background to keep same look
+                        .shadow(2.dp, RectangleShape, clip = true)
                 ) {
                     CombosGridComposition(heightMod)
                 }

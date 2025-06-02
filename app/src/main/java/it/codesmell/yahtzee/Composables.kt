@@ -204,14 +204,14 @@ class Composables {
 
         val rotationZ by animateIntAsState( //animazione che si occupa della rotazione
             targetValue = if (isMoved) 360 else 0,
-            animationSpec = tween(800),
+            animationSpec = tween(550),
         )
         // Animazione dell'offset Y/z
         val offsetY = remember { Animatable(0f) }
         val scope = rememberCoroutineScope()
 
         LaunchedEffect(isMoved) {
-            var targetY = if (isMoved) -100f else 0f
+            var targetY = if (isMoved) -130f else 0f
             offsetY.animateTo(
                 targetY,
                 animationSpec = spring(

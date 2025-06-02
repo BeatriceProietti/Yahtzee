@@ -100,7 +100,8 @@ import kotlinx.coroutines.launch
         val boxHeight = if (isPortrait) screenHeight*0.5f else screenHeight*0.85f
         val heightMod = if (isPortrait) 25 else 10
 
-        Box(
+        composables?.swappingCards(heightMod)
+        /*Box(
             contentAlignment = Alignment.CenterStart,
             modifier = Modifier
                 .height(boxHeight)
@@ -114,7 +115,7 @@ import kotlinx.coroutines.launch
                 composables?.combosGrid(2,3,heightMod)
                 composables?.combosGrid(1,1,heightMod)
             }
-        }
+        }*/
         //---------------------------------------------------------
         Spacer(Modifier.size(screenHeight*0.01f))
 

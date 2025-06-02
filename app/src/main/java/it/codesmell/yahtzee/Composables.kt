@@ -328,13 +328,13 @@ class Composables {
                     CombosGridComposition(heightMod)
                 }
             }
-
+            /*
             Button(
                 onClick = { isFirstOnTop = !isFirstOnTop },
                 modifier = Modifier.padding(top = 16.dp)
             ) {
                 Text("Scambia con rimbalzo")
-            }
+            }*/
         }
     }
 

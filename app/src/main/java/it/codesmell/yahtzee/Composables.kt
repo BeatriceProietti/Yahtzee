@@ -74,6 +74,8 @@ import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.zIndex
 
@@ -164,6 +166,7 @@ class Composables {
                 .padding(4.dp),
             horizontalArrangement = Arrangement.spacedBy(4.dp),
             maxItemsInEachRow = rows
+
         ) {
             val itemModifier = Modifier
                 .padding(4.dp)
@@ -177,6 +180,20 @@ class Composables {
             }
         }
     }
+
+    @Composable
+    fun CombosGridComposition(heightMod: Int) {
+        Column(
+            modifier = Modifier
+                .fillMaxSize() // Assicura che occupi tutto il box disponibile
+                //.verticalScroll(rememberScrollState()) // Aggiungi scroll se serve
+        ) {
+            combosGrid(1, 1, heightMod)
+            combosGrid(2, 3, heightMod)
+            combosGrid(1, 1, heightMod)
+        }
+    }
+
 
     //---------------------------------
 
@@ -248,7 +265,7 @@ class Composables {
 
 
     @Composable
-    fun swappingCards() {
+    fun swappingCards(heightMod: Int) {
 
         var isFirstOnTop by remember { mutableStateOf(true) }
 
@@ -280,25 +297,29 @@ class Composables {
                     .fillMaxWidth(),
                 contentAlignment = Alignment.CenterStart
             ) {
-                // Second card
+                // Second grid
                 Box(
                     modifier = Modifier
                         .offset(x = secondOffset, y = secondOffset)
                         .zIndex(if (isFirstOnTop) 0f else 1f)
-                        .size(300.dp, 200.dp)
+                        .size(500.dp, 415.dp)
                         .clip(RoundedCornerShape(12.dp))
-                        .background(Color.Blue)
-                )
+                        .background(Color.LightGray) // background to keep same look
+                ) {
+                    CombosGridComposition(heightMod)
+                }
 
-                // First card
+                // First grid
                 Box(
                     modifier = Modifier
                         .offset(x = firstOffset, y = firstOffset)
                         .zIndex(if (isFirstOnTop) 1f else 0f)
-                        .size(300.dp, 200.dp)
+                        .size(500.dp, 415.dp)
                         .clip(RoundedCornerShape(12.dp))
-                        .background(Color.Red)
-                )
+                        .background(Color.LightGray)
+                ) {
+                    CombosGridComposition(heightMod)
+                }
             }
 
             Button(
@@ -309,6 +330,16 @@ class Composables {
             }
         }
     }
+
+
+
+    @Composable
+    fun GameCards(){
+
+
+
+    }
+
 }
 
 

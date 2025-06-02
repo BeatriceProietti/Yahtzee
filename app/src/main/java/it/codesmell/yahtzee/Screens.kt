@@ -1,5 +1,6 @@
 package it.codesmell.yahtzee
 
+import android.annotation.SuppressLint
 import android.content.res.Configuration
 import android.hardware.SensorEvent
 import androidx.compose.foundation.layout.Arrangement
@@ -78,6 +79,7 @@ import kotlinx.coroutines.launch
 
     }
 
+    @SuppressLint("ConfigurationScreenWidthHeight")
     @Composable
     fun gameScreenContent(navController : NavController){
 
@@ -92,14 +94,15 @@ import kotlinx.coroutines.launch
         val isPortrait = configuration.orientation == Configuration.ORIENTATION_PORTRAIT
         val isLandscape = configuration.orientation == Configuration.ORIENTATION_LANDSCAPE
 
-        val screenHeight = LocalWindowInfo.current.containerSize.height.dp
-        val screenWidth = LocalWindowInfo.current.containerSize.width.dp
+        val screenHeight = configuration.screenHeightDp.dp
+        val screenWidth = configuration.screenWidthDp.dp
 
-        val boxWidth = if (isPortrait) screenWidth*0.35f else screenHeight*0.3f
-        val boxHeight = if (isPortrait) screenHeight*0.2f else screenWidth*0.2f
-        val heightMod = if (isPortrait) 30 else 15
+        val boxWidth = if (isPortrait) screenWidth*0.95f else screenWidth*0.4f
+        val boxHeight = if (isPortrait) screenHeight*0.5f else screenHeight*0.85f
+        val heightMod = if (isPortrait) 30 else 10
 
         Box(
+            contentAlignment = Alignment.CenterStart,
             modifier = Modifier
                 .height(boxHeight)
                 .width(boxWidth)
@@ -123,7 +126,6 @@ import kotlinx.coroutines.launch
             dr[i] = gameLogic.dice[i] //i dadi presi da gameLogic, da mandare all'interfaccia
         }
         Column(
-
             verticalArrangement = Arrangement.Bottom,
             horizontalAlignment = Alignment.CenterHorizontally
         ){

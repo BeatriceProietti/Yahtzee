@@ -88,7 +88,6 @@ class GameLogic : ViewModel() {
     }
 
     fun balatro(): String{
-
         var valueAmounts : Array<Int> = arrayOf(0, 0, 0, 0, 0, 0)
         var selectedDiceValues : MutableList<Int> = mutableListOf()
 
@@ -105,7 +104,7 @@ class GameLogic : ViewModel() {
         }
         statusText = valueAmounts[0].toString() + valueAmounts[1].toString() + valueAmounts[2].toString() + valueAmounts[3].toString() + valueAmounts[4].toString() + valueAmounts[5].toString()
 
-
+        //sezione delle combinazioni effettive
         if(2 in valueAmounts) return "Pair"
         if(3 in valueAmounts) return "Three of a kind"
         if(4 in valueAmounts) return "Four of a kind"
@@ -116,9 +115,10 @@ class GameLogic : ViewModel() {
             if (counter == 2) return "Two Pair"
         }
         if(5 in valueAmounts ) return "Yahtzee!"
+        
         return "Zillo!"
+        //--------------------------
     }
-
 
     //Aggiungi un dado alla lista dei dadi da tenere
     fun selectDie(which : Int){

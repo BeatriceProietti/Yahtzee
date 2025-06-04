@@ -1,6 +1,8 @@
 package it.codesmell.yahtzee
 
 
+import android.app.Notification
+import android.app.Notification.MessagingStyle.Message
 import kotlin.math.roundToInt
 import android.content.Context
 import android.util.Log
@@ -19,9 +21,11 @@ import androidx.compose.foundation.gestures.awaitEachGesture
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
@@ -62,7 +66,20 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.breens.beetablescompose.BeeTablesCompose
 import it.codesmell.yahtzee.ui.theme.YahtzeeTheme
+import kotlinx.serialization.descriptors.StructureKind
+import android.content.res.Configuration
+import androidx.compose.animation.core.animateDpAsState
+import androidx.compose.foundation.layout.IntrinsicSize
+import androidx.compose.foundation.layout.defaultMinSize
+import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.Shapes
+import androidx.compose.ui.graphics.RectangleShape
+import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.zIndex
 
 //mettiamo qui i composable, per avere un po' di ordine e per averli standardizzati per tutte le schermate
 //possiamo fare dei composable ad uso generico, si possono passare le funzioni come argomenti
@@ -141,16 +158,43 @@ class Composables {
 
 
 
-    //---------------------------------
+    //--------------------------------- tabella dei punteggi del gioco
 
 
-    //funzione che detecta le combinazioni del poker
+    @Composable
+    fun combosGrid(rows: Int, cols: Int, heightMod : Int) {
+        FlowRow(
+            modifier = Modifier
+                .padding(4.dp),
+            horizontalArrangement = Arrangement.spacedBy(4.dp),
+            maxItemsInEachRow = rows
 
+        ) {
+            val itemModifier = Modifier
+                .padding(4.dp)
+                .defaultMinSize(minHeight = 40.dp + heightMod.dp, minWidth = 60.dp)
+                .fillMaxSize()
+                .weight(1f)
+                .clip(RoundedCornerShape(8.dp))
+                .background(Color.White)
+            repeat(rows * cols) {
+                Spacer(modifier = itemModifier)
+            }
+        }
+    }
 
-
-
-
-
+    @Composable
+    fun CombosGridComposition(heightMod: Int) {
+        Column(
+            modifier = Modifier
+                .fillMaxSize() // Assicura che occupi tutto il box disponibile
+                //.verticalScroll(rememberScrollState()) // Aggiungi scroll se serve
+        ) {
+            combosGrid(1, 1, heightMod)
+            combosGrid(2, 3, heightMod)
+            combosGrid(1, 1, heightMod)
+        }
+    }
 
 
     //---------------------------------
@@ -161,15 +205,15 @@ class Composables {
         var isMoved = selectedDice[index]
 
         val rotationZ by animateIntAsState( //animazione che si occupa della rotazione
-            targetValue = if (isMoved) 360 else 0,
-            animationSpec = tween(800),
+            targetValue = if (isMoved) 180 else 0,
+            animationSpec = tween(350),
         )
         // Animazione dell'offset Y/z
         val offsetY = remember { Animatable(0f) }
         val scope = rememberCoroutineScope()
 
         LaunchedEffect(isMoved) {
-            var targetY = if (isMoved) -290f else 0f
+            var targetY = if (isMoved) -130f else 0f
             offsetY.animateTo(
                 targetY,
                 animationSpec = spring(
@@ -221,6 +265,91 @@ class Composables {
 
 //-------------------------------------
 
+
+    @Composable
+    fun swappingCards(heightMod: Int) {
+
+        val configuration = LocalConfiguration.current
+        val isPortrait = configuration.orientation == Configuration.ORIENTATION_PORTRAIT
+        var isFirstOnTop by remember { mutableStateOf(true) }
+        val screenHeight = configuration.screenHeightDp.dp
+        val screenWidth = configuration.screenWidthDp.dp
+        val boxWidth = if (isPortrait) screenWidth*0.95f else screenWidth*0.4f
+        val boxHeight = if (isPortrait) screenHeight*0.5f else screenHeight*0.85f
+        val heightMod = if (isPortrait) 25 else 10
+
+        val firstOffset by animateDpAsState(
+            targetValue = if (isFirstOnTop) 0.dp else 20.dp,
+            animationSpec = spring(
+                dampingRatio = Spring.DampingRatioMediumBouncy,
+                stiffness = Spring.StiffnessMediumLow
+            ), label = "FirstCardOffset"
+        )
+
+        val secondOffset by animateDpAsState(
+            targetValue = if (isFirstOnTop) 20.dp else 0.dp,
+            animationSpec = spring(
+                dampingRatio = Spring.DampingRatioMediumBouncy,
+                stiffness = Spring.StiffnessMediumLow
+            ), label = "SecondCardOffset"
+        )
+
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(32.dp)
+                .height(390.dp),// questa deve essere l'altezza di merda
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            Box(
+                modifier = Modifier
+                    .weight(1f)
+                    .fillMaxWidth(),
+                contentAlignment = Alignment.CenterStart
+            ) {
+                // Second grid
+                Box(
+                    modifier = Modifier
+                        .offset(x = secondOffset, y = secondOffset)
+                        .zIndex(if (isFirstOnTop) 0f else 1f)
+                        .size(boxWidth, boxHeight)
+                        .clip(RoundedCornerShape(12.dp))
+                        .background(Color.LightGray) // background to keep same look
+                        .shadow(2.dp, RectangleShape, clip = true)
+                ) {
+                    CombosGridComposition(heightMod)
+                }
+
+                // First grid
+                Box(
+                    modifier = Modifier
+                        .offset(x = firstOffset, y = firstOffset)
+                        .zIndex(if (isFirstOnTop) 1f else 0f)
+                        .size(boxWidth, boxHeight)
+                        .clip(RoundedCornerShape(12.dp))
+                        .background(Color.LightGray)
+                ) {
+                    CombosGridComposition(heightMod)
+                }
+            }
+            /*
+            Button(
+                onClick = { isFirstOnTop = !isFirstOnTop },
+                modifier = Modifier.padding(top = 16.dp)
+            ) {
+                Text("Scambia con rimbalzo")
+            }*/
+        }
+    }
+
+
+
+    @Composable
+    fun GameCards(){
+
+
+
+    }
 
 }
 

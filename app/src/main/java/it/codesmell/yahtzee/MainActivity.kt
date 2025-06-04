@@ -43,8 +43,6 @@ class MainActivity : ComponentActivity() {
         composables = Composables()
 
 
-
-
         setContent {
             //var theme by remember{mutableStateOf(false)}
             YahtzeeTheme(darkTheme = darkTheme) {
@@ -70,6 +68,7 @@ class MainActivity : ComponentActivity() {
 
                     })
                     // --------------------------------------------------------------------------------------------------
+                    composables?.funButton({navCon.navigateUp()}, "Torna Indietro", 0)
                 }
             }
         }

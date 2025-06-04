@@ -88,6 +88,7 @@ class GameLogic : ViewModel() {
     }
 
     fun balatro(): String{
+
         var valueAmounts : Array<Int> = arrayOf(0, 0, 0, 0, 0, 0)
         var selectedDiceValues : MutableList<Int> = mutableListOf()
 
@@ -104,21 +105,44 @@ class GameLogic : ViewModel() {
         }
         statusText = valueAmounts[0].toString() + valueAmounts[1].toString() + valueAmounts[2].toString() + valueAmounts[3].toString() + valueAmounts[4].toString() + valueAmounts[5].toString()
 
-        //sezione delle combinazioni effettive
-        if(2 in valueAmounts) return "Pair"
-        if(3 in valueAmounts) return "Three of a kind"
-        if(4 in valueAmounts) return "Four of a kind"
+
+        //le combinazioni combinate vanno controllate prima di quelle semplici!
         if(3 in valueAmounts && 2 in valueAmounts) return "Full House"
+        //Doppia coppia ----------------------------------------------
         var counter = 0
         for (i in 0..valueAmounts.size-1) {
             if (valueAmounts[i] == 2) counter++
             if (counter == 2) return "Two Pair"
         }
+        //-----------------------------------------------------------
+
+
+        //Scala----------------------------------------------------------------------------------
+        var straightCounter = 1
+        var gymbo  = selectedDiceValues
+        gymbo.sort() //tocca fare così perchè sort va a modificare la variabile
+        for (i in 1..selectedDiceValues.size-1){
+            if(gymbo[i-1] == gymbo[i]-1){
+                straightCounter++
+                Log.d("Sgarunzolo", straightCounter.toString())
+                if (straightCounter == 5){return "Straight"}
+                else if (straightCounter == 4) {
+                    return "Small Straight"
+                }
+            }
+
+        } //rileva fino a small straight poi straightCounter non sale sopra al 4
+        //----------------------------------------------------------------------------------------
+
+
+        if(2 in valueAmounts) return "Pair"
+        if(3 in valueAmounts) return "Three of a kind"
+        if(4 in valueAmounts) return "Four of a kind"
         if(5 in valueAmounts ) return "Yahtzee!"
-        
+
         return "Zillo!"
-        //--------------------------
     }
+
 
     //Aggiungi un dado alla lista dei dadi da tenere
     fun selectDie(which : Int){

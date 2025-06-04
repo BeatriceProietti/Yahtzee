@@ -274,8 +274,8 @@ class Composables {
         var isFirstOnTop by remember { mutableStateOf(true) }
         val screenHeight = configuration.screenHeightDp.dp
         val screenWidth = configuration.screenWidthDp.dp
-        val boxWidth = if (isPortrait) screenWidth*0.95f else screenWidth*0.4f
-        val boxHeight = if (isPortrait) screenHeight*0.5f else screenHeight*0.85f
+        val cardWidth = if (isPortrait) screenWidth*0.95f else screenWidth*0.4f
+        val cardHeight = if (isPortrait) screenHeight*0.43f else screenHeight*0.78f
         val heightMod = if (isPortrait) 25 else 10
 
         val firstOffset by animateDpAsState(
@@ -298,7 +298,8 @@ class Composables {
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(32.dp)
-                .height(390.dp),// questa deve essere l'altezza di merda
+                .height(cardHeight)
+                .width(cardWidth),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Box(
@@ -312,7 +313,7 @@ class Composables {
                     modifier = Modifier
                         .offset(x = secondOffset, y = secondOffset)
                         .zIndex(if (isFirstOnTop) 0f else 1f)
-                        .size(boxWidth, boxHeight)
+                        .size(cardWidth, cardHeight)
                         .clip(RoundedCornerShape(12.dp))
                         .background(Color.LightGray) // background to keep same look
                         .shadow(2.dp, RectangleShape, clip = true)
@@ -325,7 +326,7 @@ class Composables {
                     modifier = Modifier
                         .offset(x = firstOffset, y = firstOffset)
                         .zIndex(if (isFirstOnTop) 1f else 0f)
-                        .size(boxWidth, boxHeight)
+                        .size(cardWidth, cardHeight)
                         .clip(RoundedCornerShape(12.dp))
                         .background(Color.LightGray)
                 ) {

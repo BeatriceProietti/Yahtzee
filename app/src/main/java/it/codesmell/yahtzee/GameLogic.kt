@@ -281,8 +281,9 @@ class GameLogic : ViewModel() {
             hasRolled = false
             rollsLeft = 3
             roundsPlayed++
+            Log.d("rounds","$roundsPlayed")
 
-            if (roundsPlayed >= 13) { //finisci la partita
+            if (roundsPlayed >= 1) { //finisci la partita
                 gameOver = true
             }
         }

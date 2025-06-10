@@ -69,6 +69,7 @@ import androidx.compose.ui.unit.sp
 import it.codesmell.yahtzee.ui.theme.YahtzeeTheme
 import kotlinx.serialization.descriptors.StructureKind
 import android.content.res.Configuration
+import androidx.compose.animation.core.FastOutSlowInEasing
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.aspectRatio
@@ -97,45 +98,80 @@ class Composables {
     //quadrato di fine partita
 
     @Composable
-    fun QuadratoCentrato(isMoved: Boolean) {
+    fun EndGameSquare(show: Boolean, onDismiss: () -> Unit) {
         val configuration = LocalConfiguration.current
         val screenWidthDp = configuration.screenWidthDp.dp
         val screenHeightDp = configuration.screenHeightDp.dp
 
         val boxWidth = screenWidthDp * 0.7f
-        val boxHeight = screenHeightDp * 0.8f
+        val boxHeight = screenHeightDp * 0.5f
 
-        val offsetY = remember { Animatable(0f) }
+        val offScreenTargetY = boxHeight.value + 32f
+        val offsetY = remember { Animatable(offScreenTargetY) }
 
-        val offScreenTargetY = screenHeightDp.value + boxHeight.value
-
-        LaunchedEffect(isMoved) {
-            val target = if (isMoved) {
-                offScreenTargetY
-            } else {
-                0f
-            }
-
+        LaunchedEffect(show) {
+            val target = if (show) 0f else offScreenTargetY
             offsetY.animateTo(
                 target,
                 animationSpec = spring(
-                    dampingRatio = 0.9f,
-                    stiffness = Spring.StiffnessMedium
+                    dampingRatio = Spring.DampingRatioMediumBouncy,
+                    stiffness = Spring.StiffnessLow
                 )
             )
         }
 
         Box(
-            modifier = Modifier
-                .padding(start = screenWidthDp * 0.05f, end = screenWidthDp * 0.05f)
-                .size(boxWidth, boxHeight)
-                .clip(RoundedCornerShape(14.dp))
-                .offset(y = offsetY.value.dp)
-                .background(Color.Red)
+            modifier = Modifier.fillMaxSize(),
+            contentAlignment = Alignment.BottomCenter
         ) {
-            Text("Sono il quadrato!", color = Color.White, modifier = Modifier.align(Alignment.Center))
+            Box(
+                modifier = Modifier
+                    .size(boxWidth, boxHeight)
+                    .clip(RoundedCornerShape(14.dp))
+                    .offset(y = offsetY.value.dp)
+                    .background(Color.White)
+            ) {
+                Column(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(12.dp),
+                    verticalArrangement = Arrangement.SpaceBetween,
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    // Quadrato interno senza bordo
+                    Box(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .weight(0.7f)
+                            .clip(RoundedCornerShape(10.dp))
+                            .background(Color.Gray),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Column (modifier = Modifier.fillMaxSize(),
+                            verticalArrangement = Arrangement.Center,
+                            horizontalAlignment = Alignment.CenterHorizontally
+                            ){
+                            Text("Partita terminata", color = Color.Black)
+                            Text("Punteggio:", color = Color.Black)
+                            Text("${gameLogic.totalScore}")
+                        }
+                    }
+
+                    // Pulsante per chiudere
+                    Button(
+                        onClick = onDismiss,
+                        modifier = Modifier.padding(top = 6.dp)
+                    ) {
+                        Text("Chiudi")
+                    }
+                }
+            }
         }
     }
+
+
+
+
 
     //bottone che esegue una funzione senza argomenti
     @Composable           // vv Unit sarebbe void. funzione che prende nulla e restituisce nulla

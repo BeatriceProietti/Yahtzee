@@ -94,16 +94,7 @@ import androidx.compose.material3.Button // O androidx.compose.material.Button
         ) {
 
 
-            Button(
-                onClick = {
-                    // 2. Commuta il valore della variabile quando il bottone è premuto
-                    isOn = !isOn
-                }
-            ) {
-                // 3. Il testo del bottone cambia in base al valore di `isOn`
-                Text(if (isOn) "ON" else "OFF")
-            }
-            composables?.QuadratoCentrato(isOn)
+
         }
 
     }
@@ -136,6 +127,7 @@ import androidx.compose.material3.Button // O androidx.compose.material.Button
     @Composable
     fun GameScreen(navController: NavController, gameLogic: GameLogic) {
 
+        var showOverlay by remember { mutableStateOf(false) }
         val context = LocalContext.current
 
         LaunchedEffect(gameLogic.bonusJustAwarded) {
@@ -151,6 +143,7 @@ import androidx.compose.material3.Button // O androidx.compose.material.Button
             if (gameLogic.gameOver && !gameOverShown) {
                 Toast.makeText(context, "Partita finita! Punteggio: ${gameLogic.totalScore}", Toast.LENGTH_LONG).show()
                 gameOverShown = true
+                showOverlay = true
             }
         }
 
@@ -228,7 +221,12 @@ import androidx.compose.material3.Button // O androidx.compose.material.Button
                     .padding(start = screenHeight*0.05f, end = screenHeight*0.05f)
                 ){
 
-                    Text("punti")
+                    Text(
+                        text = "${gameLogic.totalScore}",
+                        fontSize = 18.sp,
+                        color = Color.White,
+                        modifier = Modifier.padding(8.dp)
+                    )
                 }
                 Box(){
                     composables?.swappingCards(
@@ -236,11 +234,14 @@ import androidx.compose.material3.Button // O androidx.compose.material.Button
                         onComboClick = { category ->
                             scoreCard.setScore(category, dr.toList())
                             totalScore = scoreCard.totalScore()
+                            gameLogic.rollsLeft--
                         }
                     )
 
                 }
-                Column(modifier = Modifier.rotate(-90f).offset(y = 50.dp),
+                Column(modifier = Modifier
+                    .rotate(-90f)
+                    .offset(y = 50.dp),
 
                     horizontalAlignment = Alignment.CenterHorizontally,
                     verticalArrangement = Arrangement.Center
@@ -272,6 +273,7 @@ import androidx.compose.material3.Button // O androidx.compose.material.Button
             }
 
         }
+        composables?.EndGameSquare(show = showOverlay, onDismiss = { showOverlay = false })
     }
 
 

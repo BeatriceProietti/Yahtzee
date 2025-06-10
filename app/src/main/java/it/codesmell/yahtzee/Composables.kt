@@ -71,6 +71,7 @@ import kotlinx.serialization.descriptors.StructureKind
 import android.content.res.Configuration
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.foundation.layout.IntrinsicSize
+import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.rememberScrollState
@@ -79,6 +80,13 @@ import androidx.compose.material3.Shapes
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.zIndex
+import androidx.constraintlayout.compose.ConstraintLayout
+import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.lazy.grid.itemsIndexed
+import androidx.compose.foundation.rememberOverscrollEffect
+
 
 //mettiamo qui i composable, per avere un po' di ordine e per averli standardizzati per tutte le schermate
 //possiamo fare dei composable ad uso generico, si possono passare le funzioni come argomenti
@@ -86,9 +94,52 @@ import androidx.compose.ui.zIndex
 class Composables {
 
 
+    //quadrato di fine partita
+
+    @Composable
+    fun QuadratoCentrato(isMoved: Boolean) {
+        val configuration = LocalConfiguration.current
+        val screenWidthDp = configuration.screenWidthDp.dp
+        val screenHeightDp = configuration.screenHeightDp.dp
+
+        val boxWidth = screenWidthDp * 0.7f
+        val boxHeight = screenHeightDp * 0.8f
+
+        val offsetY = remember { Animatable(0f) }
+
+        val offScreenTargetY = screenHeightDp.value + boxHeight.value
+
+        LaunchedEffect(isMoved) {
+            val target = if (isMoved) {
+                offScreenTargetY
+            } else {
+                0f
+            }
+
+            offsetY.animateTo(
+                target,
+                animationSpec = spring(
+                    dampingRatio = 0.9f,
+                    stiffness = Spring.StiffnessMedium
+                )
+            )
+        }
+
+        Box(
+            modifier = Modifier
+                .padding(start = screenWidthDp * 0.05f, end = screenWidthDp * 0.05f)
+                .size(boxWidth, boxHeight)
+                .clip(RoundedCornerShape(14.dp))
+                .offset(y = offsetY.value.dp)
+                .background(Color.Red)
+        ) {
+            Text("Sono il quadrato!", color = Color.White, modifier = Modifier.align(Alignment.Center))
+        }
+    }
+
     //bottone che esegue una funzione senza argomenti
     @Composable           // vv Unit sarebbe void. funzione che prende nulla e restituisce nulla
-    fun funButton (onClick : () -> Unit, text : String, depth : Long){
+    fun funButton (onClick : () -> Unit, text : String, depth : Long, modifier: Modifier = Modifier){
         Button(
             modifier = Modifier
                 .pointerInput(Unit) {
@@ -116,7 +167,7 @@ class Composables {
                         }
                     }
                 },
-            onClick = {},
+            onClick = {Log.d("palle","palle")},
             shape = ButtonDefaults.shape,
         ){
             Text(text)
@@ -125,20 +176,22 @@ class Composables {
 
 
     @Composable
-    fun diceRow(
-        dice : Array<Int>, //i dadi ricevuti da gameLogic
-    ){
+    fun diceRow(dice: Array<Int>, gameLogic: GameLogic) { // ricevuti da game logic
         Row(
-            Modifier
-                .padding(16.dp),
-            Arrangement
-                .spacedBy(16.dp)
-        ){
-            for(i in 0..diceAmount-1){
-                animationSquare({gameLogic.selectDie(i)},numToDie(dice[i]),i)
+            Modifier.padding(16.dp),
+            horizontalArrangement = Arrangement.spacedBy(16.dp)
+        ) {
+            for (i in 0 until dice.size) {
+                animationSquare(
+                    onClick = { gameLogic.selectDie(i) },
+                    text = numToDie(dice[i]),
+                    index = i,
+                    isMoved = gameLogic.selectedDice[i] // ← qui!
+                )
             }
         }
     }
+
 
     //da rifare con dadi fighi
     fun numToDie(num : Int) : String{
@@ -161,58 +214,207 @@ class Composables {
 
 
     @Composable
-    fun combosGrid(rows: Int, cols: Int, heightMod : Int) {
-        FlowRow(
-            modifier = Modifier
-                .padding(4.dp),
-            horizontalArrangement = Arrangement.spacedBy(4.dp),
-            maxItemsInEachRow = rows
+    fun CombosGridComposition2(
+        cardWidth: Dp,
+        cardHeight: Dp,
+        dice: List<Int>,                 // dadi attuali passati dal ViewModel
+        upperScores: Map<String, Int?>, // punteggi già confermati (null se non ancora scelti)
+        onScoreConfirmed: (String, Int) -> Unit
+    ) {
+        val cols = 2
+        val rows = 3
+        val spacing = 4.dp
+        val padding = 4.dp
 
+        val labels = listOf("Ones", "Twos", "Threes", "Fours", "Fives", "Sixes")
+        val diceEmojis = listOf("⚀", "⚁", "⚂", "⚃", "⚄", "⚅")
+
+        BoxWithConstraints(
+            modifier = Modifier
+                .width(cardWidth)
+                .height(cardHeight)
+                .padding(padding)
         ) {
-            val itemModifier = Modifier
-                .padding(4.dp)
-                .defaultMinSize(minHeight = 40.dp + heightMod.dp, minWidth = 60.dp)
-                .fillMaxSize()
-                .weight(1f)
-                .clip(RoundedCornerShape(8.dp))
-                .background(Color.White)
-            repeat(rows * cols) {
-                Spacer(modifier = itemModifier)
+            val usableHeight = maxHeight - spacing * (rows - 1)
+            val tileHeight = usableHeight / rows
+
+            LazyVerticalGrid(
+                columns = GridCells.Fixed(cols),
+                modifier = Modifier.fillMaxSize(),
+                verticalArrangement = Arrangement.spacedBy(spacing),
+                horizontalArrangement = Arrangement.spacedBy(spacing),
+                userScrollEnabled = false
+            ) {
+                items(labels.size) { index ->
+                    val label = labels[index]
+                    val confirmedScore = upperScores[label]
+                    // Calcolo punteggio attuale in base ai dadi correnti
+                    val potentialScore = gameLogic.calculateUpperSectionScore(label, dice)
+
+                    Box(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(tileHeight)
+                            .clip(RoundedCornerShape(8.dp))
+                            .background(Color.DarkGray)
+                            .clickable(enabled = confirmedScore == null && dice.isNotEmpty()) {
+                                onScoreConfirmed(label, potentialScore)
+                            },
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                            Text(
+                                text = diceEmojis.getOrNull(index) ?: "🎲",
+                                fontSize = 30.sp
+                            )
+                            Spacer(modifier = Modifier.height(4.dp))
+                            Text(
+                                text = confirmedScore?.toString() ?: "$label: $potentialScore",
+                                color = Color.White,
+                                fontSize = 20.sp
+                            )
+                        }
+                    }
+                }
             }
         }
     }
 
+
+
+
+//-----------
+
     @Composable
-    fun CombosGridComposition(heightMod: Int) {
-        Column(
+    fun ClickableText(text: String, category: ComboCategory, onClick: (ComboCategory) -> Unit) {
+        Box(
             modifier = Modifier
-                .fillMaxSize() // Assicura che occupi tutto il box disponibile
-                //.verticalScroll(rememberScrollState()) // Aggiungi scroll se serve
+                .fillMaxWidth()
+                .height(40.dp)
+                .clip(RoundedCornerShape(8.dp))
+                .background(Color.DarkGray)
+                .clickable { onClick(category) },
+            contentAlignment = Alignment.Center
         ) {
-            combosGrid(1, 1, heightMod)
-            combosGrid(2, 3, heightMod)
-            combosGrid(1, 1, heightMod)
+            Text(text, color = Color.White, fontSize = 14.sp)
         }
     }
 
 
+//-----------
+
+
+    @Composable
+    fun CombosGridComposition(
+        cardWidth: Dp,
+        cardHeight: Dp,
+        gameLogic: GameLogic,
+        onScoreConfirmed: (String, Int) -> Unit
+    ) {
+        val cols = 2
+        val rows = 7
+        val spacing = 4.dp
+        val padding = 4.dp
+
+        val labels = listOf(
+            "Three of a kind",
+            "Four of a kind",
+            "Full house",
+            "Small straight",
+            "Big straight",
+            "Yahtzee!",
+            "Chance"
+        )
+
+        // FILTRO SOLO I DADI NON SELEZIONATI
+        val diceForScoring = gameLogic.dice.filterIndexed { index, _ -> !gameLogic.selectedDice[index] }
+
+        // controllo che **tutti i dadi non selezionati siano effettivamente presenti** (almeno 1 dado)
+        val shouldShowScores = diceForScoring.isNotEmpty() && diceForScoring.any { it != 0 }
+
+        // Uso remember con chiavi di dipendenza per ricalcolare i punteggi
+        val scores = remember(diceForScoring, gameLogic.usedCombos) {
+            if (shouldShowScores) {
+                gameLogic.calculatePossibleScores(diceForScoring)
+            } else {
+                emptyMap()
+            }
+        }
+
+        BoxWithConstraints(
+            modifier = Modifier
+                .width(cardWidth)
+                .height(cardHeight)
+                .padding(padding)
+        ) {
+            val usableHeight = maxHeight - spacing * (rows - 1)
+            val tileHeight = usableHeight / rows
+
+            LazyVerticalGrid(
+                columns = GridCells.Fixed(cols),
+                modifier = Modifier.fillMaxSize(),
+                verticalArrangement = Arrangement.spacedBy(spacing),
+                horizontalArrangement = Arrangement.spacedBy(spacing),
+                userScrollEnabled = false
+            ) {
+                items(rows * cols) { index ->
+                    val row = index / cols
+                    val col = index % cols
+                    val label = labels[row]
+                    val isUsed = gameLogic.usedCombos.containsKey(label)
+                    val score = if (isUsed) gameLogic.usedCombos[label] ?: 0 else scores[label] ?: 0
+
+                    Box(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(tileHeight)
+                            .clip(RoundedCornerShape(8.dp))
+                            .background(Color.DarkGray)
+                            .clickable(enabled = col == 1 && !isUsed) {
+                                onScoreConfirmed(label, score)
+                            },
+                        contentAlignment = Alignment.Center
+                    ) {
+                        if (col == 0) {
+                            Text(label, color = Color.White, fontSize = 14.sp)
+                        } else {
+                            Text(
+                                text = score.toString(),
+                                color = when {
+                                    isUsed -> Color.White
+                                    else -> Color.LightGray
+                                },
+                                fontSize = 16.sp
+                            )
+                        }
+                    }
+                }
+            }
+        }
+    }
+
     //---------------------------------
 
     @Composable
-    fun animationSquare(onClick : () -> Unit, text : String, index : Int) { //index: indice all'interno di upDice
+    fun animationSquare(
+        onClick: () -> Unit,
+        text: String,
+        index: Int,
+        isMoved: Boolean
+    ) {
         val context = LocalContext.current
-        var isMoved = selectedDice[index]
 
-        val rotationZ by animateIntAsState( //animazione che si occupa della rotazione
+        val rotationZ by animateIntAsState( // animazione rotazione
             targetValue = if (isMoved) 180 else 0,
             animationSpec = tween(350),
+            label = "rotation"
         )
-        // Animazione dell'offset Y/z
+
         val offsetY = remember { Animatable(0f) }
         val scope = rememberCoroutineScope()
 
         LaunchedEffect(isMoved) {
-            var targetY = if (isMoved) -130f else 0f
+            val targetY = if (isMoved) -130f else 0f
             offsetY.animateTo(
                 targetY,
                 animationSpec = spring(
@@ -222,60 +424,57 @@ class Composables {
             )
         }
 
-            Box(
-                contentAlignment = Alignment.Center,
-                modifier = Modifier
-                    .offset { IntOffset(0, offsetY.value.roundToInt()) }
-                    .size(55.dp)
-                    .rotate(rotationZ.toFloat())
-                    //.clickable { upDice[index] = !upDice[index] }
-                    .pointerInput(Unit) {
-                        awaitEachGesture {
-                            //evento pressione del tasto
-                            val downEvent =
-                                awaitPointerEvent(PointerEventPass.Main)
-                            downEvent.changes.forEach {
-                                if (it.pressed) {
-                                    onClick() //eseguo la funzione passata come argomento
-                                }
+        Box(
+            contentAlignment = Alignment.Center,
+            modifier = Modifier
+                .offset { IntOffset(0, offsetY.value.roundToInt()) }
+                .size(55.dp)
+                .rotate(rotationZ.toFloat())
+                .pointerInput(Unit) {
+                    awaitEachGesture {
+                        val downEvent = awaitPointerEvent(PointerEventPass.Main)
+                        downEvent.changes.forEach {
+                            if (it.pressed) {
+                                onClick()
                             }
-                            //loop che aspetta che il tasto venga rilasciato
-                            var allUp = false
-                            while (!allUp) {
-                                val event =
-                                    awaitPointerEvent(PointerEventPass.Main)
-                                if (event.changes.all { it.pressed.not() }) {
-                                    allUp = true
-                                    event.changes.forEach {
-                                        hfx?.click(0.5f)
-                                    }
+                        }
+                        var allUp = false
+                        while (!allUp) {
+                            val event = awaitPointerEvent(PointerEventPass.Main)
+                            if (event.changes.all { !it.pressed }) {
+                                allUp = true
+                                event.changes.forEach {
+                                    hfx?.click(0.5f)
                                 }
                             }
                         }
                     }
-            ){
-                Text(
-                    text = text,
-                    color = MaterialTheme.colorScheme.primary,
-                    fontSize = 50.sp
-                )
-            }
+                }
+        ) {
+            Text(
+                text = text,
+                color = MaterialTheme.colorScheme.primary,
+                fontSize = 50.sp
+            )
+        }
     }
+
 
 //-------------------------------------
 
 
     @Composable
-    fun swappingCards(heightMod: Int) {
-
+    fun swappingCards(
+        scoreCard: ScoreCard,
+        onComboClick: (ComboCategory) -> Unit
+    ) {
         val configuration = LocalConfiguration.current
         val isPortrait = configuration.orientation == Configuration.ORIENTATION_PORTRAIT
         var isFirstOnTop by remember { mutableStateOf(true) }
         val screenHeight = configuration.screenHeightDp.dp
         val screenWidth = configuration.screenWidthDp.dp
-        val cardWidth = if (isPortrait) screenWidth*0.95f else screenWidth*0.4f
-        val cardHeight = if (isPortrait) screenHeight*0.43f else screenHeight*0.78f
-        val heightMod = if (isPortrait) 25 else 10
+        val cardWidth = if (isPortrait) screenWidth * 0.90f else screenWidth * 0.4f
+        val cardHeight = if (isPortrait) screenHeight * 0.43f else screenHeight * 0.78f
 
         val firstOffset by animateDpAsState(
             targetValue = if (isFirstOnTop) 0.dp else 20.dp,
@@ -295,7 +494,6 @@ class Composables {
 
         Column(
             modifier = Modifier
-                .fillMaxWidth()
                 .padding(32.dp)
                 .height(cardHeight)
                 .width(cardWidth),
@@ -307,42 +505,54 @@ class Composables {
                     .fillMaxWidth(),
                 contentAlignment = Alignment.CenterStart
             ) {
-                // Second grid
+                // Second grid (numeri 1–6)
                 Box(
                     modifier = Modifier
                         .offset(x = secondOffset, y = secondOffset)
                         .zIndex(if (isFirstOnTop) 0f else 1f)
                         .size(cardWidth, cardHeight)
                         .clip(RoundedCornerShape(12.dp))
-                        .background(Color.LightGray) // background to keep same look
-                        .shadow(2.dp, RectangleShape, clip = true)
+                        .background(Color.Green)
                 ) {
-                    CombosGridComposition(heightMod)
+                    CombosGridComposition2(
+                        cardWidth = cardWidth,
+                        cardHeight = cardHeight,
+                        dice = gameLogic.dice,
+                        upperScores = gameLogic.upperSectionScores,
+                    ) { label, score ->
+                        gameLogic.confirmScore(label, score)
+                    }
                 }
 
-                // First grid
+                // First grid (combo punteggiabile)
                 Box(
                     modifier = Modifier
                         .offset(x = firstOffset, y = firstOffset)
                         .zIndex(if (isFirstOnTop) 1f else 0f)
                         .size(cardWidth, cardHeight)
                         .clip(RoundedCornerShape(12.dp))
-                        .background(Color.LightGray)
+                        .background(Color.Gray)
                 ) {
-                    CombosGridComposition(heightMod)
+                    CombosGridComposition(
+                        cardWidth = cardWidth,
+                        cardHeight = cardHeight,
+                        gameLogic = gameLogic, // <--- qui
+                        onScoreConfirmed = { combo, score ->
+                            gameLogic.confirmScore(combo, score)
+                        }
+                    )
+
                 }
             }
-            /*
+
             Button(
                 onClick = { isFirstOnTop = !isFirstOnTop },
-                modifier = Modifier.padding(top = 16.dp)
+                modifier = Modifier.padding(top = screenHeight * 0.05f)
             ) {
                 Text("Scambia con rimbalzo")
-            }*/
+            }
         }
     }
-
-
 
     @Composable
     fun GameCards(){
@@ -350,7 +560,6 @@ class Composables {
 
 
     }
-
 }
 
 

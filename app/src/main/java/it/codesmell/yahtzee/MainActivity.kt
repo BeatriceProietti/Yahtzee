@@ -1,5 +1,6 @@
 package it.codesmell.yahtzee
 
+import DataBase
 import android.os.Bundle
 import android.widget.Toast
 import androidx.activity.ComponentActivity
@@ -21,7 +22,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import it.codesmell.yahtzee.ui.theme.YahtzeeTheme
-
+import androidx.room.Room
 //sborras
 
 var gthis : MainActivity? = null
@@ -34,9 +35,21 @@ var darkTheme by mutableStateOf(true)
 lateinit var mozione : motionManager
 
 class MainActivity : ComponentActivity() {
+
+
+
+
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
+
+
+        val db = Room.databaseBuilder(
+            applicationContext,
+            DataBase::class.java,
+            "yahtzee-db"
+        ).build()
 
         gthis = this
         hfx = hapticEffects(this)

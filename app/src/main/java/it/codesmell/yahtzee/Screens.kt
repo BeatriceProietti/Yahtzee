@@ -150,7 +150,6 @@ import androidx.compose.material3.Button // O androidx.compose.material.Button
 
 
 
-        val scoreCard = remember { ScoreCard() }
         var totalScore by remember { mutableStateOf(0) }
 
         var dr = IntArray(diceAmount)
@@ -180,15 +179,7 @@ import androidx.compose.material3.Button // O androidx.compose.material.Button
 
                 }
                 Box(){
-                    composables?.swappingCards(
-                        scoreCard = scoreCard,
-                        onComboClick = { category ->
-                            scoreCard.setScore(category, dr.toList())
-                            totalScore = scoreCard.totalScore()
-                            gameLogic.rollsLeft--
-                        }
-                    )
-
+                    composables?.swappingCards()
                 }
                 Box(modifier = Modifier // riga di dadi di merda
                     .padding(bottom = screenHeight*0.05f, top = screenHeight*0.05f)
@@ -229,15 +220,7 @@ import androidx.compose.material3.Button // O androidx.compose.material.Button
                     )
                 }
                 Box(){
-                    composables?.swappingCards(
-                        scoreCard = scoreCard,
-                        onComboClick = { category ->
-                            scoreCard.setScore(category, dr.toList())
-                            totalScore = scoreCard.totalScore()
-                            gameLogic.rollsLeft--
-                        }
-                    )
-
+                    composables?.swappingCards()
                 }
                 Column(modifier = Modifier
                     .rotate(-90f)

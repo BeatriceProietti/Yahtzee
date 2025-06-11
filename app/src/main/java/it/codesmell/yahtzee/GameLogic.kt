@@ -1,19 +1,16 @@
 package it.codesmell.yahtzee
 
 import android.util.Log
-import android.widget.Toast
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateMapOf
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.selects.select
 import kotlinx.coroutines.withContext
 import kotlin.random.Random
 
@@ -130,8 +127,6 @@ class GameLogic : ViewModel() {
 
 
     //funzione che si calcola la seconda carta
-
-
     fun calculateUpperSectionScore(combo: String, dice: List<Int>): Int {
         val target = when (combo) {
             "Ones" -> 1
@@ -159,62 +154,6 @@ class GameLogic : ViewModel() {
 
     }
 
-    fun balatro(): String{
-
-        var valueAmounts : Array<Int> = arrayOf(0, 0, 0, 0, 0, 0)
-        var selectedDiceValues : MutableList<Int> = mutableListOf()
-
-        //compongo la lista di dadi selezionati
-        for(i in 0..dice.size-1){
-            if(selectedDice[i] == true){
-                if(dice[i] in 1..6) selectedDiceValues.add(dice[i])
-            }
-        }
-
-        //conto le occorrenze di ciascun valore
-        for(i in 0..selectedDiceValues.size-1){
-            valueAmounts[selectedDiceValues[i]-1]++
-        }
-        statusText = valueAmounts[0].toString() + valueAmounts[1].toString() + valueAmounts[2].toString() + valueAmounts[3].toString() + valueAmounts[4].toString() + valueAmounts[5].toString()
-
-
-        //le combinazioni combinate vanno controllate prima di quelle semplici!
-        if(3 in valueAmounts && 2 in valueAmounts) return "Full House"
-        //Doppia coppia ----------------------------------------------
-        var counter = 0
-        for (i in 0..valueAmounts.size-1) {
-            if (valueAmounts[i] == 2) counter++
-            if (counter == 2) return "Two Pair"
-        }
-        //-----------------------------------------------------------
-
-
-        //Scala----------------------------------------------------------------------------------
-        var straightCounter = 1
-        var gymbo  = selectedDiceValues
-        gymbo.sort() //tocca fare così perchè sort va a modificare la variabile
-        for (i in 1..selectedDiceValues.size-1){
-            if(gymbo[i-1] == gymbo[i]-1){
-                straightCounter++
-                Log.d("Sgarunzolo", straightCounter.toString())
-                if (straightCounter == 5){return "Straight"}
-                else if (straightCounter == 4) {
-                    return "Small Straight"
-                }
-            }
-
-        } //rileva fino a small straight poi straightCounter non sale sopra al 4
-        //----------------------------------------------------------------------------------------
-
-
-        if(2 in valueAmounts) return "Pair"
-        if(3 in valueAmounts) return "Three of a kind"
-        if(4 in valueAmounts) return "Four of a kind"
-        if(5 in valueAmounts ) return "Yahtzee!"
-
-        return "Zillo!"
-    }
-
 
     //Aggiungi un dado alla lista dei dadi da tenere
     fun selectDie(which : Int){
@@ -224,25 +163,36 @@ class GameLogic : ViewModel() {
                     selectedDice[which] = false
                     Log.d("GameLogic", "abbasso il dado $which")
                     //statusText = "Dadi selezionati: $selectedDice"
-                    balatro()
                     return
                 }
             }
         Log.d("GameLogic", "alzo il dado $which")
         selectedDice[which] = true
         statusText = "Dadi selezionati: $selectedDice"
-        statusText = balatro()
     }
 
     //pisello e palle
 
+    // sbobba chatgpt da rifare vv----------------------------------------------------------------------------------------------
 
+    //prende una lista di dadi e restituisce il punteggio
     fun calculatePossibleScores(dice: List<Int>): Map<String, Int> {
-        val counts = dice.groupingBy { it }.eachCount()
+
+        var valueAmounts : Array<Int> = arrayOf(0, 0, 0, 0, 0, 0)   //numero occorrenze di ciascun valore
+
+        //conto le occorrenze di ciascun valore
+        for(i in 0..dice.size-1){
+            valueAmounts[dice[i]-1]++
+        }
+
+        //somma dei valori dei dadi selezionati
         val sum = dice.sum()
 
-        fun hasNOfAKind(n: Int) = counts.any { it.value >= n }
-        fun isFullHouse() = counts.size == 2 && counts.values.contains(3)
+        //restituisce true se c'è almeno un elemento di valueAmounts con valore n
+        fun hasNOfAKind(n: Int) : Boolean {return (n in valueAmounts)}
+        //restituisce true se c'è almeno un elemento di valueAmounts di valore 2 e uno di valore 3
+        fun isFullHouse() : Boolean {return (2 in valueAmounts && 3 in valueAmounts)}
+        //hardcoded è brutto ma per 5 dadi è più semplice così
         fun isSmallStraight(): Boolean {
             val unique = dice.distinct().sorted()
             val straights = listOf(
@@ -256,15 +206,14 @@ class GameLogic : ViewModel() {
             val unique = dice.distinct().sorted()
             return unique == listOf(1, 2, 3, 4, 5) || unique == listOf(2, 3, 4, 5, 6)
         }
-        fun isYahtzee() = dice.size == 5 && counts.any { it.value == 5 }
 
-        return mapOf(
+        return mapOf( //restituisce una mappa di coppie combinazione-punteggio (key-value)
             "Three of a kind" to if (hasNOfAKind(3)) sum else 0,
             "Four of a kind" to if (hasNOfAKind(4)) sum else 0,
             "Full house" to if (isFullHouse()) 25 else 0,
             "Small straight" to if (isSmallStraight()) 30 else 0,
             "Big straight" to if (isLargeStraight()) 40 else 0,
-            "Yahtzee!" to if (isYahtzee()) 50 else 0,
+            "Yahtzee!" to if (hasNOfAKind(5)) 50 else 0,
             "Chance" to sum
         )
     }
@@ -288,69 +237,4 @@ class GameLogic : ViewModel() {
             }
         }
     }
-
-
-
-
-
-
-}
-
-enum class ComboCategory {
-    THREE_OF_A_KIND, FOUR_OF_A_KIND, FULL_HOUSE,
-    SMALL_STRAIGHT, LARGE_STRAIGHT, YAHTZEE, CHANCE
-}
-
-class ScoreCard {
-    val scores = mutableMapOf<ComboCategory, Int?>()
-
-    fun setScore(category: ComboCategory, dice: List<Int>) {
-        if (scores[category] == null && gameLogic.hasRolled) {
-            scores[category] = calculateScore(category, dice)
-        }
-    }
-
-    fun getScore(category: ComboCategory): Int? = scores[category]
-
-    fun totalScore(): Int = scores.values.filterNotNull().sum()
-
-    private fun calculateScore(category: ComboCategory, dice: List<Int>): Int {
-        val counts = dice.groupingBy { it }.eachCount()
-        val unique = dice.distinct().sorted()
-
-        fun isStraight(length: Int): Boolean {
-            var max = 1
-            var cur = 1
-            for (i in 1 until unique.size) {
-                if (unique[i] == unique[i - 1] + 1) {
-                    cur++
-                    max = maxOf(max, cur)
-                } else {
-                    cur = 1
-                }
-            }
-            return max >= length
-        }
-
-        if (dice.size < 5 && category == ComboCategory.YAHTZEE) return 0
-        return when (category) {
-            ComboCategory.THREE_OF_A_KIND ->
-                if (counts.any { it.value >= 3 }) dice.sum() else 0
-            ComboCategory.FOUR_OF_A_KIND ->
-                if (counts.any { it.value >= 4 }) dice.sum() else 0
-            ComboCategory.FULL_HOUSE ->
-                if (counts.values.contains(3) && counts.values.contains(2)) 25 else 0
-            ComboCategory.SMALL_STRAIGHT ->
-                if (isStraight(4)) 30 else 0
-            ComboCategory.LARGE_STRAIGHT ->
-                if (isStraight(5)) 40 else 0
-            ComboCategory.YAHTZEE ->
-                if (counts.any { it.value == 5 }) 50 else 0  // **qui è essenziale `== 5`**
-            ComboCategory.CHANCE -> dice.sum()
-        }
-    }
-
-
-
-
 }

@@ -1,6 +1,7 @@
 package it.codesmell.yahtzee
 
 
+import android.annotation.SuppressLint
 import android.app.Notification
 import android.app.Notification.MessagingStyle.Message
 import kotlin.math.roundToInt
@@ -249,6 +250,7 @@ class Composables {
     //--------------------------------- tabella dei punteggi del gioco
 
 
+    @SuppressLint("UnusedBoxWithConstraintsScope")
     @Composable
     fun CombosGridComposition2(
         cardWidth: Dp,
@@ -322,14 +324,14 @@ class Composables {
 //-----------
 
     @Composable
-    fun ClickableText(text: String, category: ComboCategory, onClick: (ComboCategory) -> Unit) {
+    fun ClickableText(text: String) {
         Box(
             modifier = Modifier
                 .fillMaxWidth()
                 .height(40.dp)
                 .clip(RoundedCornerShape(8.dp))
                 .background(Color.DarkGray)
-                .clickable { onClick(category) },
+                .clickable {},
             contentAlignment = Alignment.Center
         ) {
             Text(text, color = Color.White, fontSize = 14.sp)
@@ -340,6 +342,7 @@ class Composables {
 //-----------
 
 
+    @SuppressLint("UnusedBoxWithConstraintsScope")
     @Composable
     fun CombosGridComposition(
         cardWidth: Dp,
@@ -501,8 +504,7 @@ class Composables {
 
     @Composable
     fun swappingCards(
-        scoreCard: ScoreCard,
-        onComboClick: (ComboCategory) -> Unit
+        //onComboClick: () -> Unit
     ) {
         val configuration = LocalConfiguration.current
         val isPortrait = configuration.orientation == Configuration.ORIENTATION_PORTRAIT

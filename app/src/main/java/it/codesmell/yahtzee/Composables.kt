@@ -67,6 +67,7 @@ import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.graphics.drawscope.Fill
 import androidx.compose.ui.graphics.lerp
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
+import androidx.compose.ui.platform.LocalWindowInfo
 
 
 //mettiamo qui i composable, per avere un po' di ordine e per averli standardizzati per tutte le schermate
@@ -597,6 +598,12 @@ class Composables {
 
     @Composable
     fun funButton3D(onClick : () -> Unit, text : String, color : Color, depth: Long){
+        val configuration = LocalConfiguration.current
+        val isPortrait = configuration.orientation == Configuration.ORIENTATION_PORTRAIT
+        val isLandscape = configuration.orientation == Configuration.ORIENTATION_LANDSCAPE
+
+        val screenHeight = LocalWindowInfo.current.containerSize.height.dp
+        val screenWidth = LocalWindowInfo.current.containerSize.width.dp
         var saturation = 0.7f
         MealCalendar(
             perspective = Composables.Perspective.Left(
@@ -607,10 +614,11 @@ class Composables {
         ) {
             Text(
                 text,
+                fontSize = 20.sp,
                 color = MaterialTheme.colorScheme.onPrimary,
                 modifier = Modifier
                     .background(lerp(Color(0xffffffff), color, saturation))
-                    .padding(6.dp)
+                    .padding(50.dp)
                     .pointerInput(Unit) {
                         awaitEachGesture {
                             //evento pressione del tasto

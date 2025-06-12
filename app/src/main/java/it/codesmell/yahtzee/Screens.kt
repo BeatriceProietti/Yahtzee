@@ -29,33 +29,74 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalWindowInfo
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.constraintlayout.compose.MotionScene
 import androidx.navigation.NavController
 
 // qua mettiamo tutte le schermate dell'app
 
     @Composable
     fun MainScreen(navController: NavController) {
-        Row(modifier = Modifier
-            .fillMaxWidth()
-            .padding(top = 50.dp)// devo cambiarlo con lo screensize
-        ){
 
-            composables?.funButton(::switchVibMode, "\uD83D\uDCF3", 0)
-            composables?.funButton(::switchTheme, if (darkTheme) "☾" else "☼", 0)
+        val configuration = LocalConfiguration.current
+        val isPortrait = configuration.orientation == Configuration.ORIENTATION_PORTRAIT
+        val isLandscape = configuration.orientation == Configuration.ORIENTATION_LANDSCAPE
+
+        val screenHeight = LocalWindowInfo.current.containerSize.height.dp
+        val screenWidth = LocalWindowInfo.current.containerSize.width.dp
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(top = screenHeight * 0.02f, end = 0.dp),
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            composables?.funButton3D(::switchVibMode, "\uD83D\uDCF3", color = Color.Blue, depth = 10)
+            composables?.funButton3D(::switchTheme, if (darkTheme) "☾" else "☼", color = Color.Blue, depth = 10)
         }
+
 
         Column(
             modifier = Modifier.fillMaxSize(),
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-                Text("Benvenuto allo Yahtzeello")
-                composables?.funButton3D(onClick = {provas()}, text = "Sbrisculo Aptico", color = Color.Blue, depth = 50)
-
-                composables?.funButton3D(onClick = { navController.navigate("GameScreen") }, text = "Gioca", color = Color.Red, depth = 10)
-
-                composables?.funButton3D(onClick = { navController.navigate("Screen2") }, text = "schermata di prova delle applicazioni", color = Color.Blue, depth = 10)
-
+            Text("Benvenuto allo Yahtzeello")
+            composables?.funButton3D(
+                onClick = { provas() },
+                text = "sbrisculo aptico",
+                color = Color.Blue,
+                depth = 10
+            )
+            Row(modifier = Modifier.fillMaxWidth().padding(start = 60.dp, end = 40.dp)) {
+                composables?.funButton3D(
+                    onClick = { navController.navigate("GameScreen") },
+                    text = "Single",
+                    color = Color.Red,
+                    depth = 10
+                )
+                composables?.funButton3D(
+                    onClick = { navController.navigate("GameScreen") },
+                    text = "Multi",
+                    color = Color.Red,
+                    depth = 10
+                )
+            }
+            Column(modifier = Modifier.fillMaxWidth().padding(start = 60.dp, end = 40.dp),
+                verticalArrangement = Arrangement.Center,
+                horizontalAlignment = Alignment.CenterHorizontally) {
+                composables?.funButton3D(
+                    onClick = { navController.navigate("Screen2") },
+                    text = "schermata di prova delle applicazioni",
+                    color = Color.Blue,
+                    depth = 10
+                )
+                composables?.funButton3D(
+                    onClick = { provas() },
+                    text = "partite precedenti",
+                    color = Color.Blue,
+                    depth = 10
+                )
+            }
         }
     }
 

@@ -8,6 +8,7 @@ import android.print.PrintAttributes.Margins
 import android.util.Size
 import android.widget.Button
 import android.widget.Toast
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.snapping.SnapPosition
 import androidx.compose.foundation.layout.Arrangement
@@ -55,30 +56,46 @@ import it.codesmell.yahtzee.gameLogic
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import org.intellij.lang.annotations.JdkConstants.HorizontalAlignment
 import androidx.compose.material3.Button // O androidx.compose.material.Button
-
+import androidx.compose.ui.layout.ContentScale
+import coil.compose.rememberImagePainter
 
 // qua mettiamo tutte le schermate dell'app
 
     @Composable
     fun MainScreen(navController: NavController) {
+        Row(modifier = Modifier
+            .fillMaxWidth()
+            .padding(top = 50.dp)// devo cambiarlo con lo screensize
+        ){
+
+            composables?.funButton(::switchVibMode, "\uD83D\uDCF3", 0)
+            composables?.funButton(::switchTheme, if (darkTheme) "☾" else "☼", 0)
+        }
+
         Column(
             modifier = Modifier.fillMaxSize(),
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Text("Benvenuto allo Yahtzeello")
-            composables?.funButton(::provas, "Sbrisculo Aptico", 50)
-            composables?.funButton(::switchVibMode, "Cambia mod. vibrazione", 0)
-            composables?.funButton({ navController.navigate("GameScreen") }, "Gioca", 0)
-            composables?.funButton(::switchTheme, "cambia il tema", 0)
-            composables?.funButton({ navController.navigate("Screen2") }, "schermata di prova delle applicazioni", 0)
+                Text("Benvenuto allo Yahtzeello")
+                composables?.funButton(::provas, "Sbrisculo Aptico", 50)
+
+                composables?.funButton({ navController.navigate("GameScreen") }, "Gioca", 0)
+
+                composables?.funButton(
+                    { navController.navigate("Screen2") },
+                    "schermata di prova delle applicazioni",
+                    0
+                )
+
         }
     }
 
 
-    @Composable
+
+
+@Composable
     fun Screen2(navController: NavController) {
         val configuration = LocalConfiguration.current
         val isPortrait = configuration.orientation == Configuration.ORIENTATION_PORTRAIT
@@ -90,10 +107,19 @@ import androidx.compose.material3.Button // O androidx.compose.material.Button
         var isMoved = false
         Column(modifier = Modifier.fillMaxSize(),
             horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.Bottom
+            verticalArrangement = Arrangement.Center
         ) {
 
-
+            composables?.ThreeDimensionalLayout(
+                perspective = Composables.Perspective.Left(
+                    bottomEdgeColor = Color.Red,
+                    rightEdgeColor = Color.Blue
+                ),
+                edgeOffset = 50.dp
+            ) {
+                Text("Pulsa ante", Modifier.background(Color.Red).padding(top = 8.dp, bottom = 8.dp))
+                //composables?.funButton(::switchTheme, "Tema!", 0)
+            }
 
         }
 

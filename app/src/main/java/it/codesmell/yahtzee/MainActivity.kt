@@ -45,11 +45,11 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
 
 
-        val db = Room.databaseBuilder(
+        /*val db = Room.databaseBuilder(
             applicationContext,
             DataBase::class.java,
             "yahtzee-db"
-        ).build()
+        ).build()*/
 
         gthis = this
         hfx = hapticEffects(this)

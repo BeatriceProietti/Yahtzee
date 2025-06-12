@@ -64,8 +64,8 @@ dependencies {
     implementation("androidx.compose.foundation:foundation:1.5.4")
     implementation ("androidx.room:room-runtime:2.6.1") // Per Coroutine support
     implementation ("androidx.room:room-ktx:2.6.1")
-
-    kapt("androidx.room:room-compiler:2.6.1") // <---- QUESTO
+    implementation("io.coil-kt:coil-compose:2.4.0")
+    kapt("androidx.room:room-compiler:2.6.1") // <---- QUESTO DIO CRISTO
 
 
 }

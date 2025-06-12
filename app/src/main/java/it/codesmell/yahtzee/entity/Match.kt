@@ -1,6 +1,6 @@
 package it.codesmell.yahtzee.entity
 
-class Match {
+class Match(val timestamp: Long = System.currentTimeMillis()) {
 
     private val scores: MutableMap<String, TableScore> = mutableMapOf()
 
@@ -8,11 +8,9 @@ class Match {
         scores[playerName] = tableScore
     }
 
-    fun getScore(playerName: String): TableScore? {
-        return scores[playerName]
-    }
+    fun getScore(playerName: String): TableScore? = scores[playerName]
 
-    fun getAllScores(): Map<String, TableScore> {
-        return scores.toMap()
-    }
+    fun getAllScores(): Map<String, TableScore> = scores.toMap()
+
+    fun getHighestScore(): Int = scores.values.maxOfOrNull { it.finalScore } ?: 0
 }

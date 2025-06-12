@@ -61,6 +61,7 @@ class GameLogic : ViewModel() {
     var totalScore by mutableStateOf(0)
     var dice by mutableStateOf(List(diceAmount){0}) //lista di 5 mutable state = 0s
 
+
     //Tira un dado a scelta. which: quale dado tirare. size: numero massimo del dado
     fun rollDie(which : Int, size : Int) { //quale dado da tirare, dimensione del dado
         val newList = dice.toMutableList()

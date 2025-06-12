@@ -86,7 +86,12 @@ class GameLogic : ViewModel() {
         if (rollsLeft <= 0 || gameOver) return
 
         hasRolled = true
-        rollsLeft--
+
+        if (selectedDice.any { it == true }) {
+            rollsLeft--
+
+        }
+
 
         CoroutineScope(Dispatchers.Main).launch {
             for (i in 0 until selectedDice.size) {

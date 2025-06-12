@@ -1,34 +1,20 @@
 package it.codesmell.yahtzee
 
 import android.annotation.SuppressLint
-import android.content.Context
 import android.content.res.Configuration
-import android.hardware.SensorEvent
-import android.print.PrintAttributes.Margins
-import android.util.Size
-import android.widget.Button
 import android.widget.Toast
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.gestures.snapping.SnapPosition
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
-import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -38,27 +24,12 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.TransformOrigin
-import androidx.compose.ui.graphics.graphicsLayer
-import androidx.compose.ui.layout.layoutId
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalWindowInfo
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.constraintlayout.compose.ConstraintLayout
-import androidx.constraintlayout.compose.ConstraintSet
-import androidx.constraintlayout.compose.Dimension
 import androidx.navigation.NavController
-import androidx.navigation.compose.rememberNavController
-import it.codesmell.yahtzee.gameLogic
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import androidx.compose.material3.Button // O androidx.compose.material.Button
-import androidx.compose.ui.layout.ContentScale
-import coil.compose.rememberImagePainter
 
 // qua mettiamo tutte le schermate dell'app
 
@@ -79,15 +50,11 @@ import coil.compose.rememberImagePainter
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
                 Text("Benvenuto allo Yahtzeello")
-                composables?.funButton(::provas, "Sbrisculo Aptico", 50)
+                composables?.funButton3D(onClick = {provas()}, text = "Sbrisculo Aptico", color = Color.Blue, depth = 50)
 
-                composables?.funButton({ navController.navigate("GameScreen") }, "Gioca", 0)
+                composables?.funButton3D(onClick = { navController.navigate("GameScreen") }, text = "Gioca", color = Color.Red, depth = 10)
 
-                composables?.funButton(
-                    { navController.navigate("Screen2") },
-                    "schermata di prova delle applicazioni",
-                    0
-                )
+                composables?.funButton3D(onClick = { navController.navigate("Screen2") }, text = "schermata di prova delle applicazioni", color = Color.Blue, depth = 10)
 
         }
     }
@@ -110,15 +77,10 @@ import coil.compose.rememberImagePainter
             verticalArrangement = Arrangement.Center
         ) {
 
-            composables?.ThreeDimensionalLayout(
-                perspective = Composables.Perspective.Left(
-                    bottomEdgeColor = Color.Red,
-                    rightEdgeColor = Color.Blue
-                ),
-                edgeOffset = 50.dp
-            ) {
-                Text("Pulsa ante", Modifier.background(Color.Red).padding(top = 8.dp, bottom = 8.dp))
-                //composables?.funButton(::switchTheme, "Tema!", 0)
+            composables?.funButton3D(onClick = {}, text = "palle Lunghe", color = Color.Red, depth = 50)
+            Row(){
+                composables?.funButton3D(onClick = {}, text = "palle", color = Color.Blue, depth = 13)
+                composables?.funButton3D(onClick = {}, text = "pallepalle", color = Color.Black, depth = 10)
             }
 
         }
@@ -151,7 +113,7 @@ import coil.compose.rememberImagePainter
     }
 
     @Composable
-    fun GameScreen(navController: NavController, gameLogic: GameLogic) {
+    fun GameScreen(gameLogic: GameLogic) {
 
         var showOverlay by remember { mutableStateOf(false) }
         val context = LocalContext.current
@@ -173,10 +135,9 @@ import coil.compose.rememberImagePainter
             }
         }
 
-
-
-
         var totalScore by remember { mutableStateOf(0) }
+
+
 
         var dr = IntArray(diceAmount)
         for (i in 0..diceAmount - 1) {
@@ -186,6 +147,7 @@ import coil.compose.rememberImagePainter
         val screenHeight = configuration.screenHeightDp.dp
         val screenWidth = configuration.screenWidthDp.dp
 
+        //Portrait ------------------------------------------------------------------------------------------------------------
         if (LocalConfiguration.current.orientation == Configuration.ORIENTATION_PORTRAIT) {
 
             Column(modifier = Modifier.fillMaxSize(),
@@ -219,14 +181,16 @@ import coil.compose.rememberImagePainter
 
                     val canRoll = gameLogic.rollsLeft > 0 && !gameLogic.gameOver
 
-                    composables?.funButton(
+                    composables?.funButton3D(
                         onClick = { if (canRoll) gameLogic.rollSelectedDice() },
                         text = if (canRoll) "Tira Dadi" else "Scegli una combo",
-                        depth = 0
-                    )                }
-
+                        depth = 10,
+                        color = MaterialTheme.colorScheme.primary
+                    )
+                }
             }
         }
+        //Landscape ------------------------------------------------------------------------------------------------------------
         else{
 
             Row(modifier = Modifier.fillMaxSize(),
@@ -269,12 +233,12 @@ import coil.compose.rememberImagePainter
                     ) {
                         val canRoll = gameLogic.rollsLeft > 0 && !gameLogic.gameOver
 
-                        composables?.funButton(
+                        composables?.funButton3D(
                             onClick = { if (canRoll) gameLogic.rollSelectedDice() },
                             text = if (canRoll) "Tira Dadi" else "Scegli una combo",
-                            depth = 0
+                            depth = 10,
+                            color = MaterialTheme.colorScheme.primary
                         )
-
 
                     }
                 }
@@ -284,8 +248,6 @@ import coil.compose.rememberImagePainter
         }
         composables?.EndGameSquare(show = showOverlay, onDismiss = { showOverlay = false })
     }
-
-
 
 // -----
 

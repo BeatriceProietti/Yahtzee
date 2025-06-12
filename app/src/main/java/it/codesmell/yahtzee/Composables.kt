@@ -2,18 +2,11 @@ package it.codesmell.yahtzee
 
 
 import android.annotation.SuppressLint
-import android.app.Notification
-import android.app.Notification.MessagingStyle.Message
 import kotlin.math.roundToInt
-import android.content.Context
 import android.util.Log
-import android.widget.Toast
 import androidx.compose.animation.core.Animatable
-import androidx.compose.animation.core.LinearEasing
 import androidx.compose.animation.core.Spring
-import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.animateIntAsState
-import androidx.compose.animation.core.animateIntSizeAsState
 import androidx.compose.animation.core.spring
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
@@ -22,7 +15,6 @@ import androidx.compose.foundation.gestures.awaitEachGesture
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -35,7 +27,6 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.ColorScheme
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -49,54 +40,33 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.rotate
-import androidx.compose.ui.draw.shadow
-import androidx.compose.ui.geometry.Offset
-import androidx.compose.ui.graphics.Canvas
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Path
-import androidx.compose.ui.graphics.drawscope.DrawScope
-import androidx.compose.ui.graphics.drawscope.rotate
-import androidx.compose.ui.graphics.drawscope.translate
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.input.pointer.PointerEventPass
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import it.codesmell.yahtzee.ui.theme.YahtzeeTheme
-import kotlinx.serialization.descriptors.StructureKind
 import android.content.res.Configuration
-import androidx.compose.animation.core.FastOutSlowInEasing
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.interaction.collectIsPressedAsState
-import androidx.compose.foundation.layout.IntrinsicSize
-import androidx.compose.foundation.layout.aspectRatio
-import androidx.compose.foundation.layout.defaultMinSize
-import androidx.compose.foundation.layout.fillMaxHeight
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.Shapes
-import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.zIndex
-import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
-import androidx.compose.foundation.lazy.grid.itemsIndexed
-import androidx.compose.foundation.rememberOverscrollEffect
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.graphics.drawscope.Fill
+import androidx.compose.ui.graphics.lerp
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
-import androidx.compose.ui.platform.LocalHapticFeedback
 
 
 //mettiamo qui i composable, per avere un po' di ordine e per averli standardizzati per tutte le schermate
@@ -625,10 +595,54 @@ class Composables {
         ) : Perspective()
     }
 
+    @Composable
+    fun funButton3D(onClick : () -> Unit, text : String, color : Color, depth: Long){
+        var saturation = 0.7f
+        MealCalendar(
+            perspective = Composables.Perspective.Left(
+                bottomEdgeColor = lerp(Color(0x878787ff), color, saturation),
+                rightEdgeColor = lerp(Color(0xd4d4d4ff), color, saturation),
+            ),
+            edgeOffset = depth.toInt().dp //devo averlo come long nell'argomento perchè depth della vibrazione vuole un long
+        ) {
+            Text(
+                text,
+                color = MaterialTheme.colorScheme.onPrimary,
+                modifier = Modifier
+                    .background(lerp(Color(0xffffffff), color, saturation))
+                    .padding(6.dp)
+                    .pointerInput(Unit) {
+                        awaitEachGesture {
+                            //evento pressione del tasto
+                            val downEvent =
+                                awaitPointerEvent(PointerEventPass.Main)
+                            downEvent.changes.forEach {
+                                if (it.pressed) {
+                                    hfx?.btnDown(depth)
+                                    onClick() //eseguo la funzione passata come argomento
+                                }
+                            }
+                            //loop che aspetta che il tasto venga rilasciato
+                            var allUp = false
+                            while (!allUp) {
+                                val event =
+                                    awaitPointerEvent(PointerEventPass.Main)
+                                if (event.changes.all { it.pressed.not() }) {
+                                    allUp = true
+                                    event.changes.forEach {
+                                        hfx?.click(0.5f)
+                                    }
+                                }
+                            }
+                        }
+                    }
+            )
+        }
+    }
 
     @OptIn(ExperimentalFoundationApi::class)
     @Composable
-    fun ThreeDimensionalLayout(
+    fun MealCalendar( //bottone 3D
         perspective: Perspective = Perspective.Left(
             bottomEdgeColor = Color.Black, rightEdgeColor = Color.Black
         ), edgeOffset: Dp = 16.dp, content: @Composable () -> Unit
@@ -665,11 +679,9 @@ class Composables {
             }
         }
 
-        val hapticFeedBack = LocalHapticFeedback.current
 
         Box(modifier = Modifier
             .combinedClickable(interactionSource = interactionSource, indication = null, onClick = {
-                hapticFeedBack.performHapticFeedback(HapticFeedbackType.LongPress)
             })
             .graphicsLayer {
                 rotationX = when (perspective) {

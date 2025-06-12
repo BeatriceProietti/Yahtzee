@@ -22,7 +22,6 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import it.codesmell.yahtzee.ui.theme.YahtzeeTheme
-import androidx.room.Room
 //sborras
 
 var gthis : MainActivity? = null
@@ -35,11 +34,6 @@ var darkTheme by mutableStateOf(true)
 lateinit var mozione : motionManager
 
 class MainActivity : ComponentActivity() {
-
-
-
-
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
@@ -77,7 +71,7 @@ class MainActivity : ComponentActivity() {
 
                         composable(
                             route = "GameScreen"
-                        ){GameScreen(navCon, gameLogic)}
+                        ){GameScreen(gameLogic)}
 
                     })
                     // --------------------------------------------------------------------------------------------------

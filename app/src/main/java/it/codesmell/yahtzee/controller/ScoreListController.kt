@@ -23,8 +23,8 @@ class MatchController(private val db: AppDatabase) {
 
     /*
     Esempio di uso
-    val controller = MatchController(db)
+    val controller = MatchController(AppDatabase.getInstance(context))
 
-    val byDate = controller.getScoresByDate()
-    val byScore = controller.getScoresByHigherScores()
+    val byDate = MatchController.getScoresByDate()
+    val byScore = MatchController.getScoresByHigherScores()
      */

@@ -2,7 +2,7 @@ plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
-    id("org.jetbrains.kotlin.kapt")
+    //id("org.jetbrains.kotlin.kapt")
 }
 
 android {
@@ -65,7 +65,7 @@ dependencies {
     implementation ("androidx.room:room-runtime:2.6.1") // Per Coroutine support
     implementation ("androidx.room:room-ktx:2.6.1")
     implementation("io.coil-kt:coil-compose:2.4.0")
-    kapt("androidx.room:room-compiler:2.6.1") // <---- QUESTO DIO CRISTO
+    //kapt("androidx.room:room-compiler:2.7.1") // <---- QUESTO DIO CRISTO
 
 
 }

@@ -1,6 +1,6 @@
 package it.codesmell.yahtzee
 
-import DataBase
+//import DataBase
 import android.os.Bundle
 import android.widget.Toast
 import androidx.activity.ComponentActivity

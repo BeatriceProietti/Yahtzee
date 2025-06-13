@@ -606,9 +606,9 @@ class Composables {
         val screenWidth = LocalWindowInfo.current.containerSize.width.dp
         var saturation = 0.7f
         MealCalendar(
-            perspective = Composables.Perspective.Left(
+            perspective = Composables.Perspective.Top(
                 bottomEdgeColor = lerp(Color(0x878787ff), color, saturation),
-                rightEdgeColor = lerp(Color(0xd4d4d4ff), color, saturation),
+                //rightEdgeColor = lerp(Color(0xd4d4d4ff), color, saturation),
             ),
             edgeOffset = depth.toInt().dp //devo averlo come long nell'argomento perchè depth della vibrazione vuole un long
         ) {

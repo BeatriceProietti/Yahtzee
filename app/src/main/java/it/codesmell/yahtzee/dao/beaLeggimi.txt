@@ -1,0 +1,8 @@
+bea con tutto il bene del mondo:
+devi pensare con la testa tua. sei più che capace
+se usi chat, **cerca di capire cosa ti dice**
+se ti fidi ciecamente, non arrivi da nessuna parte, non funziona un cazzo
+il codice perlomeno deve essere commentato, dobbiamo capire cosa faccia.
+pusha solo se riesci a concludere qualcosa.
+
+Per il DB basta una o due classi.

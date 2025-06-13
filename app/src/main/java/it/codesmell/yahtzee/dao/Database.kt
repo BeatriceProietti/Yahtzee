@@ -4,8 +4,6 @@ import androidx.room.Room
 import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
 import it.codesmell.yahtzee.dao.MatchDao
-import it.codesmell.yahtzee.dao.MatchEntity
-import it.codesmell.yahtzee.dao.TableScoreEntity
 
 @Database(
     entities = [MatchEntity::class, TableScoreEntity::class],

@@ -11,6 +11,6 @@ import it.codesmell.yahtzee.dao.TableScoreEntity
 )
 
 @TypeConverters(TypeConverters::class)
-abstract class AppDatabase : RoomDatabase() {
+abstract class Database : RoomDatabase() {
     abstract fun matchDao(): MatchDao
 }

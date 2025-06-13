@@ -43,16 +43,7 @@ import androidx.navigation.NavController
 
         val screenHeight = LocalWindowInfo.current.containerSize.height.dp
         val screenWidth = LocalWindowInfo.current.containerSize.width.dp
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(top = screenHeight * 0.02f, end = 0.dp),
-            horizontalArrangement = Arrangement.SpaceBetween,
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            composables?.funButton3D(::switchVibMode, "\uD83D\uDCF3", color = Color.Blue, depth = 10)
-            composables?.funButton3D(::switchTheme, if (darkTheme) "☾" else "☼", color = Color.Blue, depth = 10)
-        }
+
 
 
         Column(
@@ -60,47 +51,94 @@ import androidx.navigation.NavController
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Text("Benvenuto allo Yahtzeello")
-            composables?.funButton3D(
-                onClick = { provas() },
-                text = "sbrisculo aptico",
-                color = Color.Blue,
-                depth = 10
-            )
-            Row(modifier = Modifier.fillMaxWidth().padding(start = 60.dp, end = 40.dp)) {
-                composables?.funButton3D(
-                    onClick = { navController.navigate("GameScreen") },
-                    text = "Single",
-                    color = Color.Red,
-                    depth = 10
-                )
-                composables?.funButton3D(
-                    onClick = { navController.navigate("GameScreen") },
-                    text = "Multi",
-                    color = Color.Red,
-                    depth = 10
-                )
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(start = screenWidth*0.05f, end = screenWidth*0.05f),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Box() {
+                    composables?.funButton3D(
+                        onClick = { navController.navigate("GameScreen") },
+                        text = "Single",
+                        color = Color.Red,
+                        depth = 10,
+                        paddingVal = 15.dp
+                    )
+                }
+                Box() {
+                    composables?.funButton3D(
+                        onClick = { navController.navigate("GameScreen") },
+                        text = "Multi",
+                        color = Color.Red,
+                        depth = 10,
+                        paddingVal = 15.dp
+                    )
+                }
             }
-            Column(modifier = Modifier.fillMaxWidth().padding(start = 60.dp, end = 40.dp),
+
+            Column(modifier = Modifier.fillMaxWidth().padding(top = 15.dp),
                 verticalArrangement = Arrangement.Center,
                 horizontalAlignment = Alignment.CenterHorizontally) {
                 composables?.funButton3D(
                     onClick = { navController.navigate("Screen2") },
                     text = "schermata di prova delle applicazioni",
                     color = Color.Blue,
-                    depth = 10
+                    depth = 10,
+                    15.dp
                 )
                 composables?.funButton3D(
                     onClick = { provas() },
                     text = "partite precedenti",
                     color = Color.Blue,
-                    depth = 10
+                    depth = 10,
+                    15.dp
+                )
+                composables?.funButton3D(
+                    onClick = { navController.navigate("OptionScreen") },
+                    text = "opzioni",
+                    color = Color.Blue,
+                    depth = 10,
+                    15.dp
                 )
             }
         }
     }
 
+    @Composable
+    fun OptionScreen(navController: NavController){
 
+        val configuration = LocalConfiguration.current
+        val isPortrait = configuration.orientation == Configuration.ORIENTATION_PORTRAIT
+        val isLandscape = configuration.orientation == Configuration.ORIENTATION_LANDSCAPE
+
+        val screenHeight = LocalWindowInfo.current.containerSize.height.dp
+        val screenWidth = LocalWindowInfo.current.containerSize.width.dp
+
+
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(top = screenHeight * 0.02f, end = 0.dp),
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            composables?.funButton3D(::switchVibMode, "\uD83D\uDCF3", color = Color.Blue, depth = 10,50.dp)
+            composables?.funButton3D(::switchTheme, if (darkTheme) "☾" else "☼", color = Color.Blue, depth = 10,50.dp)
+        }
+
+        Text("Benvenuto allo Yahtzeello")
+        composables?.funButton3D(
+            onClick = { provas() },
+            text = "sbrisculo aptico",
+            color = Color.Blue,
+            depth = 10,
+            50.dp
+        )
+
+
+    }
 
 
 @Composable
@@ -118,10 +156,10 @@ import androidx.navigation.NavController
             verticalArrangement = Arrangement.Center
         ) {
 
-            composables?.funButton3D(onClick = {}, text = "palle Lunghe", color = Color.Red, depth = 50)
+            composables?.funButton3D(onClick = {}, text = "palle Lunghe", color = Color.Red, depth = 50,50.dp)
             Row(){
-                composables?.funButton3D(onClick = {}, text = "palle", color = Color.Blue, depth = 13)
-                composables?.funButton3D(onClick = {}, text = "pallepalle", color = Color.Black, depth = 10)
+                composables?.funButton3D(onClick = {}, text = "palle", color = Color.Blue, depth = 13,50.dp)
+                composables?.funButton3D(onClick = {}, text = "pallepalle", color = Color.Black, depth = 10,50.dp)
             }
 
         }
@@ -225,8 +263,10 @@ import androidx.navigation.NavController
                     composables?.funButton3D(
                         onClick = { if (canRoll) gameLogic.rollSelectedDice() },
                         text = if (canRoll) "Tira Dadi" else "Scegli una combo",
+
+                        color = MaterialTheme.colorScheme.primary,
                         depth = 10,
-                        color = MaterialTheme.colorScheme.primary
+                        50.dp
                     )
                 }
             }
@@ -277,8 +317,10 @@ import androidx.navigation.NavController
                         composables?.funButton3D(
                             onClick = { if (canRoll) gameLogic.rollSelectedDice() },
                             text = if (canRoll) "Tira Dadi" else "Scegli una combo",
+                            color = MaterialTheme.colorScheme.primary,
                             depth = 10,
-                            color = MaterialTheme.colorScheme.primary
+                            50.dp
+
                         )
 
                     }

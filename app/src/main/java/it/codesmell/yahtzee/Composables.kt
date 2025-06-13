@@ -597,7 +597,7 @@ class Composables {
     }
 
     @Composable
-    fun funButton3D(onClick : () -> Unit, text : String, color : Color, depth: Long){
+    fun funButton3D(onClick : () -> Unit, text : String, color : Color, depth: Long, paddingVal : Dp){
         val configuration = LocalConfiguration.current
         val isPortrait = configuration.orientation == Configuration.ORIENTATION_PORTRAIT
         val isLandscape = configuration.orientation == Configuration.ORIENTATION_LANDSCAPE
@@ -618,7 +618,7 @@ class Composables {
                 color = MaterialTheme.colorScheme.onPrimary,
                 modifier = Modifier
                     .background(lerp(Color(0xffffffff), color, saturation))
-                    .padding(50.dp)
+                    .padding(paddingVal)
                     .pointerInput(Unit) {
                         awaitEachGesture {
                             //evento pressione del tasto

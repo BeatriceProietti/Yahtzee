@@ -191,12 +191,26 @@ class GameLogic : ViewModel() {
 
     //Funzione che si calcola il bonus dei dadini
 
-    fun checkAndApplyUpperSectionBonus() {
+    fun checkAndApplyUpperSectionBonus(isPlayerOneTurn: Boolean) {
+        val playerOneBonus = false
+        val playerTwoBonus = false
         val upperTotal = currentUpperSectionScores.values.filterNotNull().sum()
-        if (upperTotal >= 63 && upperSectionBonus == 0) {
+        if (upperTotal >= 1 && upperSectionBonus == 0) {
             upperSectionBonus = 35
-            totalScore += 35
-            bonusJustAwarded = true
+            if (multiPlayer) {
+                if (isPlayerOneTurn && playerOneBonus == false) {
+                    p1TotalScore += upperSectionBonus
+                    playerOneBonus == true
+                }
+                if (isPlayerOneTurn == false && playerTwoBonus == false) {
+                    p2TotalScore += upperSectionBonus
+                    playerTwoBonus == true
+                }
+                bonusJustAwarded = true
+            }
+            else{
+                totalScore += 35
+            }
         }
     }
 
@@ -216,12 +230,6 @@ class GameLogic : ViewModel() {
         return dice.filter { it == target }.sum()
     }
 
-
-
-    //Gi
-    fun playPhase(){
-
-    }
 
     fun resetDie(index : Int){
         Log.d("GameLogic", "abbasso il dado $index")
@@ -307,9 +315,14 @@ class GameLogic : ViewModel() {
 
             if (multiPlayer) {
                 if (isPlayerOneTurn) {
+                    checkAndApplyUpperSectionBonus(isPlayerOneTurn)
                     p1TotalScore += score
+                    if (rollsLeft <= 0 || gameOver) return
+
                 } else {
+                    checkAndApplyUpperSectionBonus(isPlayerOneTurn)
                     p2TotalScore += score
+                    if (rollsLeft <= 0 || gameOver) return
                 }
             } else {
                 totalScore += score
@@ -327,6 +340,11 @@ class GameLogic : ViewModel() {
 
             Log.d("roundplay", "$roundsPlayed")
             Log.d("roundplay", "$multiPlayer")
+
+
+            checkAndApplyUpperSectionBonus(false)
+
+
             if ((multiPlayer && roundsPlayed >= 2) || (!multiPlayer && roundsPlayed >= 2)) {
                 gameOver = true
                 Log.d("roundplay", "sono nel gameover la partita è finita dio cristo $gameOver")

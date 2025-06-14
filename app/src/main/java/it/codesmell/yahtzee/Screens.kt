@@ -2,6 +2,7 @@ package it.codesmell.yahtzee
 
 import android.annotation.SuppressLint
 import android.content.res.Configuration
+import android.graphics.Bitmap
 import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -16,6 +17,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.material3.Text
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.ProvidableCompositionLocal
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -28,6 +30,7 @@ import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalWindowInfo
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.MotionScene
@@ -35,16 +38,18 @@ import androidx.navigation.NavController
 
 // qua mettiamo tutte le schermate dell'app
 
+val configuration : ProvidableCompositionLocal<Configuration>? = null
+var isPortrait : Boolean = false
+var isLandscape : Boolean = false
+
+var screenHeight : Dp = 0.dp
+var screenWidth : Dp = 0.dp
+
     @Composable
     fun MainScreen(navController: NavController) {
 
-        val configuration = LocalConfiguration.current
-        val isPortrait = configuration.orientation == Configuration.ORIENTATION_PORTRAIT
-        val isLandscape = configuration.orientation == Configuration.ORIENTATION_LANDSCAPE
-
-        val screenHeight = LocalWindowInfo.current.containerSize.height.dp
-        val screenWidth = LocalWindowInfo.current.containerSize.width.dp
-
+        screenHeight = LocalWindowInfo.current.containerSize.height.dp
+        screenWidth = LocalWindowInfo.current.containerSize.width.dp
 
 
         Column(
@@ -56,32 +61,35 @@ import androidx.navigation.NavController
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(start = screenWidth*0.05f, end = screenWidth*0.05f),
-                horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.CenterVertically
+                horizontalArrangement = Arrangement.Center,
+                verticalAlignment = Alignment.CenterVertically,
             ) {
-                Box() {
-                    composables?.funButton3D(
-                        onClick = { navController.navigate("GameScreen") },
-                        text = stringResource(R.string.mode_singleplayer),
-                        color = Color.Red,
-                        depth = 10,
-                        150.dp,50.dp
-                    )
-                }
-                Box() {
-                    composables?.funButton3D(
-                        onClick = { navController.navigate("GameScreen"); gameLogic.multiPlayer=true}, // col punto e virgola posso fargli fare più cose
-                        text = stringResource(R.string.mode_multiplayer),
-                        color = Color.Red,
-                        depth = 10,
-                        150.dp,50.dp
-                    )
-                }
+                composables?.funButton3D(
+                    onClick = { navController.navigate("GameScreen") },
+                    text = stringResource(R.string.mode_singleplayer),
+                    color = Color.Red,
+                    depth = 10,
+                    screenWidth*0.2f,50.dp
+                )
+                composables?.funButton3D(
+                    onClick = { provas() },
+                    text = stringResource(R.string.highscores),
+                    color = Color(0xFFFF5722),
+                    depth = 10,
+                    screenWidth*0.3f,50.dp
+                )
             }
 
             Column(modifier = Modifier.fillMaxWidth().padding(top = 15.dp),
                 verticalArrangement = Arrangement.Center,
                 horizontalAlignment = Alignment.CenterHorizontally) {
+                composables?.funButton3D(
+                    onClick = { navController.navigate("GameScreen"); gameLogic.multiPlayer=true}, // col punto e virgola posso fargli fare più cose
+                    text = stringResource(R.string.mode_multiplayer),
+                    color = Color.Red,
+                    depth = 10,
+                    150.dp,50.dp
+                )
                 composables?.funButton3D(
                     onClick = { navController.navigate("Screen2") },
                     text = stringResource(R.string.mode_testscreen),
@@ -89,13 +97,7 @@ import androidx.navigation.NavController
                     depth = 10,
                     350.dp,50.dp
                 )
-                composables?.funButton3D(
-                    onClick = { provas() },
-                    text = stringResource(R.string.highscores),
-                    color = Color.Blue,
-                    depth = 10,
-                    350.dp,50.dp
-                )
+
                 composables?.funButton3D(
                     onClick = { navController.navigate("OptionScreen") },
                     text = stringResource(R.string.settings),
@@ -109,15 +111,6 @@ import androidx.navigation.NavController
 
     @Composable
     fun OptionScreen(navController: NavController){
-
-        val configuration = LocalConfiguration.current
-        val isPortrait = configuration.orientation == Configuration.ORIENTATION_PORTRAIT
-        val isLandscape = configuration.orientation == Configuration.ORIENTATION_LANDSCAPE
-
-        val screenHeight = LocalWindowInfo.current.containerSize.height.dp
-        val screenWidth = LocalWindowInfo.current.containerSize.width.dp
-
-
         Column(
             modifier = Modifier.fillMaxSize(),
             verticalArrangement = Arrangement.Center,
@@ -133,12 +126,6 @@ import androidx.navigation.NavController
 
 @Composable
     fun Screen2(navController: NavController) {
-        val configuration = LocalConfiguration.current
-        val isPortrait = configuration.orientation == Configuration.ORIENTATION_PORTRAIT
-        val isLandscape = configuration.orientation == Configuration.ORIENTATION_LANDSCAPE
-
-        val screenHeight = LocalWindowInfo.current.containerSize.height.dp
-        val screenWidth = LocalWindowInfo.current.containerSize.width.dp
         var isOn by remember { mutableStateOf(true) }
         var isMoved = false
         Column(modifier = Modifier.fillMaxSize(),
@@ -159,7 +146,6 @@ import androidx.navigation.NavController
 
     @Composable
     fun GameScreen(gameLogic: GameLogic) {
-
         var showOverlay by remember { mutableStateOf(true) }
         val context = LocalContext.current
 
@@ -174,14 +160,10 @@ import androidx.navigation.NavController
         //var totalScore by remember { mutableStateOf(0) }
 
 
-
         var dr = IntArray(diceAmount)
         for (i in 0..diceAmount - 1) {
             dr[i] = gameLogic.dice[i] //i dadi presi da gameLogic, da mandare all'interfaccia
         }
-        val configuration = LocalConfiguration.current
-        val screenHeight = configuration.screenHeightDp.dp
-        val screenWidth = configuration.screenWidthDp.dp
 
         //Portrait ------------------------------------------------------------------------------------------------------------
         if (LocalConfiguration.current.orientation == Configuration.ORIENTATION_PORTRAIT) {

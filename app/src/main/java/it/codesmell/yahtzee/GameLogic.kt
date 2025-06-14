@@ -408,6 +408,7 @@ class GameLogic : ViewModel() {
 
             }
         }
+        dice = List(diceAmount) { 0 }
     }
 
 

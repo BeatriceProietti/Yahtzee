@@ -3,6 +3,7 @@ package it.codesmell.yahtzee
 import android.annotation.SuppressLint
 import android.content.res.Configuration
 import android.graphics.Bitmap
+import android.util.Log
 import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -21,6 +22,7 @@ import androidx.compose.runtime.ProvidableCompositionLocal
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -35,6 +37,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.MotionScene
 import androidx.navigation.NavController
+import kotlinx.coroutines.delay
 
 // qua mettiamo tutte le schermate dell'app
 
@@ -151,15 +154,43 @@ var screenWidth : Dp = 0.dp
 
     @Composable
     fun GameScreen(gameLogic: GameLogic) {
-        var showOverlay by remember { mutableStateOf(true) }
+        var showOverlay by remember { mutableStateOf(false) }
         val context = LocalContext.current
 
-        LaunchedEffect(gameLogic.bonusJustAwarded) {
-            if (gameLogic.bonusJustAwarded) {
-                Toast.makeText(context, "Hai ottenuto il bonus di +35 punti!", Toast.LENGTH_SHORT).show()
-                gameLogic.bonusJustAwarded = false // resetta il flag
+
+        var hasReset by rememberSaveable { mutableStateOf(false) }
+
+        LaunchedEffect(Unit) {
+            if (!hasReset) {
+                gameLogic.resetGame()
+                hasReset = true
             }
         }
+
+
+        LaunchedEffect(gameLogic.gameOver) {
+            if (gameLogic.gameOver) {
+                showOverlay = true
+            }
+        }
+        LaunchedEffect(gameLogic.bonusJustAwarded) {
+            if (gameLogic.bonusJustAwarded) {
+                Log.d("bonus", "🎉 Bonus attivato!")
+
+                Toast.makeText(
+                    context,
+                    "Hai ottenuto il bonus di +35 punti!",
+                    Toast.LENGTH_SHORT
+                ).show()
+
+                // Ritarda il reset giusto per evitare race condition visiva (facoltativo)
+                delay(300)
+
+                gameLogic.bonusJustAwarded = false // Reset flag
+                Log.d("bonus", "✅ bonusJustAwarded reset a ${gameLogic.bonusJustAwarded}")
+            }
+        }
+
 
 
         //var totalScore by remember { mutableStateOf(0) }
@@ -282,7 +313,14 @@ var screenWidth : Dp = 0.dp
             }
 
         }
-        composables?.EndGameSquare(gameLogic.gameOver, onDismiss = { showOverlay = false })
+        composables?.EndGameSquare(
+            show = showOverlay,
+            onDismiss = { showOverlay = false },
+            p1Score = p1TotalScore,
+            p2Score = p2TotalScore,
+            isMultiplayer = gameLogic.multiPlayer
+        )
+
     }
 
 // -----

@@ -53,6 +53,60 @@ var p2UpperSectionBonus by mutableStateOf(0)
 class GameLogic : ViewModel() {
 
 
+// funzione di reset
+
+    fun resetGame() {
+        // Reset variabili di gioco
+        isPlayerOneTurn = true
+
+        playerOneBonusAwarded = false
+        playerTwoBonusAwarded = false
+        bonusJustAwarded = false
+        upperSectionBonus = 0
+
+        rollsLeft = 3
+        roundsPlayed = 0
+        gameOver = false
+        bonusShown = false
+        hasRolled = false
+
+        // Reset punteggi
+        totalScore = 0
+        p1TotalScore = 0
+        p2TotalScore = 0
+        p1UpperSectionBonus = 0
+        p2UpperSectionBonus = 0
+        p1BonusJustAwarded = false
+        p2BonusJustAwarded = false
+
+        // Reset punteggi combo e upper section
+        p1UpperSectionScores.keys.forEach { p1UpperSectionScores[it] = null }
+        p2UpperSectionScores.keys.forEach { p2UpperSectionScores[it] = null }
+
+        p1UsedCombos.clear()
+        p2UsedCombos.clear()
+        usedCombos.clear()
+
+        // Reset dadi e selezioni dadi
+        dice = List(diceAmount) { 0 }
+        selectedDice.clear()
+        repeat(diceAmount) { selectedDice.add(false) }
+
+        statusText = "status"
+    }
+
+
+//
+
+
+
+
+
+
+
+
+
+
     var isPlayerOneTurn by mutableStateOf(true) // turno del giocatore, usato anche per il secondo
 
     val currentTotalScore: Int
@@ -63,7 +117,7 @@ class GameLogic : ViewModel() {
 
     var multiPlayer by mutableStateOf(false) // parte falso e verrà settato a true
     var upperSectionBonus by mutableStateOf(0)
-    val bonusThreshold = 63
+    val bonusThreshold = 1
     val bonusAmount = 35
 
     var rollsLeft = 3
@@ -190,29 +244,32 @@ class GameLogic : ViewModel() {
 
 
     //Funzione che si calcola il bonus dei dadini
-
-    fun checkAndApplyUpperSectionBonus(isPlayerOneTurn: Boolean) {
-        val playerOneBonus = false
-        val playerTwoBonus = false
+    var playerOneBonusAwarded by mutableStateOf(false)
+    var playerTwoBonusAwarded by mutableStateOf(false)
+    fun checkAndApplyUpperSectionBonus() {
         val upperTotal = currentUpperSectionScores.values.filterNotNull().sum()
-        if (upperTotal >= 1 && upperSectionBonus == 0) {
-            upperSectionBonus = 35
+
+        if (upperTotal >= bonusThreshold) {
             if (multiPlayer) {
-                if (isPlayerOneTurn && playerOneBonus == false) {
-                    p1TotalScore += upperSectionBonus
-                    playerOneBonus == true
+                if (isPlayerOneTurn && !playerOneBonusAwarded) {
+                    p1TotalScore += bonusAmount
+                    playerOneBonusAwarded = true
+                    bonusJustAwarded = true
+                } else if (!isPlayerOneTurn && !playerTwoBonusAwarded) {
+                    p2TotalScore += bonusAmount
+                    playerTwoBonusAwarded = true
+                    bonusJustAwarded = true
                 }
-                if (isPlayerOneTurn == false && playerTwoBonus == false) {
-                    p2TotalScore += upperSectionBonus
-                    playerTwoBonus == true
+            } else {
+                if (upperSectionBonus == 0) {
+                    upperSectionBonus = bonusAmount
+                    totalScore += bonusAmount
+                    bonusJustAwarded = true
                 }
-                bonusJustAwarded = true
-            }
-            else{
-                totalScore += 35
             }
         }
     }
+
 
 
 
@@ -265,8 +322,8 @@ class GameLogic : ViewModel() {
         var valueAmounts : Array<Int> = arrayOf(0, 0, 0, 0, 0, 0)   //numero occorrenze di ciascun valore
 
         //conto le occorrenze di ciascun valore
-        for(i in 0..dice.size-1){
-            valueAmounts[dice[i]-1]++
+        for(i in 1..dice.size){
+            valueAmounts[i-1]++
         }
 
         //somma dei valori dei dadi selezionati
@@ -315,12 +372,12 @@ class GameLogic : ViewModel() {
 
             if (multiPlayer) {
                 if (isPlayerOneTurn) {
-                    checkAndApplyUpperSectionBonus(isPlayerOneTurn)
+                    checkAndApplyUpperSectionBonus()
                     p1TotalScore += score
                     if (rollsLeft <= 0 || gameOver) return
 
                 } else {
-                    checkAndApplyUpperSectionBonus(isPlayerOneTurn)
+                    checkAndApplyUpperSectionBonus()
                     p2TotalScore += score
                     if (rollsLeft <= 0 || gameOver) return
                 }
@@ -342,7 +399,7 @@ class GameLogic : ViewModel() {
             Log.d("roundplay", "$multiPlayer")
 
 
-            checkAndApplyUpperSectionBonus(false)
+            checkAndApplyUpperSectionBonus()
 
 
             if ((multiPlayer && roundsPlayed >= 2) || (!multiPlayer && roundsPlayed >= 2)) {

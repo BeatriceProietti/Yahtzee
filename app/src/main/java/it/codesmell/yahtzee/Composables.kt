@@ -83,7 +83,13 @@ class Composables {
     //quadrato di fine partita
 
     @Composable
-    fun EndGameSquare(show: Boolean, onDismiss: () -> Unit) {
+    fun EndGameSquare(
+        show: Boolean,
+        onDismiss: () -> Unit,
+        p1Score: Int,
+        p2Score: Int,
+        isMultiplayer: Boolean
+    ) {
         val configuration = LocalConfiguration.current
         val screenWidthDp = configuration.screenWidthDp.dp
         val screenHeightDp = configuration.screenHeightDp.dp
@@ -105,6 +111,17 @@ class Composables {
             )
         }
 
+        // Calcolo del vincitore
+        val resultText = if (!isMultiplayer) {
+            "Partita terminata\nPunteggio: $p1Score"
+        } else {
+            when {
+                p1Score > p2Score -> "Ha vinto il Giocatore 1 con $p1Score punti!"
+                p2Score > p1Score -> "Ha vinto il Giocatore 2 con $p2Score punti!"
+                else -> "Pareggio! Entrambi i giocatori hanno $p1Score punti."
+            }
+        }
+
         Box(
             modifier = Modifier.fillMaxSize(),
             contentAlignment = Alignment.BottomCenter
@@ -123,7 +140,7 @@ class Composables {
                     verticalArrangement = Arrangement.SpaceBetween,
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
-                    // Quadrato interno senza bordo
+                    // Testo centrale
                     Box(
                         modifier = Modifier
                             .fillMaxWidth()
@@ -132,12 +149,7 @@ class Composables {
                             .background(Color.Gray),
                         contentAlignment = Alignment.Center
                     ) {
-                        Column (modifier = Modifier.fillMaxSize(),
-                            verticalArrangement = Arrangement.Center,
-                            horizontalAlignment = Alignment.CenterHorizontally
-                            ){
-                            Text("Partita terminata", color = Color.Black)
-                        }
+                        Text(resultText, color = Color.Black)
                     }
 
                     // Pulsante per chiudere
@@ -151,6 +163,7 @@ class Composables {
             }
         }
     }
+
 
 
 

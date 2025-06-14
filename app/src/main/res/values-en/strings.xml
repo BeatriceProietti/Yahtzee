@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Yahtzee!</string>
+    <string name="mode_singleplayer">One Player</string>
+    <string name="mode_multiplayer">Two Players</string>
+</resources>

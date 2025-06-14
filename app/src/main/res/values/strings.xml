@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">Yahtzee!</string>
+    <string name="mode_singleplayer">mode_singleplayer</string>
+    <string name="mode_multiplayer">mode_multiplayer</string>
 </resources>

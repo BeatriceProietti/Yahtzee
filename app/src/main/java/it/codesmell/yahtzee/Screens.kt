@@ -48,8 +48,13 @@ var screenWidth : Dp = 0.dp
     @Composable
     fun MainScreen(navController: NavController) {
 
-        screenHeight = LocalWindowInfo.current.containerSize.height.dp
-        screenWidth = LocalWindowInfo.current.containerSize.width.dp
+        val configuration = LocalConfiguration.current
+        isPortrait = configuration.orientation == Configuration.ORIENTATION_PORTRAIT
+        isLandscape = configuration.orientation == Configuration.ORIENTATION_LANDSCAPE
+
+        screenHeight = configuration.screenHeightDp.dp
+        screenWidth = configuration.screenWidthDp.dp
+
 
 
         Column(
@@ -69,12 +74,12 @@ var screenWidth : Dp = 0.dp
                     text = stringResource(R.string.mode_singleplayer),
                     color = Color.Red,
                     depth = 10,
-                    screenWidth*0.2f,50.dp
+                    screenWidth*0.6f,50.dp
                 )
                 composables?.funButton3D(
                     onClick = { provas() },
                     text = stringResource(R.string.highscores),
-                    color = Color(0xFFFF5722),
+                    color = Color(0xFFFF772E),
                     depth = 10,
                     screenWidth*0.3f,50.dp
                 )
@@ -88,14 +93,14 @@ var screenWidth : Dp = 0.dp
                     text = stringResource(R.string.mode_multiplayer),
                     color = Color.Red,
                     depth = 10,
-                    150.dp,50.dp
+                    screenWidth*0.9f,50.dp
                 )
                 composables?.funButton3D(
                     onClick = { navController.navigate("Screen2") },
                     text = stringResource(R.string.mode_testscreen),
                     color = Color.Blue,
                     depth = 10,
-                    350.dp,50.dp
+                    screenWidth*0.9f,50.dp
                 )
 
                 composables?.funButton3D(
@@ -103,7 +108,7 @@ var screenWidth : Dp = 0.dp
                     text = stringResource(R.string.settings),
                     color = Color.Blue,
                     depth = 10,
-                    150.dp,50.dp
+                    screenWidth*0.9f,50.dp
                 )
             }
         }
@@ -164,6 +169,7 @@ var screenWidth : Dp = 0.dp
         for (i in 0..diceAmount - 1) {
             dr[i] = gameLogic.dice[i] //i dadi presi da gameLogic, da mandare all'interfaccia
         }
+        val configuration = LocalConfiguration.current
 
         //Portrait ------------------------------------------------------------------------------------------------------------
         if (LocalConfiguration.current.orientation == Configuration.ORIENTATION_PORTRAIT) {

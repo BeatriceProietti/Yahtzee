@@ -616,39 +616,37 @@ class Composables {
             Box(
                 modifier = Modifier
                     .size(sizeX, sizeY)
-                    .background(lerp(Color(0xffffffff), color, saturation)),
+                    .background(lerp(Color(0xffffffff), color, saturation))
+                    .pointerInput(Unit) {
+                        awaitEachGesture {
+                            //evento pressione del tasto
+                            val downEvent =
+                                awaitPointerEvent(PointerEventPass.Main)
+                            downEvent.changes.forEach {
+                                if (it.pressed) {
+                                    hfx?.btnDown(depth)
+                                    onClick() //eseguo la funzione passata come argomento
+                                }
+                            }
+                            //loop che aspetta che il tasto venga rilasciato
+                            var allUp = false
+                            while (!allUp) {
+                                val event =
+                                    awaitPointerEvent(PointerEventPass.Main)
+                                if (event.changes.all { it.pressed.not() }) {
+                                    allUp = true
+                                    event.changes.forEach {
+                                        hfx?.click(0.5f)
+                                    }
+                                }
+                            }
+                        }
+                    },
                 contentAlignment = Alignment.Center) {
                 Text(
                     text,
                     fontSize = 20.sp,
                     color = MaterialTheme.colorScheme.onPrimary,
-                    modifier = Modifier
-                        //.padding(paddingVal)
-                        .pointerInput(Unit) {
-                            awaitEachGesture {
-                                //evento pressione del tasto
-                                val downEvent =
-                                    awaitPointerEvent(PointerEventPass.Main)
-                                downEvent.changes.forEach {
-                                    if (it.pressed) {
-                                        hfx?.btnDown(depth)
-                                        onClick() //eseguo la funzione passata come argomento
-                                    }
-                                }
-                                //loop che aspetta che il tasto venga rilasciato
-                                var allUp = false
-                                while (!allUp) {
-                                    val event =
-                                        awaitPointerEvent(PointerEventPass.Main)
-                                    if (event.changes.all { it.pressed.not() }) {
-                                        allUp = true
-                                        event.changes.forEach {
-                                            hfx?.click(0.5f)
-                                        }
-                                    }
-                                }
-                            }
-                        }
                 )
             }
         }

@@ -69,7 +69,7 @@ import androidx.navigation.NavController
                 }
                 Box() {
                     composables?.funButton3D(
-                        onClick = { navController.navigate("GameScreen") },
+                        onClick = { navController.navigate("GameScreen"); gameLogic.multiPlayer=true}, // col punto e virgola posso fargli fare più cose
                         text = "Multi",
                         color = Color.Red,
                         depth = 10,
@@ -170,7 +170,7 @@ import androidx.navigation.NavController
     @Composable
     fun GameScreen(gameLogic: GameLogic) {
 
-        var showOverlay by remember { mutableStateOf(false) }
+        var showOverlay by remember { mutableStateOf(true) }
         val context = LocalContext.current
 
         LaunchedEffect(gameLogic.bonusJustAwarded) {
@@ -179,18 +179,9 @@ import androidx.navigation.NavController
                 gameLogic.bonusJustAwarded = false // resetta il flag
             }
         }
-        var gameOverShown by remember { mutableStateOf(false) }
-        var bonusShown by remember { mutableStateOf(false) }
 
-        LaunchedEffect(gameLogic.roundsPlayed) {
-            if (gameLogic.gameOver && !gameOverShown) {
-                Toast.makeText(context, "Partita finita! Punteggio: ${gameLogic.totalScore}", Toast.LENGTH_LONG).show()
-                gameOverShown = true
-                showOverlay = true
-            }
-        }
 
-        var totalScore by remember { mutableStateOf(0) }
+        //var totalScore by remember { mutableStateOf(0) }
 
 
 
@@ -212,14 +203,24 @@ import androidx.navigation.NavController
                 Box(modifier = Modifier //punteggio
                     .padding(top = screenHeight*0.05f, bottom = screenHeight*0.05f)
                 ){
-
-                    Text(
-                        text = "Punteggio Totale: ${gameLogic.totalScore}",
-                        fontSize = 18.sp,
-                        color = Color.White,
-                        modifier = Modifier.padding(8.dp)
-                    )
-
+                    Row(){
+                        val scoreToShow =
+                        if (gameLogic.multiPlayer) gameLogic.currentTotalScore else gameLogic.totalScore
+                        Text(
+                            text = "Punteggio Totale: $scoreToShow",
+                            fontSize = 18.sp,
+                            color = Color.White,
+                            modifier = Modifier.padding(8.dp)
+                        )
+                        if (gameLogic.multiPlayer) {
+                            Text(
+                                text = if (gameLogic.isPlayerOneTurn) "Turno: Giocatore 1" else "Turno: Giocatore 2",
+                                fontSize = 18.sp,
+                                color = Color.White,
+                                modifier = Modifier.padding(8.dp)
+                            )
+                        }
+                    }
                 }
                 Box(){
                     composables?.swappingCards()
@@ -303,7 +304,7 @@ import androidx.navigation.NavController
             }
 
         }
-        composables?.EndGameSquare(show = showOverlay, onDismiss = { showOverlay = false })
+        composables?.EndGameSquare(gameLogic.gameOver, onDismiss = { showOverlay = false })
     }
 
 // -----

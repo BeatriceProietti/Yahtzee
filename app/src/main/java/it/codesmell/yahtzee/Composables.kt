@@ -77,6 +77,8 @@ import androidx.compose.ui.text.style.TextAlign
 class Composables {
 
 
+
+
     //quadrato di fine partita
 
     @Composable
@@ -134,8 +136,6 @@ class Composables {
                             horizontalAlignment = Alignment.CenterHorizontally
                             ){
                             Text("Partita terminata", color = Color.Black)
-                            Text("Punteggio:", color = Color.Black)
-                            Text("${gameLogic.totalScore}")
                         }
                     }
 
@@ -352,7 +352,7 @@ class Composables {
         val shouldShowScores = diceForScoring.isNotEmpty() && diceForScoring.any { it != 0 }
 
         // Uso remember con chiavi di dipendenza per ricalcolare i punteggi
-        val scores = remember(diceForScoring, gameLogic.usedCombos) {
+        val scores = remember(diceForScoring, gameLogic.currentUsedCombos) {
             if (shouldShowScores) {
                 gameLogic.calculatePossibleScores(diceForScoring)
             } else {
@@ -380,8 +380,8 @@ class Composables {
                     val row = index / cols
                     val col = index % cols
                     val label = labels[row]
-                    val isUsed = gameLogic.usedCombos.containsKey(label)
-                    val score = if (isUsed) gameLogic.usedCombos[label] ?: 0 else scores[label] ?: 0
+                    val isUsed = gameLogic.currentUsedCombos.containsKey(label)
+                    val score = if (isUsed) gameLogic.currentUsedCombos[label] ?: 0 else scores[label] ?: 0
 
                     Box(
                         modifier = Modifier
@@ -536,7 +536,7 @@ class Composables {
                         cardWidth = cardWidth,
                         cardHeight = cardHeight,
                         dice = gameLogic.dice,
-                        upperScores = gameLogic.upperSectionScores,
+                        upperScores = gameLogic.currentUpperSectionScores,
                     ) { label, score ->
                         gameLogic.confirmScore(label, score)
                     }

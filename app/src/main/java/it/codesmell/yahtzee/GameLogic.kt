@@ -28,22 +28,59 @@ var rerollAmount : Int = 2 //quanti reroll si possono fare
 var selectedDice : MutableList<Boolean> = mutableStateListOf<Boolean>(false,false,false,false,false) //TODO inizializzalo col numero dinamico
 
 
+
+
+
+
+// Giocatore 1
+
+var p1TotalScore by mutableStateOf(0)
+var p1BonusJustAwarded by mutableStateOf(false)
+var p1UpperSectionBonus by mutableStateOf(0)
+
+// Giocatore 2
+var p2TotalScore by mutableStateOf(0)
+var p2BonusJustAwarded by mutableStateOf(false)
+var p2UpperSectionBonus by mutableStateOf(0)
+
+
+
+
+
+
+
+
 class GameLogic : ViewModel() {
+
+
+    var isPlayerOneTurn by mutableStateOf(true) // turno del giocatore, usato anche per il secondo
+
+    val currentTotalScore: Int
+        get() = if (isPlayerOneTurn) p1TotalScore else p2TotalScore // score per quando sono in mutli poi al massimo lo sistemo
 
 
     var bonusJustAwarded by mutableStateOf(false)
 
+    var multiPlayer by mutableStateOf(false) // parte falso e verrà settato a true
     var upperSectionBonus by mutableStateOf(0)
     val bonusThreshold = 63
     val bonusAmount = 35
 
     var rollsLeft = 3
     var roundsPlayed = 0
-    var gameOver = false
+    var gameOver by mutableStateOf(false)
     var bonusShown = false
 
+/////////////////
 
-    val upperSectionScores = mutableStateMapOf<String, Int?>(
+
+
+
+
+
+
+
+    val p1UpperSectionScores = mutableStateMapOf<String, Int?>(
         "Ones" to null,
         "Twos" to null,
         "Threes" to null,
@@ -51,12 +88,45 @@ class GameLogic : ViewModel() {
         "Fives" to null,
         "Sixes" to null,
     )
+    val p1UsedCombos = mutableStateMapOf<String, Int>() // es: "Full house" -> 25
+
+
+
+
+    val p2UpperSectionScores = mutableStateMapOf<String, Int?>(
+        "Ones" to null,
+        "Twos" to null,
+        "Threes" to null,
+        "Fours" to null,
+        "Fives" to null,
+        "Sixes" to null,
+    )
+    val p2UsedCombos = mutableStateMapOf<String, Int>() // es: "Full house" -> 25
+
+
+
+    val currentUpperSectionScores: MutableMap<String, Int?>
+        get() = if (isPlayerOneTurn) p1UpperSectionScores else p2UpperSectionScores
+
+    val currentUsedCombos: MutableMap<String, Int>
+        get() = if (isPlayerOneTurn) p1UsedCombos else p2UsedCombos
+
+
+
+
+
+///////////
+
+
+
+
+
 
 
 
 
     var hasRolled by mutableStateOf(false)
-    val usedCombos = mutableStateMapOf<String, Int>() // es: "Full house" -> 25
+
     var selectedDice : MutableList<Boolean> = mutableStateListOf<Boolean>(false,false,false,false,false) //TODO inizializzalo col numero dinamico
     var totalScore by mutableStateOf(0)
     var dice by mutableStateOf(List(diceAmount){0}) //lista di 5 mutable state = 0s
@@ -122,7 +192,7 @@ class GameLogic : ViewModel() {
     //Funzione che si calcola il bonus dei dadini
 
     fun checkAndApplyUpperSectionBonus() {
-        val upperTotal = upperSectionScores.values.filterNotNull().sum()
+        val upperTotal = currentUpperSectionScores.values.filterNotNull().sum()
         if (upperTotal >= 63 && upperSectionBonus == 0) {
             upperSectionBonus = 35
             totalScore += 35
@@ -225,22 +295,45 @@ class GameLogic : ViewModel() {
     }
 
     fun confirmScore(combo: String, score: Int) {
-        if (!usedCombos.containsKey(combo) && hasRolled) {
-            usedCombos[combo] = score
-            totalScore += score
+        val combos = currentUsedCombos
+        val upperScores = currentUpperSectionScores
 
-            if (combo in upperSectionScores) {
-                upperSectionScores[combo] = score
+        if (!combos.containsKey(combo) && hasRolled) {
+            combos[combo] = score
+
+            if (combo in upperScores) {
+                upperScores[combo] = score
+            }
+
+            if (multiPlayer) {
+                if (isPlayerOneTurn) {
+                    p1TotalScore += score
+                } else {
+                    p2TotalScore += score
+                }
+            } else {
+                totalScore += score
             }
 
             hasRolled = false
             rollsLeft = 3
             roundsPlayed++
-            Log.d("rounds","$roundsPlayed")
 
-            if (roundsPlayed >= 1) { //finisci la partita
+
+            if (multiPlayer) {
+                isPlayerOneTurn = !isPlayerOneTurn
+            }
+
+
+            Log.d("roundplay", "$roundsPlayed")
+            Log.d("roundplay", "$multiPlayer")
+            if ((multiPlayer && roundsPlayed >= 2) || (!multiPlayer && roundsPlayed >= 2)) {
                 gameOver = true
+                Log.d("roundplay", "sono nel gameover la partita è finita dio cristo $gameOver")
+
             }
         }
     }
+
+
 }

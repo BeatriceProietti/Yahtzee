@@ -68,6 +68,7 @@ import androidx.compose.ui.graphics.drawscope.Fill
 import androidx.compose.ui.graphics.lerp
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.platform.LocalWindowInfo
+import androidx.compose.ui.text.style.TextAlign
 
 
 //mettiamo qui i composable, per avere un po' di ordine e per averli standardizzati per tutte le schermate
@@ -597,7 +598,7 @@ class Composables {
     }
 
     @Composable
-    fun funButton3D(onClick : () -> Unit, text : String, color : Color, depth: Long, paddingVal : Dp){
+    fun funButton3D(onClick : () -> Unit, text : String, color : Color, depth: Long, sizeX : Dp, sizeY : Dp){
         val configuration = LocalConfiguration.current
         val isPortrait = configuration.orientation == Configuration.ORIENTATION_PORTRAIT
         val isLandscape = configuration.orientation == Configuration.ORIENTATION_LANDSCAPE
@@ -606,45 +607,50 @@ class Composables {
         val screenWidth = LocalWindowInfo.current.containerSize.width.dp
         var saturation = 0.7f
         MealCalendar(
-            perspective = Composables.Perspective.Top(
+            perspective = Composables.Perspective.Left(
                 bottomEdgeColor = lerp(Color(0x878787ff), color, saturation),
-                //rightEdgeColor = lerp(Color(0xd4d4d4ff), color, saturation),
+                rightEdgeColor = lerp(Color(0xd4d4d4ff), color, saturation),
             ),
             edgeOffset = depth.toInt().dp //devo averlo come long nell'argomento perchè depth della vibrazione vuole un long
         ) {
-            Text(
-                text,
-                fontSize = 20.sp,
-                color = MaterialTheme.colorScheme.onPrimary,
+            Box(
                 modifier = Modifier
-                    .background(lerp(Color(0xffffffff), color, saturation))
-                    .padding(paddingVal)
-                    .pointerInput(Unit) {
-                        awaitEachGesture {
-                            //evento pressione del tasto
-                            val downEvent =
-                                awaitPointerEvent(PointerEventPass.Main)
-                            downEvent.changes.forEach {
-                                if (it.pressed) {
-                                    hfx?.btnDown(depth)
-                                    onClick() //eseguo la funzione passata come argomento
-                                }
-                            }
-                            //loop che aspetta che il tasto venga rilasciato
-                            var allUp = false
-                            while (!allUp) {
-                                val event =
+                    .size(sizeX, sizeY)
+                    .background(lerp(Color(0xffffffff), color, saturation)),
+                contentAlignment = Alignment.Center) {
+                Text(
+                    text,
+                    fontSize = 20.sp,
+                    color = MaterialTheme.colorScheme.onPrimary,
+                    modifier = Modifier
+                        //.padding(paddingVal)
+                        .pointerInput(Unit) {
+                            awaitEachGesture {
+                                //evento pressione del tasto
+                                val downEvent =
                                     awaitPointerEvent(PointerEventPass.Main)
-                                if (event.changes.all { it.pressed.not() }) {
-                                    allUp = true
-                                    event.changes.forEach {
-                                        hfx?.click(0.5f)
+                                downEvent.changes.forEach {
+                                    if (it.pressed) {
+                                        hfx?.btnDown(depth)
+                                        onClick() //eseguo la funzione passata come argomento
+                                    }
+                                }
+                                //loop che aspetta che il tasto venga rilasciato
+                                var allUp = false
+                                while (!allUp) {
+                                    val event =
+                                        awaitPointerEvent(PointerEventPass.Main)
+                                    if (event.changes.all { it.pressed.not() }) {
+                                        allUp = true
+                                        event.changes.forEach {
+                                            hfx?.click(0.5f)
+                                        }
                                     }
                                 }
                             }
                         }
-                    }
-            )
+                )
+            }
         }
     }
 

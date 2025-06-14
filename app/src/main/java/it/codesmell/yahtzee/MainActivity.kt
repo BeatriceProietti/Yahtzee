@@ -72,6 +72,9 @@ class MainActivity : ComponentActivity() {
                         composable(
                             route = "GameScreen"
                         ){GameScreen(gameLogic)}
+                        composable(
+                            route = "OptionScreen"
+                        ){OptionScreen(navCon)}
 
                     })
                     // --------------------------------------------------------------------------------------------------

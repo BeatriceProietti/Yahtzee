@@ -1,11 +1,11 @@
 package it.codesmell.yahtzee.controller
 
 import AppDatabase
-import it.codesmell.yahtzee.dao.matchEntityToDomain
+//import it.codesmell.yahtzee.dao.matchEntityToDomain
 import it.codesmell.yahtzee.entity.Match
 
 class MatchController(private val db: AppDatabase) {
-
+    /*
     private suspend fun loadAllMatches(): List<Match> {
         return db.matchDao().getAllMatches().map { matchWithScores ->
             matchEntityToDomain(matchWithScores.match, matchWithScores.scores)
@@ -18,7 +18,7 @@ class MatchController(private val db: AppDatabase) {
 
     suspend fun getScoresByHigherScores(): List<Match> {
         return loadAllMatches().sortedByDescending { it.getHighestScore() }
-    }
+    }*/
 }
 
     /*

@@ -64,7 +64,7 @@ import androidx.navigation.NavController
                         text = "Single",
                         color = Color.Red,
                         depth = 10,
-                        paddingVal = 15.dp
+                        150.dp,50.dp
                     )
                 }
                 Box() {
@@ -73,7 +73,7 @@ import androidx.navigation.NavController
                         text = "Multi",
                         color = Color.Red,
                         depth = 10,
-                        paddingVal = 15.dp
+                        150.dp,50.dp
                     )
                 }
             }
@@ -86,21 +86,21 @@ import androidx.navigation.NavController
                     text = "schermata di prova delle applicazioni",
                     color = Color.Blue,
                     depth = 10,
-                    15.dp
+                    350.dp,50.dp
                 )
                 composables?.funButton3D(
                     onClick = { provas() },
                     text = "partite precedenti",
                     color = Color.Blue,
                     depth = 10,
-                    15.dp
+                    350.dp,50.dp
                 )
                 composables?.funButton3D(
                     onClick = { navController.navigate("OptionScreen") },
                     text = "opzioni",
                     color = Color.Blue,
                     depth = 10,
-                    15.dp
+                    150.dp,50.dp
                 )
             }
         }
@@ -124,8 +124,8 @@ import androidx.navigation.NavController
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically
         ) {
-            composables?.funButton3D(::switchVibMode, "\uD83D\uDCF3", color = Color.Blue, depth = 10,50.dp)
-            composables?.funButton3D(::switchTheme, if (darkTheme) "☾" else "☼", color = Color.Blue, depth = 10,50.dp)
+            composables?.funButton3D(::switchVibMode, "\uD83D\uDCF3", color = Color.Blue, depth = 10,150.dp,50.dp)
+            composables?.funButton3D(::switchTheme, if (darkTheme) "☾" else "☼", color = Color.Blue, depth = 10,150.dp,50.dp)
         }
 
         Text("Benvenuto allo Yahtzeello")
@@ -134,7 +134,7 @@ import androidx.navigation.NavController
             text = "sbrisculo aptico",
             color = Color.Blue,
             depth = 10,
-            50.dp
+            150.dp,50.dp
         )
 
 
@@ -156,40 +156,16 @@ import androidx.navigation.NavController
             verticalArrangement = Arrangement.Center
         ) {
 
-            composables?.funButton3D(onClick = {}, text = "palle Lunghe", color = Color.Red, depth = 50,50.dp)
+            composables?.funButton3D(onClick = {}, text = "palle Lunghe", color = Color.Red, depth = 50,30.dp,150.dp)
             Row(){
-                composables?.funButton3D(onClick = {}, text = "palle", color = Color.Blue, depth = 13,50.dp)
-                composables?.funButton3D(onClick = {}, text = "pallepalle", color = Color.Black, depth = 10,50.dp)
+                composables?.funButton3D(onClick = {}, text = "palle", color = Color.Blue, depth = 13,30.dp,150.dp)
+                composables?.funButton3D(onClick = {}, text = "pallepalle", color = Color.Black, depth = 10,30.dp,150.dp)
             }
 
         }
 
     }
 
-    @SuppressLint("ConfigurationScreenWidthHeight")
-    @Composable
-    fun gameScreenContent(navController : NavController) {
-
-        val configuration = LocalConfiguration.current
-        val isPortrait = configuration.orientation == Configuration.ORIENTATION_PORTRAIT
-        val isLandscape = configuration.orientation == Configuration.ORIENTATION_LANDSCAPE
-
-        val screenHeight = configuration.screenHeightDp.dp
-        val screenWidth = configuration.screenWidthDp.dp
-
-        var dr = IntArray(diceAmount)
-        for (i in 0..diceAmount - 1) {
-            dr[i] = gameLogic.dice[i] //i dadi presi da gameLogic, da mandare all'interfaccia
-        }
-
-
-
-
-
-        //---------------------------------------------------------
-
-
-    }
 
     @Composable
     fun GameScreen(gameLogic: GameLogic) {
@@ -263,10 +239,9 @@ import androidx.navigation.NavController
                     composables?.funButton3D(
                         onClick = { if (canRoll) gameLogic.rollSelectedDice() },
                         text = if (canRoll) "Tira Dadi" else "Scegli una combo",
-
                         color = MaterialTheme.colorScheme.primary,
                         depth = 10,
-                        50.dp
+                        150.dp,50.dp
                     )
                 }
             }
@@ -319,8 +294,7 @@ import androidx.navigation.NavController
                             text = if (canRoll) "Tira Dadi" else "Scegli una combo",
                             color = MaterialTheme.colorScheme.primary,
                             depth = 10,
-                            50.dp
-
+                            150.dp,50.dp
                         )
 
                     }

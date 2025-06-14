@@ -3,15 +3,15 @@ import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
-import it.codesmell.yahtzee.dao.MatchDao
+//import it.codesmell.yahtzee.dao.MatchDao
 
 @Database(
-    entities = [MatchEntity::class, TableScoreEntity::class],
+    //entities = [MatchEntity::class, TableScoreEntity::class],
     version = 1
 )
 @TypeConverters(TypeConverters::class)
 abstract class AppDatabase : RoomDatabase() {
-    abstract fun matchDao(): MatchDao
+    //abstract fun matchDao(): MatchDao
 
     companion object {
         @Volatile private var INSTANCE: AppDatabase? = null

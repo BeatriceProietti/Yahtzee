@@ -27,6 +27,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalWindowInfo
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.MotionScene
@@ -61,7 +62,7 @@ import androidx.navigation.NavController
                 Box() {
                     composables?.funButton3D(
                         onClick = { navController.navigate("GameScreen") },
-                        text = "Single",
+                        text = stringResource(R.string.mode_singleplayer),
                         color = Color.Red,
                         depth = 10,
                         150.dp,50.dp
@@ -70,7 +71,7 @@ import androidx.navigation.NavController
                 Box() {
                     composables?.funButton3D(
                         onClick = { navController.navigate("GameScreen"); gameLogic.multiPlayer=true}, // col punto e virgola posso fargli fare più cose
-                        text = "Multi",
+                        text = stringResource(R.string.mode_multiplayer),
                         color = Color.Red,
                         depth = 10,
                         150.dp,50.dp
@@ -83,21 +84,21 @@ import androidx.navigation.NavController
                 horizontalAlignment = Alignment.CenterHorizontally) {
                 composables?.funButton3D(
                     onClick = { navController.navigate("Screen2") },
-                    text = "schermata di prova delle applicazioni",
+                    text = stringResource(R.string.mode_testscreen),
                     color = Color.Blue,
                     depth = 10,
                     350.dp,50.dp
                 )
                 composables?.funButton3D(
                     onClick = { provas() },
-                    text = "partite precedenti",
+                    text = stringResource(R.string.highscores),
                     color = Color.Blue,
                     depth = 10,
                     350.dp,50.dp
                 )
                 composables?.funButton3D(
                     onClick = { navController.navigate("OptionScreen") },
-                    text = "opzioni",
+                    text = stringResource(R.string.settings),
                     color = Color.Blue,
                     depth = 10,
                     150.dp,50.dp
@@ -117,25 +118,14 @@ import androidx.navigation.NavController
         val screenWidth = LocalWindowInfo.current.containerSize.width.dp
 
 
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(top = screenHeight * 0.02f, end = 0.dp),
-            horizontalArrangement = Arrangement.SpaceBetween,
-            verticalAlignment = Alignment.CenterVertically
+        Column(
+            modifier = Modifier.fillMaxSize(),
+            verticalArrangement = Arrangement.Center,
+            horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            composables?.funButton3D(::switchVibMode, "\uD83D\uDCF3", color = Color.Blue, depth = 10,150.dp,50.dp)
+            composables?.funButton3D(::switchVibMode, stringResource(R.string.settings_hapticsMode), color = if(hfx?.hasRichHaptics == true) Color.Blue else Color.Red, depth = 10,150.dp,50.dp)
             composables?.funButton3D(::switchTheme, if (darkTheme) "☾" else "☼", color = Color.Blue, depth = 10,150.dp,50.dp)
         }
-
-        Text("Benvenuto allo Yahtzeello")
-        composables?.funButton3D(
-            onClick = { provas() },
-            text = "sbrisculo aptico",
-            color = Color.Blue,
-            depth = 10,
-            150.dp,50.dp
-        )
 
 
     }

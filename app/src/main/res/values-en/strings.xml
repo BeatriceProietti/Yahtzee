@@ -3,4 +3,17 @@
     <string name="app_name">Yahtzee!</string>
     <string name="mode_singleplayer">One Player</string>
     <string name="mode_multiplayer">Two Players</string>
+    <string name="highscores">High Scores</string>
+    <string name="settings">Settings</string>
+    <string name="settings_hapticsMode">Haptics mode</string>
+    <string name="settings_theme">Change theme</string>
+    <string name="mode_testscreen">Meal Calendar</string>
+    <string name="combo_3kind">Three of a kind</string>
+    <string name="combo_4kind">Four of a kind</string>
+    <string name="combo_5kind">Yahtzee!</string>
+    <string name="combo_fullhouse">Full House</string>
+    <string name="combo_sstraight">Small Straight</string>
+    <string name="combo_lstraight">Large Straight</string>
+    <string name="combo_chance">Chance</string>
+    <string name="game_throwdice">Throw dice</string>
 </resources>

@@ -3,4 +3,17 @@
     <string name="app_name">Yahtzee!</string>
     <string name="mode_singleplayer">Un giocatore</string>
     <string name="mode_multiplayer">Due giocatori</string>
+    <string name="highscores">Classifica punteggi</string>
+    <string name="settings">Impostazioni</string>
+    <string name="settings_hapticsMode">Modalità vibrazione</string>
+    <string name="settings_theme">Cambia tema</string>
+    <string name="mode_testscreen">schermata di prova delle applicazioni</string>
+    <string name="combo_4kind">Poker</string>
+    <string name="combo_5kind">Yahtzee!</string>
+    <string name="combo_3kind">Tris</string>
+    <string name="combo_fullhouse">Full</string>
+    <string name="combo_sstraight">Piccola scala</string>
+    <string name="combo_lstraight">Grande scala</string>
+    <string name="combo_chance">Chance</string>
+    <string name="game_throwdice">Tira dadi</string>
 </resources>

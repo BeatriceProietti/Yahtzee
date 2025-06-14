@@ -2,4 +2,17 @@
     <string name="app_name">Yahtzee!</string>
     <string name="mode_singleplayer">mode_singleplayer</string>
     <string name="mode_multiplayer">mode_multiplayer</string>
+    <string name="highscores">h1ghsc0r3s</string>
+    <string name="settings">5e771ng5</string>
+    <string name="settings_hapticsMode">settings_hapticsMode</string>
+    <string name="settings_theme">settings_theme</string>
+    <string name="mode_testscreen">mode_testscreen</string>
+    <string name="combo_3kind">combo_3kind</string>
+    <string name="combo_4kind">combo_4kind</string>
+    <string name="combo_5kind">combo_5kind</string>
+    <string name="combo_fullhouse">combo_fullhouse</string>
+    <string name="combo_sstraight">combo_sstraight</string>
+    <string name="combo_lstraight">combo_lstraight</string>
+    <string name="combo_chance">combo_chance</string>
+    <string name="game_throwdice">game_throwdice</string>
 </resources>

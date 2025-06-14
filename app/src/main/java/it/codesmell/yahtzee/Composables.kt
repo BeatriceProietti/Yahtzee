@@ -68,6 +68,7 @@ import androidx.compose.ui.graphics.drawscope.Fill
 import androidx.compose.ui.graphics.lerp
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.platform.LocalWindowInfo
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 
 
@@ -336,13 +337,13 @@ class Composables {
         val padding = 4.dp
 
         val labels = listOf(
-            "Three of a kind",
-            "Four of a kind",
-            "Full house",
-            "Small straight",
-            "Big straight",
-            "Yahtzee!",
-            "Chance"
+            stringResource(R.string.combo_3kind),
+            stringResource(R.string.combo_4kind),
+            stringResource(R.string.combo_fullhouse),
+            stringResource(R.string.combo_sstraight),
+            stringResource(R.string.combo_lstraight),
+            stringResource(R.string.combo_5kind),
+            stringResource(R.string.combo_chance)
         )
 
         // FILTRO SOLO I DADI NON SELEZIONATI
@@ -606,6 +607,9 @@ class Composables {
         val screenHeight = LocalWindowInfo.current.containerSize.height.dp
         val screenWidth = LocalWindowInfo.current.containerSize.width.dp
         var saturation = 0.7f
+
+        //var color by mutableStateOf(Color.Magenta)
+
         MealCalendar(
             perspective = Composables.Perspective.Left(
                 bottomEdgeColor = lerp(Color(0x878787ff), color, saturation),

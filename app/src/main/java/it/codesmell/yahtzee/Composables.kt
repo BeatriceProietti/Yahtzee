@@ -70,6 +70,7 @@ import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.platform.LocalWindowInfo
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
 
 
 //mettiamo qui i composable, per avere un po' di ordine e per averli standardizzati per tutte le schermate
@@ -97,7 +98,8 @@ class Composables {
         val boxWidth = screenWidthDp * 0.7f
         val boxHeight = screenHeightDp * 0.5f
 
-        val offScreenTargetY = boxHeight.value + 32f
+        // 🔁 Cambiato: parte da ben fuori lo schermo (positivo = va in basso)
+        val offScreenTargetY = screenHeightDp.value
         val offsetY = remember { Animatable(offScreenTargetY) }
 
         LaunchedEffect(show) {
@@ -111,9 +113,9 @@ class Composables {
             )
         }
 
-        // Calcolo del vincitore
+        // 🔁 Localizzazione qui (se vuoi), per ora lasciamo testo statico
         val resultText = if (!isMultiplayer) {
-            "Partita terminata\nPunteggio: $p1Score"
+            "Partita terminata\nPunteggio: ${gameLogic.totalScore}"
         } else {
             when {
                 p1Score > p2Score -> "Ha vinto il Giocatore 1 con $p1Score punti!"
@@ -124,13 +126,13 @@ class Composables {
 
         Box(
             modifier = Modifier.fillMaxSize(),
-            contentAlignment = Alignment.BottomCenter
+            contentAlignment = Alignment.Center // 🔁 Ora centra il box!
         ) {
             Box(
                 modifier = Modifier
                     .size(boxWidth, boxHeight)
+                    .offset(y = offsetY.value.dp) // 🔁 Si anima solo verticalmente
                     .clip(RoundedCornerShape(14.dp))
-                    .offset(y = offsetY.value.dp)
                     .background(Color.White)
             ) {
                 Column(
@@ -140,19 +142,28 @@ class Composables {
                     verticalArrangement = Arrangement.SpaceBetween,
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
-                    // Testo centrale
                     Box(
                         modifier = Modifier
                             .fillMaxWidth()
                             .weight(0.7f)
                             .clip(RoundedCornerShape(10.dp))
-                            .background(Color.Gray),
+                            .background(Color.Gray)
+                            .padding(8.dp), // 🔁 aggiunto padding per far "respirare" il testo
                         contentAlignment = Alignment.Center
                     ) {
-                        Text(resultText, color = Color.Black)
+                        Text(
+                            text = resultText,
+                            color = Color.Black,
+                            textAlign = TextAlign.Center,
+                            fontSize = 18.sp,
+                            maxLines = 4,
+                            overflow = TextOverflow.Ellipsis,
+                            softWrap = true,
+                            modifier = Modifier.fillMaxWidth()
+                        )
                     }
 
-                    // Pulsante per chiudere
+
                     Button(
                         onClick = onDismiss,
                         modifier = Modifier.padding(top = 6.dp)
@@ -163,6 +174,7 @@ class Composables {
             }
         }
     }
+
 
 
 
@@ -543,7 +555,7 @@ class Composables {
                         .offset(x = secondOffset, y = secondOffset)
                         .zIndex(if (isFirstOnTop) 0f else 1f)
                         .size(cardWidth, cardHeight)
-                        .clip(RoundedCornerShape(12.dp))
+                        //.clip(RoundedCornerShape(12.dp))
                         .background(Color.Green)
                 ) {
                     CombosGridComposition2(
@@ -562,7 +574,7 @@ class Composables {
                         .offset(x = firstOffset, y = firstOffset)
                         .zIndex(if (isFirstOnTop) 1f else 0f)
                         .size(cardWidth, cardHeight)
-                        .clip(RoundedCornerShape(12.dp))
+                        //.clip(RoundedCornerShape(12.dp))
                         .background(Color.Gray)
                 ) {
                     CombosGridComposition(
@@ -576,12 +588,14 @@ class Composables {
 
                 }
             }
-
-            Button(
-                onClick = { isFirstOnTop = !isFirstOnTop },
-                modifier = Modifier.padding(top = screenHeight * 0.05f)
-            ) {
-                Text("Scambia con rimbalzo")
+            Box(modifier = Modifier.padding(top = 25.dp)) {
+                funButton3D(
+                    onClick = { isFirstOnTop = !isFirstOnTop },
+                    "Scambia",
+                    color = MaterialTheme.colorScheme.primary,
+                    depth = 10,
+                    150.dp, 50.dp
+                )
             }
         }
     }

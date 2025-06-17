@@ -315,7 +315,7 @@ var screenWidth : Dp = 0.dp
         }
         composables?.EndGameSquare(
             show = showOverlay,
-            onDismiss = { showOverlay = false },
+            onDismiss = { showOverlay = false; gameLogic.resetGame() },
             p1Score = p1TotalScore,
             p2Score = p2TotalScore,
             isMultiplayer = gameLogic.multiPlayer

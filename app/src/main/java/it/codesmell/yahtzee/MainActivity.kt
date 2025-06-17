@@ -62,8 +62,7 @@ class MainActivity : ComponentActivity() {
         setContent {
             //var theme by remember{mutableStateOf(false)}
             YahtzeeTheme(darkTheme = darkTheme) {
-                Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-                    Greeting(name = "Moto", modifier = Modifier.padding(innerPadding)) //possiamo lasciare roba fuori dalla navigazione, in modo che rimanga fissa tra le schermate
+                Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding -> Modifier.padding(innerPadding) //possiamo lasciare roba fuori dalla navigazione, in modo che rimanga fissa tra le schermate
                     // roba navigazione ---------------------------------------------------------------------------------
                     var navCon = rememberNavController()
                     NavHost(navController = navCon, startDestination = "MainScreen", builder ={
@@ -87,7 +86,7 @@ class MainActivity : ComponentActivity() {
 
                     })
                     // --------------------------------------------------------------------------------------------------
-                    composables?.funButton({navCon.navigateUp()}, "Torna Indietro", 0)
+
                 }
             }
         }

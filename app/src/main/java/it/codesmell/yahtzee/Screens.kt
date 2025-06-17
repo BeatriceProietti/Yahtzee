@@ -37,6 +37,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.MotionScene
 import androidx.navigation.NavController
+import androidx.room.util.TableInfo
 import kotlinx.coroutines.delay
 
 // qua mettiamo tutte le schermate dell'app
@@ -216,14 +217,14 @@ var screenWidth : Dp = 0.dp
                         val scoreToShow =
                         if (gameLogic.multiPlayer) gameLogic.currentTotalScore else gameLogic.totalScore
                         Text(
-                            text = "Punteggio Totale: $scoreToShow",
+                            text = "Punteggio: $scoreToShow",
                             fontSize = 18.sp,
                             color = Color.White,
                             modifier = Modifier.padding(8.dp)
                         )
                         if (gameLogic.multiPlayer) {
                             Text(
-                                text = if (gameLogic.isPlayerOneTurn) "Turno: Giocatore 1" else "Turno: Giocatore 2",
+                                text = if (gameLogic.isPlayerOneTurn) "G1" else "G2",
                                 fontSize = 18.sp,
                                 color = Color.White,
                                 modifier = Modifier.padding(8.dp)
@@ -265,15 +266,26 @@ var screenWidth : Dp = 0.dp
                 ) {
 
                 Box(modifier = Modifier //punteggio
-                    .padding(start = screenHeight*0.05f, end = screenHeight*0.05f)
+                    .padding(top = screenHeight*0.05f, bottom = screenHeight*0.05f)
                 ){
-
-                    Text(
-                        text = "${gameLogic.totalScore}",
-                        fontSize = 18.sp,
-                        color = Color.White,
-                        modifier = Modifier.padding(8.dp)
-                    )
+                    Column(){
+                        val scoreToShow =
+                            if (gameLogic.multiPlayer) gameLogic.currentTotalScore else gameLogic.totalScore
+                        Text(
+                            text = "Punteggio: $scoreToShow",
+                            fontSize = 18.sp,
+                            color = Color.White,
+                            modifier = Modifier.padding(8.dp)
+                        )
+                        if (gameLogic.multiPlayer) {
+                            Text(
+                                text = if (gameLogic.isPlayerOneTurn) "G1" else "G2",
+                                fontSize = 18.sp,
+                                color = Color.White,
+                                modifier = Modifier.padding(8.dp)
+                            )
+                        }
+                    }
                 }
                 Box(){
                     composables?.swappingCards()

@@ -208,7 +208,9 @@ class GameLogic : ViewModel() {
 
     //Tira i dadi appartenenti a selectedDice
     fun rollSelectedDice() {
-        if (rollsLeft <= 0 || gameOver) return
+
+        if(gameOver) return
+        if (rollsLeft <= 0) return
 
         hasRolled = true
 
@@ -371,44 +373,39 @@ class GameLogic : ViewModel() {
             }
 
             if (multiPlayer) {
-                if (isPlayerOneTurn) {
-                    checkAndApplyUpperSectionBonus()
-                    p1TotalScore += score
-                    if (rollsLeft <= 0 || gameOver) return
+                checkAndApplyUpperSectionBonus()
 
+                if (isPlayerOneTurn) {
+                    p1TotalScore += score
                 } else {
-                    checkAndApplyUpperSectionBonus()
                     p2TotalScore += score
-                    if (rollsLeft <= 0 || gameOver) return
                 }
             } else {
                 totalScore += score
             }
 
-            hasRolled = false
+            // Reset turn
             rollsLeft = 3
             roundsPlayed++
-
 
             if (multiPlayer) {
                 isPlayerOneTurn = !isPlayerOneTurn
             }
 
-
             Log.d("roundplay", "$roundsPlayed")
+            Log.d("rolls", "$rollsLeft")
             Log.d("roundplay", "$multiPlayer")
 
-
             checkAndApplyUpperSectionBonus()
-
 
             if ((multiPlayer && roundsPlayed >= 2) || (!multiPlayer && roundsPlayed >= 2)) {
                 gameOver = true
                 Log.d("roundplay", "sono nel gameover la partita è finita dio cristo $gameOver")
-
             }
         }
+
         dice = List(diceAmount) { 0 }
+        hasRolled = false
     }
 
 

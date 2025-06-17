@@ -122,14 +122,26 @@ var screenWidth : Dp = 0.dp
     fun OptionScreen(navController: NavController){
         Column(
             modifier = Modifier.fillMaxSize(),
-            verticalArrangement = Arrangement.Center,
+            verticalArrangement = Arrangement.spacedBy(24.dp, Alignment.CenterVertically),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            composables?.funButton3D(::switchVibMode, stringResource(R.string.settings_hapticsMode), color = if(hfx?.hasRichHaptics == true) Color.Blue else Color.Red, depth = 10,150.dp,50.dp)
-            composables?.funButton3D(::switchTheme, if (darkTheme) "☾" else "☼", color = Color.Blue, depth = 10,150.dp,50.dp)
+            composables?.funButton3D(
+                ::switchVibMode,
+                stringResource(R.string.settings_hapticsMode),
+                color = if(hfx?.hasRichHaptics == true) Color.Blue else Color.Red,
+                depth = 10,
+                150.dp,
+                50.dp
+            )
+            composables?.funButton3D(
+                ::switchTheme,
+                if (darkTheme) "☾" else "☼",
+                color = Color.Blue,
+                depth = 10,
+                150.dp,
+                50.dp
+            )
         }
-
-
     }
 
 

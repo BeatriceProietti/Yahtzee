@@ -222,8 +222,8 @@ class Composables {
     @Composable
     fun diceRow(dice: Array<Int>, gameLogic: GameLogic) { // ricevuti da game logic
         Row(
-            Modifier.padding(16.dp),
-            horizontalArrangement = Arrangement.spacedBy(16.dp)
+            Modifier.padding(5.dp),
+            horizontalArrangement = Arrangement.spacedBy(5.dp)
         ) {
             for (i in 0 until dice.size) {
                 animationSquare(
@@ -300,7 +300,7 @@ class Composables {
                         modifier = Modifier
                             .fillMaxWidth()
                             .height(tileHeight)
-                            .clip(RoundedCornerShape(8.dp))
+                            //.clip(RoundedCornerShape(8.dp))
                             .background(Color.DarkGray)
                             .clickable(enabled = confirmedScore == null && dice.isNotEmpty()) {
                                 onScoreConfirmed(label, potentialScore)
@@ -413,7 +413,7 @@ class Composables {
                         modifier = Modifier
                             .fillMaxWidth()
                             .height(tileHeight)
-                            .clip(RoundedCornerShape(8.dp))
+                            //.clip(RoundedCornerShape(8.dp))
                             .background(Color.DarkGray)
                             .clickable(enabled = col == 1 && !isUsed) {
                                 onScoreConfirmed(label, score)

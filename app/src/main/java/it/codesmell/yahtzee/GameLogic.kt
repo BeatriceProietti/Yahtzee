@@ -20,7 +20,12 @@ class GameLogic : ViewModel() {
 
 val rng = Random(System.currentTimeMillis()) //prendo come seed l'ora attuale
 
-var diceAmount : Int = 5
+
+var p1YahtzeeBonusCount by mutableStateOf(0)
+var p2YahtzeeBonusCount by mutableStateOf(0)
+
+
+    var diceAmount : Int = 5
 val usedCombos = mutableStateMapOf<String, Int>() // es: "Full house" -> 25
 var totalScore by mutableStateOf(0)
 var statusText by mutableStateOf("status")
@@ -210,6 +215,7 @@ var p2UpperSectionBonus by mutableStateOf(0)
                     }
                 }
             }
+            checkYahtzeeBonus(dice)
         }
     }
 
@@ -297,20 +303,38 @@ var p2UpperSectionBonus by mutableStateOf(0)
 
     //pisello e palle
 
-
-
-    fun checkYahtzeeBonus(dice: List<Int>){
+    fun checkYahtzeeBonus(dice: List<Int>) {
         val valueCounts = dice.groupingBy { it }.eachCount()
 
-        if(rollsLeft<3){
-           if  (valueCounts.values.any { it >= 5 }){
-               yahtzeeAmount++
-               Log.d("yahtzee bonus", "$yahtzeeAmount")
-           }
+        val isYahtzee = valueCounts.values.any { it == 5 }
 
+        if (isYahtzee && rollsLeft < 300) {
+            // Verifica che la combo Yahtzee sia già stata usata
+            val yahtzeeAlreadyUsed = currentUsedCombos.containsKey("combo_5kind")
+
+            if (yahtzeeAlreadyUsed) {
+                // Assegna il bonus
+                if (multiPlayer) {
+                    if (isPlayerOneTurn) {
+                        p1TotalScore += 100
+                        p1YahtzeeBonusCount++
+                    } else {
+                        p2TotalScore += 100
+                        p2YahtzeeBonusCount++
+                    }
+                } else {
+                    totalScore += 100
+                    yahtzeeAmount++
+                    Log.d("yahtzee bonus", "hai ottenuto il bonus")
+                }
+                hfx?.click(1f)
+            }
         }
-
     }
+
+
+
+
 
 
     //prende una lista di dadi e restituisce i possibili punteggi per ciascuna combinazione
@@ -373,7 +397,6 @@ var p2UpperSectionBonus by mutableStateOf(0)
 
             if (multiPlayer) {
                 checkAndApplyUpperSectionBonus()
-                checkYahtzeeBonus(dice)
                 if (isPlayerOneTurn) {
                     p1TotalScore += score
                 } else {
@@ -396,7 +419,6 @@ var p2UpperSectionBonus by mutableStateOf(0)
             Log.d("roundplay", "$multiPlayer")
 
             checkAndApplyUpperSectionBonus()
-            checkYahtzeeBonus(dice)
             //fine partita
             if ((multiPlayer && roundsPlayed >= 2) || (!multiPlayer && roundsPlayed >= 3)) {
                 gameOver = true

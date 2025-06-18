@@ -168,15 +168,15 @@ var screenWidth : Dp = 0.dp
                     Row(
                         modifier = Modifier
                             .clickable {
-                                onEvent(ScoreListEvent.sortScores(sortType))
+                              //  onEvent(ScoreListEvent.sortScores(sortType))
                             },
                         horizontalArrangement = Arrangement.Center,
                         verticalAlignment = CenterVertically,
                     ){
-                        RadioButton(
-                            selected = state.sortType == sortType,
-                            onClick = {onEvent(ScoreListEvent.sortScores(sortType))}
-                        )
+                        //RadioButton(
+                           // selected = state.sortType == sortType,
+                            //onClick = {onEvent(ScoreListEvent.sortScores(sortType))}
+                       // )
                         Text(text = sortType.name)
                     }
                 }

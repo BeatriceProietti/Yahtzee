@@ -99,7 +99,7 @@ var p2UpperSectionBonus by mutableStateOf(0)
 
 
     var bonusJustAwarded by mutableStateOf(false)
-
+    var yahtzeeAmount = 0
     var multiPlayer by mutableStateOf(false) // parte falso e verrà settato a true
     var upperSectionBonus by mutableStateOf(0)
     val bonusThreshold = 1
@@ -299,14 +299,28 @@ var p2UpperSectionBonus by mutableStateOf(0)
 
 
 
+    fun checkYahtzeeBonus(dice: List<Int>){
+        val valueCounts = dice.groupingBy { it }.eachCount()
+
+        if(rollsLeft<3){
+           if  (valueCounts.values.any { it >= 5 }){
+               yahtzeeAmount++
+               Log.d("yahtzee bonus", "$yahtzeeAmount")
+           }
+
+        }
+
+    }
+
+
     //prende una lista di dadi e restituisce i possibili punteggi per ciascuna combinazione
     fun calculatePossibleScores(dice: List<Int>): Map<String, Int> {
         val valueCounts = dice.groupingBy { it }.eachCount()  // Esempio: {6=3, 2=2}
         val sum = dice.sum()
-
-
+        val yahtzee = 50+(100*(yahtzeeAmount-1).coerceAtLeast(0))
         fun hasNOfAKind(n: Int): Boolean {
             return valueCounts.values.any { it >= n }
+
         }
 
         fun isSmallStraight(): Boolean {
@@ -325,7 +339,6 @@ var p2UpperSectionBonus by mutableStateOf(0)
         }
 
         fun isFullHouse(): Boolean {
-            Log.d("full", "il full house funziona")
             return valueCounts.values.contains(3) && valueCounts.values.contains(2)
         }
 
@@ -335,9 +348,13 @@ var p2UpperSectionBonus by mutableStateOf(0)
             "combo_fullhouse" to if (isFullHouse()) 25 else 0, //full
             "combo_sstraight" to if (isSmallStraight()) 30 else 0, //sstraight
             "combo_lstraight" to if (isLargeStraight()) 40 else 0,//lstraight
-            "combo_5kind" to if (hasNOfAKind(5)) 50 else 0,//yahtzee
+            "combo_5kind" to if (hasNOfAKind(5)) yahtzee else 0,//yahtzee
             "combo_chance" to sum //chance
         )
+
+
+
+
     }
 
 
@@ -356,7 +373,7 @@ var p2UpperSectionBonus by mutableStateOf(0)
 
             if (multiPlayer) {
                 checkAndApplyUpperSectionBonus()
-
+                checkYahtzeeBonus(dice)
                 if (isPlayerOneTurn) {
                     p1TotalScore += score
                 } else {
@@ -379,9 +396,9 @@ var p2UpperSectionBonus by mutableStateOf(0)
             Log.d("roundplay", "$multiPlayer")
 
             checkAndApplyUpperSectionBonus()
-
+            checkYahtzeeBonus(dice)
             //fine partita
-            if ((multiPlayer && roundsPlayed >= 2) || (!multiPlayer && roundsPlayed >= 2)) {
+            if ((multiPlayer && roundsPlayed >= 2) || (!multiPlayer && roundsPlayed >= 3)) {
                 gameOver = true
                 Log.d("roundplay", "sono nel gameover la partita è finita dio cristo $gameOver")
             }

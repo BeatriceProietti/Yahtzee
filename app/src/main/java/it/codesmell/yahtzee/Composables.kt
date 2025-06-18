@@ -354,21 +354,21 @@ class Composables {
         cardWidth: Dp,
         cardHeight: Dp,
         gameLogic: GameLogic,
-        confirmedScores: (Int, Int) -> Unit
+        confirmedScores: (String, Int) -> Unit
     ) {
         val cols = 2
         val rows = 7
         val spacing = 4.dp
         val padding = 4.dp
 
-        val labels = listOf(
-            stringResource(R.string.combo_3kind),
-            stringResource(R.string.combo_4kind),
-            stringResource(R.string.combo_fullhouse),
-            stringResource(R.string.combo_sstraight),
-            stringResource(R.string.combo_lstraight),
-            stringResource(R.string.combo_5kind),
-            stringResource(R.string.combo_chance)
+        val labels = listOf(// Label delle combinazioni adattate alla localizzazione
+            "combo_3kind" to R.string.combo_3kind,
+            "combo_4kind" to R.string.combo_4kind,
+            "combo_fullhouse" to R.string.combo_fullhouse,
+            "combo_sstraight" to R.string.combo_sstraight,
+            "combo_lstraight" to R.string.combo_lstraight,
+            "combo_5kind" to R.string.combo_5kind,
+            "combo_chance" to R.string.combo_chance
         )
 
         // FILTRO SOLO I DADI NON SELEZIONATI
@@ -405,9 +405,10 @@ class Composables {
                 items(rows * cols) { index ->
                     val row = index / cols
                     val col = index % cols
-                    val label = labels[row]
-                    val isUsed = gameLogic.currentUsedCombos.containsKey(row)
-                    val score = if (isUsed) gameLogic.currentUsedCombos[row] ?: 0 else scores[row] ?: 0
+                    val (comboKey, resId) = labels[row] // associa la key alla stringa localizzata
+                    val label = stringResource(resId)
+                    val isUsed = gameLogic.currentUsedCombos.containsKey(comboKey)
+                    val score = if (isUsed) gameLogic.currentUsedCombos[comboKey] ?: 0 else scores[comboKey] ?: 0
                     //se ho già usato una combo ci mette il valore che ho salvato prima selezionando la combo nella tabella altrimenti mostro il nuovo punteggio generato
 
                     Box(
@@ -417,7 +418,7 @@ class Composables {
                             //.clip(RoundedCornerShape(8.dp))
                             .background(Color.DarkGray)
                             .clickable(enabled = col == 1 && !isUsed) { //la casella è cliccabile solo se non è stata già usata
-                                confirmedScores(row, score)  //fissa la combinazione quando premi
+                                confirmedScores(comboKey, score)  //fissa la combinazione quando premi
                             },
                         contentAlignment = Alignment.Center
                     ) {
@@ -581,11 +582,12 @@ class Composables {
                     CombosGridComposition(
                         cardWidth = cardWidth,
                         cardHeight = cardHeight,
-                        gameLogic = gameLogic, // <--- qui
+                        gameLogic = gameLogic,
                         confirmedScores = { combo, score ->
                             gameLogic.confirmScore(combo, score)
                         }
                     )
+
 
                 }
             }

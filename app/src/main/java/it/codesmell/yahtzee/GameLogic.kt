@@ -162,7 +162,7 @@ class GameLogic : ViewModel() {
     val currentUpperSectionScores: MutableMap<String, Int?>
         get() = if (isPlayerOneTurn) p1UpperSectionScores else p2UpperSectionScores
 
-    val currentUsedCombos: MutableMap<String, Int>
+    val currentUsedCombos: MutableMap<Int, Int>
         get() = if (isPlayerOneTurn) p1UsedCombos else p2UsedCombos
 
 
@@ -319,7 +319,7 @@ class GameLogic : ViewModel() {
     // sbobba chatgpt da rifare vv----------------------------------------------------------------------------------------------
 
     //prende una lista di dadi e restituisce il punteggio
-    fun calculatePossibleScores(dice: List<Int>): Map<String, Int> {
+    fun calculatePossibleScores(dice: List<Int>): Map<Int, Int> {
         val valueCounts = dice.groupingBy { it }.eachCount()  // Esempio: {6=3, 2=2}
         val sum = dice.sum()
 
@@ -352,37 +352,14 @@ class GameLogic : ViewModel() {
         }
 
         return mapOf(
-            "Three of a kind" to if (hasNOfAKind(3)) sum else 0,
-            "Four of a kind" to if (hasNOfAKind(4)) sum else 0,
-            "Full house" to if (isFullHouse()) 25 else 0,
-            "Small straight" to if (isSmallStraight()) 30 else 0,
-            "Big straight" to if (isLargeStraight()) 40 else 0,
-            "Yahtzee!" to if (hasNOfAKind(5)) 50 else 0,
-            "Chance" to sum
+            0 to if (hasNOfAKind(3)) sum else 0, //tris
+            1 to if (hasNOfAKind(4)) sum else 0, //poker
+            2 to if (isFullHouse()) 25 else 0, //full
+            3 to if (isSmallStraight()) 30 else 0, //sstraight
+            4 to if (isLargeStraight()) 40 else 0,//lstraight
+            5 to if (hasNOfAKind(5)) 50 else 0,//yahtzee
+            6 to sum//chance
         )
-    }
-
-
-    fun runComboTests() {
-        val testCases = listOf(
-            Triple(listOf(6, 6, 6, 2, 2), "Full house", 25),
-            Triple(listOf(3, 3, 3, 4, 5), "Three of a kind", 18),
-            Triple(listOf(4, 4, 4, 4, 1), "Four of a kind", 17),
-            Triple(listOf(2, 3, 4, 5, 6), "Big straight", 40),
-            Triple(listOf(1, 2, 3, 4, 6), "Small straight", 30),
-            Triple(listOf(5, 5, 5, 5, 5), "Yahtzee!", 50),
-            Triple(listOf(1, 3, 4, 2, 6), "Chance", 16)
-        )
-
-        for ((dice, expectedCombo, expectedScore) in testCases) {
-            val result = calculatePossibleScores(dice)
-            val actualScore = result[expectedCombo] ?: 0
-            if (actualScore == expectedScore) {
-                println("✅ PASS: $expectedCombo on $dice → $actualScore")
-            } else {
-                println("❌ FAIL: $expectedCombo on $dice → got $actualScore, expected $expectedScore")
-            }
-        }
     }
 
 

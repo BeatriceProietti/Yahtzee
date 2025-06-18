@@ -407,7 +407,8 @@ class Composables {
                     val col = index % cols
                     val label = labels[row]
                     val isUsed = gameLogic.currentUsedCombos.containsKey(label)
-                    val score = if (isUsed) gameLogic.currentUsedCombos[label] ?: 0 else scores[label] ?: 0
+                    val score = if (isUsed) gameLogic.currentUsedCombos[row] ?: 0 else scores[row] ?: 0
+                    //se ho già usato una combo ci mette il valore che ho salvato prima selezionando la combo nella tabella altrimenti mostro il nuovo punteggio generato
 
                     Box(
                         modifier = Modifier

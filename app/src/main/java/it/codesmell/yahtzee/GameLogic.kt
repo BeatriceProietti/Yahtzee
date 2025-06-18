@@ -14,9 +14,11 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import kotlin.random.Random
 
+
+
+class GameLogic : ViewModel() {
+
 val rng = Random(System.currentTimeMillis()) //prendo come seed l'ora attuale
-
-
 
 var diceAmount : Int = 5
 val usedCombos = mutableStateMapOf<String, Int>() // es: "Full house" -> 25
@@ -27,7 +29,8 @@ var rerollAmount : Int = 2 //quanti reroll si possono fare
 
 var selectedDice : MutableList<Boolean> = mutableStateListOf<Boolean>(false,false,false,false,false) //TODO inizializzalo col numero dinamico
 
-
+var hasRolled by mutableStateOf(false)
+var dice by mutableStateOf(List(diceAmount){0}) //lista di 5 mutable state = 0s
 
 
 
@@ -42,15 +45,6 @@ var p1UpperSectionBonus by mutableStateOf(0)
 var p2TotalScore by mutableStateOf(0)
 var p2BonusJustAwarded by mutableStateOf(false)
 var p2UpperSectionBonus by mutableStateOf(0)
-
-
-
-
-
-
-
-
-class GameLogic : ViewModel() {
 
 
 // funzione di reset
@@ -97,14 +91,6 @@ class GameLogic : ViewModel() {
 
 
 //
-
-
-
-
-
-
-
-
 
 
     var isPlayerOneTurn by mutableStateOf(true) // turno del giocatore, usato anche per il secondo
@@ -162,7 +148,7 @@ class GameLogic : ViewModel() {
     val currentUpperSectionScores: MutableMap<String, Int?>
         get() = if (isPlayerOneTurn) p1UpperSectionScores else p2UpperSectionScores
 
-    val currentUsedCombos: MutableMap<Int, Int>
+    val currentUsedCombos: MutableMap<String, Int>
         get() = if (isPlayerOneTurn) p1UsedCombos else p2UsedCombos
 
 
@@ -179,11 +165,7 @@ class GameLogic : ViewModel() {
 
 
 
-    var hasRolled by mutableStateOf(false)
 
-    var selectedDice : MutableList<Boolean> = mutableStateListOf<Boolean>(false,false,false,false,false) //TODO inizializzalo col numero dinamico
-    var totalScore by mutableStateOf(0)
-    var dice by mutableStateOf(List(diceAmount){0}) //lista di 5 mutable state = 0s
 
 
     //Tira un dado a scelta. which: quale dado tirare. size: numero massimo del dado
@@ -244,6 +226,31 @@ class GameLogic : ViewModel() {
         }
     }
 
+    //abbassa un dado
+    fun resetDie(index : Int){
+        Log.d("GameLogic", "abbasso il dado $index")
+        selectedDice[index] = false
+        statusText = "Dadi selezionati: $selectedDice"
+    }
+
+    //Aggiungi un dado alla lista dei dadi da tenere
+    fun selectDie(which : Int){
+        //Controlla se è già tra i selezionati. se si, rimuovilo.
+        for(i in 0..selectedDice.size-1){
+            if(selectedDice[which] == true){
+                selectedDice[which] = false
+                Log.d("GameLogic", "abbasso il dado $which")
+                //statusText = "Dadi selezionati: $selectedDice"
+                return
+            }
+        }
+        Log.d("GameLogic", "alzo il dado $which")
+        selectedDice[which] = true
+        statusText = "Dadi selezionati: $selectedDice"
+    }
+
+
+    // sbobba chatgpt da rifare vv----------------------------------------------------------------------------------------------
 
     //Funzione che si calcola il bonus dei dadini
     var playerOneBonusAwarded by mutableStateOf(false)
@@ -274,8 +281,7 @@ class GameLogic : ViewModel() {
 
 
 
-
-    //funzione che si calcola la seconda carta
+    //calcolo punteggi upper section
     fun calculateUpperSectionScore(combo: String, dice: List<Int>): Int {
         val target = when (combo) {
             "Ones" -> 1
@@ -286,50 +292,23 @@ class GameLogic : ViewModel() {
             "Sixes" -> 6
             else -> 0
         }
-        return dice.filter { it == target }.sum()
+        return dice.filter { it == target }.sum() //restituisce la somma del valore di tutti i dadi di un certo valore
     }
 
-
-    fun resetDie(index : Int){
-        Log.d("GameLogic", "abbasso il dado $index")
-        selectedDice[index] = false
-       statusText = "Dadi selezionati: $selectedDice"
-
-    }
-
-
-    //Aggiungi un dado alla lista dei dadi da tenere
-    fun selectDie(which : Int){
-        //Controlla se è già tra i selezionati. se si, rimuovilo.
-            for(i in 0..selectedDice.size-1){
-                if(selectedDice[which] == true){
-                    selectedDice[which] = false
-                    Log.d("GameLogic", "abbasso il dado $which")
-                    //statusText = "Dadi selezionati: $selectedDice"
-                    return
-                }
-            }
-        Log.d("GameLogic", "alzo il dado $which")
-        selectedDice[which] = true
-        statusText = "Dadi selezionati: $selectedDice"
-    }
 
     //pisello e palle
 
-    // sbobba chatgpt da rifare vv----------------------------------------------------------------------------------------------
 
-    //prende una lista di dadi e restituisce il punteggio
-    fun calculatePossibleScores(dice: List<Int>): Map<Int, Int> {
+
+    //prende una lista di dadi e restituisce i possibili punteggi per ciascuna combinazione
+    fun calculatePossibleScores(dice: List<Int>): Map<String, Int> {
         val valueCounts = dice.groupingBy { it }.eachCount()  // Esempio: {6=3, 2=2}
         val sum = dice.sum()
-
 
 
         fun hasNOfAKind(n: Int): Boolean {
             return valueCounts.values.any { it >= n }
         }
-
-
 
         fun isSmallStraight(): Boolean {
             val unique = dice.toSet()
@@ -352,28 +331,28 @@ class GameLogic : ViewModel() {
         }
 
         return mapOf(
-            0 to if (hasNOfAKind(3)) sum else 0, //tris
-            1 to if (hasNOfAKind(4)) sum else 0, //poker
-            2 to if (isFullHouse()) 25 else 0, //full
-            3 to if (isSmallStraight()) 30 else 0, //sstraight
-            4 to if (isLargeStraight()) 40 else 0,//lstraight
-            5 to if (hasNOfAKind(5)) 50 else 0,//yahtzee
-            6 to sum//chance
+            "combo_3kind" to if (hasNOfAKind(3)) sum else 0, //tris
+            "combo_4kind" to if (hasNOfAKind(4)) sum else 0, //poker
+            "combo_fullhouse" to if (isFullHouse()) 25 else 0, //full
+            "combo_sstraight" to if (isSmallStraight()) 30 else 0, //sstraight
+            "combo_lstraight" to if (isLargeStraight()) 40 else 0,//lstraight
+            "combo_5kind" to if (hasNOfAKind(5)) 50 else 0,//yahtzee
+            "combo_chance" to sum //chance
         )
     }
 
 
 
-
+    //quando premi un punteggio, fissa il punteggio
     fun confirmScore(combo: String, score: Int) {
-        val combos = currentUsedCombos
-        val upperScores = currentUpperSectionScores
+        //val combos = currentUsedCombos //le combo già confermate
+        //val upperScores = currentUpperSectionScores
 
-        if (!combos.containsKey(combo) && hasRolled) {
-            combos[combo] = score
+        if (!currentUsedCombos.containsKey(combo) && hasRolled) {
+            currentUsedCombos[combo] = score //aggiunge la coppia combo-punteggio
 
-            if (combo in upperScores) {
-                upperScores[combo] = score
+            if (combo in currentUpperSectionScores ) {
+                currentUpperSectionScores [combo] = score
             }
 
             if (multiPlayer) {
@@ -388,7 +367,7 @@ class GameLogic : ViewModel() {
                 totalScore += score
             }
 
-            // Reset turn
+            // reset e passa al prossimo turno
             rollsLeft = 300
             roundsPlayed++
 
@@ -402,6 +381,7 @@ class GameLogic : ViewModel() {
 
             checkAndApplyUpperSectionBonus()
 
+            //fine partita
             if ((multiPlayer && roundsPlayed >= 2) || (!multiPlayer && roundsPlayed >= 2)) {
                 gameOver = true
                 Log.d("roundplay", "sono nel gameover la partita è finita dio cristo $gameOver")

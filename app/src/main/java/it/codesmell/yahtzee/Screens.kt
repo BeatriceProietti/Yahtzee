@@ -37,7 +37,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.MotionScene
 import androidx.navigation.NavController
-import androidx.room.util.TableInfo
 import kotlinx.coroutines.delay
 
 // qua mettiamo tutte le schermate dell'app
@@ -209,8 +208,8 @@ var screenWidth : Dp = 0.dp
         //var totalScore by remember { mutableStateOf(0) }
 
 
-        var dr = IntArray(diceAmount)
-        for (i in 0..diceAmount - 1) {
+        var dr = IntArray(gameLogic.diceAmount)
+        for (i in 0..gameLogic.diceAmount - 1) {
             dr[i] = gameLogic.dice[i] //i dadi presi da gameLogic, da mandare all'interfaccia
         }
         val configuration = LocalConfiguration.current
@@ -340,8 +339,8 @@ var screenWidth : Dp = 0.dp
         composables?.EndGameSquare(
             show = showOverlay,
             onDismiss = { showOverlay = false; gameLogic.resetGame() },
-            p1Score = p1TotalScore,
-            p2Score = p2TotalScore,
+            p1Score = gameLogic.p1TotalScore,
+            p2Score = gameLogic.p2TotalScore,
             isMultiplayer = gameLogic.multiPlayer
         )
 

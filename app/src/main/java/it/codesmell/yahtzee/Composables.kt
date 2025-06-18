@@ -66,7 +66,6 @@ import androidx.compose.runtime.derivedStateOf
 import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.graphics.drawscope.Fill
 import androidx.compose.ui.graphics.lerp
-import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.platform.LocalWindowInfo
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
@@ -260,6 +259,7 @@ class Composables {
     @SuppressLint("UnusedBoxWithConstraintsScope")
     @Composable
     fun CombosGridComposition2(
+
         cardWidth: Dp,
         cardHeight: Dp,
         dice: List<Int>,                 // dadi attuali passati dal ViewModel
@@ -354,7 +354,7 @@ class Composables {
         cardWidth: Dp,
         cardHeight: Dp,
         gameLogic: GameLogic,
-        onScoreConfirmed: (String, Int) -> Unit
+        confirmedScores: (Int, Int) -> Unit
     ) {
         val cols = 2
         val rows = 7
@@ -406,7 +406,7 @@ class Composables {
                     val row = index / cols
                     val col = index % cols
                     val label = labels[row]
-                    val isUsed = gameLogic.currentUsedCombos.containsKey(label)
+                    val isUsed = gameLogic.currentUsedCombos.containsKey(row)
                     val score = if (isUsed) gameLogic.currentUsedCombos[row] ?: 0 else scores[row] ?: 0
                     //se ho già usato una combo ci mette il valore che ho salvato prima selezionando la combo nella tabella altrimenti mostro il nuovo punteggio generato
 
@@ -416,8 +416,8 @@ class Composables {
                             .height(tileHeight)
                             //.clip(RoundedCornerShape(8.dp))
                             .background(Color.DarkGray)
-                            .clickable(enabled = col == 1 && !isUsed) {
-                                onScoreConfirmed(label, score)
+                            .clickable(enabled = col == 1 && !isUsed) { //la casella è cliccabile solo se non è stata già usata
+                                confirmedScores(row, score)  //fissa la combinazione quando premi
                             },
                         contentAlignment = Alignment.Center
                     ) {
@@ -582,7 +582,7 @@ class Composables {
                         cardWidth = cardWidth,
                         cardHeight = cardHeight,
                         gameLogic = gameLogic, // <--- qui
-                        onScoreConfirmed = { combo, score ->
+                        confirmedScores = { combo, score ->
                             gameLogic.confirmScore(combo, score)
                         }
                     )

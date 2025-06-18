@@ -57,7 +57,6 @@ var p2UpperSectionBonus by mutableStateOf(0)
         playerTwoBonusAwarded = false
         bonusJustAwarded = false
         upperSectionBonus = 0
-
         rollsLeft = 3
         roundsPlayed = 0
         gameOver = false

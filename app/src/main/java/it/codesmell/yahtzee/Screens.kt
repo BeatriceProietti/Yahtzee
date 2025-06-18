@@ -5,6 +5,7 @@ import android.content.res.Configuration
 import android.graphics.Bitmap
 import android.util.Log
 import android.widget.Toast
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -165,9 +166,13 @@ var screenWidth : Dp = 0.dp
 
 
     @Composable
-    fun GameScreen(gameLogic: GameLogic) {
+    fun GameScreen(gameLogic: GameLogic,navController: NavController) {
         var showOverlay by remember { mutableStateOf(false) }
         val context = LocalContext.current
+        BackHandler { // mi serve sennò non mi setta le variabili del multiplayer a falso e il gioco parte sempre in multi
+            navController.popBackStack()
+            gameLogic.multiPlayer = false
+        }
 
 
         var hasReset by rememberSaveable { mutableStateOf(false) }

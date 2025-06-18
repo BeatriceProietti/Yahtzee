@@ -2,7 +2,7 @@ plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
-    //id("org.jetbrains.kotlin.kapt")
+    id("com.google.devtools.ksp")
 }
 
 android {
@@ -50,6 +50,7 @@ dependencies {
     implementation(libs.androidx.ui.graphics)
     implementation(libs.androidx.ui.tooling.preview)
     implementation(libs.androidx.material3)
+    implementation(libs.androidx.room.common.jvm)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
@@ -58,14 +59,15 @@ dependencies {
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
 
+    implementation("org.jetbrains.kotlinx:kotlinx-metadata-jvm:0.7.0")
     implementation("androidx.compose.material3:material3:1.4.0-alpha14")
     implementation("androidx.navigation:navigation-compose:2.9.0")
     implementation ("androidx.constraintlayout:constraintlayout-compose:1.0.1")
     implementation("androidx.compose.foundation:foundation:1.5.4")
-    implementation ("androidx.room:room-runtime:2.6.1") // Per Coroutine support
+    //implementation ("androidx.room:room-runtime:2.6.1") // Per Coroutine support
     implementation ("androidx.room:room-ktx:2.6.1")
     implementation("io.coil-kt:coil-compose:2.4.0")
-    //kapt("androidx.room:room-compiler:2.7.1") // <---- QUESTO DIO CRISTO
+    ksp("androidx.room:room-compiler:2.6.1") // <---- QUESTO DIO CRISTO
 
 
 }

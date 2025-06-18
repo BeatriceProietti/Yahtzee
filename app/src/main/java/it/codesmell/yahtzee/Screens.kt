@@ -7,6 +7,8 @@ import android.util.Log
 import android.widget.Toast
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -15,7 +17,11 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.RadioButton
 import androidx.compose.runtime.Composable
 import androidx.compose.material3.Text
 import androidx.compose.runtime.LaunchedEffect
@@ -26,6 +32,8 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.Alignment.Companion.CenterHorizontally
+import androidx.compose.ui.Alignment.Companion.CenterVertically
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.graphics.Color
@@ -146,20 +154,45 @@ var screenWidth : Dp = 0.dp
 
 
 @Composable
-    fun Screen2(navController: NavController) {
-        var isOn by remember { mutableStateOf(true) }
-        var isMoved = false
+    fun Screen2(navController: NavController, state: ScoreListState, onEvent: ScoreListEvent) {
         Column(modifier = Modifier.fillMaxSize(),
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center
         ) {
-
-            composables?.funButton3D(onClick = {}, text = "palle Lunghe", color = Color.Red, depth = 50,30.dp,150.dp)
-            Row(){
-                composables?.funButton3D(onClick = {}, text = "palle", color = Color.Blue, depth = 13,30.dp,150.dp)
-                composables?.funButton3D(onClick = {}, text = "pallepalle", color = Color.Black, depth = 10,30.dp,150.dp)
+            Row(modifier = Modifier
+                .fillMaxWidth()
+                .horizontalScroll(rememberScrollState()),
+                verticalAlignment = Alignment.CenterVertically
+            ){
+                SortType.values().forEach{ sortType ->
+                    Row(
+                        modifier = Modifier
+                            .clickable {
+                                onEvent(ScoreListEvent.sortScores(sortType))
+                            },
+                        horizontalArrangement = Arrangement.Center,
+                        verticalAlignment = CenterVertically,
+                    ){
+                        RadioButton(
+                            selected = state.sortType == sortType,
+                            onClick = {onEvent(ScoreListEvent.sortScores(sortType))}
+                        )
+                        Text(text = sortType.name)
+                    }
+                }
             }
 
+            LazyColumn(){
+                items(state.scores){ score ->
+                    composables?.funButton3D(
+                        onClick = {  },
+                        text = "${score.finalScore} ${score.date}", //valori delo score
+                        color = Color.Blue,
+                        depth = 10,
+                        screenWidth*0.9f,50.dp
+                    )
+                }
+            }
         }
 
     }

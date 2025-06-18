@@ -320,37 +320,38 @@ class GameLogic : ViewModel() {
 
     //prende una lista di dadi e restituisce il punteggio
     fun calculatePossibleScores(dice: List<Int>): Map<String, Int> {
-
-        var valueAmounts : Array<Int> = arrayOf(0, 0, 0, 0, 0, 0)   //numero occorrenze di ciascun valore
-
-        //conto le occorrenze di ciascun valore
-        for(i in 1..dice.size){
-            valueAmounts[i-1]++
-        }
-
-        //somma dei valori dei dadi selezionati
+        val valueCounts = dice.groupingBy { it }.eachCount()  // Esempio: {6=3, 2=2}
         val sum = dice.sum()
 
-        //restituisce true se c'è almeno un elemento di valueAmounts con valore n
-        fun hasNOfAKind(n: Int) : Boolean {return (n in valueAmounts)}
-        //restituisce true se c'è almeno un elemento di valueAmounts di valore 2 e uno di valore 3
-        fun isFullHouse() : Boolean {return (2 in valueAmounts && 3 in valueAmounts)}
-        //hardcoded è brutto ma per 5 dadi è più semplice così
-        fun isSmallStraight(): Boolean {
-            val unique = dice.distinct().sorted()
-            val straights = listOf(
-                listOf(1, 2, 3, 4),
-                listOf(2, 3, 4, 5),
-                listOf(3, 4, 5, 6)
-            )
-            return straights.any { unique.containsAll(it) }
-        }
-        fun isLargeStraight(): Boolean {
-            val unique = dice.distinct().sorted()
-            return unique == listOf(1, 2, 3, 4, 5) || unique == listOf(2, 3, 4, 5, 6)
+
+
+        fun hasNOfAKind(n: Int): Boolean {
+            return valueCounts.values.any { it >= n }
         }
 
-        return mapOf( //restituisce una mappa di coppie combinazione-punteggio (key-value)
+
+
+        fun isSmallStraight(): Boolean {
+            val unique = dice.toSet()
+            val sequences = listOf(
+                setOf(1, 2, 3, 4),
+                setOf(2, 3, 4, 5),
+                setOf(3, 4, 5, 6)
+            )
+            return sequences.any { unique.containsAll(it) }
+        }
+
+        fun isLargeStraight(): Boolean {
+            val unique = dice.toSet()
+            return unique == setOf(1, 2, 3, 4, 5) || unique == setOf(2, 3, 4, 5, 6)
+        }
+
+        fun isFullHouse(): Boolean {
+            Log.d("full", "il full house funziona")
+            return valueCounts.values.contains(3) && valueCounts.values.contains(2)
+        }
+
+        return mapOf(
             "Three of a kind" to if (hasNOfAKind(3)) sum else 0,
             "Four of a kind" to if (hasNOfAKind(4)) sum else 0,
             "Full house" to if (isFullHouse()) 25 else 0,
@@ -360,6 +361,32 @@ class GameLogic : ViewModel() {
             "Chance" to sum
         )
     }
+
+
+    fun runComboTests() {
+        val testCases = listOf(
+            Triple(listOf(6, 6, 6, 2, 2), "Full house", 25),
+            Triple(listOf(3, 3, 3, 4, 5), "Three of a kind", 18),
+            Triple(listOf(4, 4, 4, 4, 1), "Four of a kind", 17),
+            Triple(listOf(2, 3, 4, 5, 6), "Big straight", 40),
+            Triple(listOf(1, 2, 3, 4, 6), "Small straight", 30),
+            Triple(listOf(5, 5, 5, 5, 5), "Yahtzee!", 50),
+            Triple(listOf(1, 3, 4, 2, 6), "Chance", 16)
+        )
+
+        for ((dice, expectedCombo, expectedScore) in testCases) {
+            val result = calculatePossibleScores(dice)
+            val actualScore = result[expectedCombo] ?: 0
+            if (actualScore == expectedScore) {
+                println("✅ PASS: $expectedCombo on $dice → $actualScore")
+            } else {
+                println("❌ FAIL: $expectedCombo on $dice → got $actualScore, expected $expectedScore")
+            }
+        }
+    }
+
+
+
 
     fun confirmScore(combo: String, score: Int) {
         val combos = currentUsedCombos
@@ -385,7 +412,7 @@ class GameLogic : ViewModel() {
             }
 
             // Reset turn
-            rollsLeft = 3
+            rollsLeft = 300
             roundsPlayed++
 
             if (multiPlayer) {

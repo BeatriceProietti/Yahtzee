@@ -18,36 +18,39 @@ import kotlin.random.Random
 
 class GameLogic : ViewModel() {
 
-val rng = Random(System.currentTimeMillis()) //prendo come seed l'ora attuale
+    val rng = Random(System.currentTimeMillis()) //prendo come seed l'ora attuale
 
+    var statusText by mutableStateOf("status")
 
-var p1YahtzeeBonusCount by mutableStateOf(0)
-var p2YahtzeeBonusCount by mutableStateOf(0)
-
-
-    var diceAmount : Int = 5
-val usedCombos = mutableStateMapOf<String, Int>() // es: "Full house" -> 25
-var totalScore by mutableStateOf(0)
-var statusText by mutableStateOf("status")
-var firstPhase = true //primo tiro, e poi i reroll
-var rerollAmount : Int = 2 //quanti reroll si possono fare
-
-var selectedDice : MutableList<Boolean> = mutableStateListOf<Boolean>(false,false,false,false,false) //TODO inizializzalo col numero dinamico
-
-var hasRolled by mutableStateOf(false)
-var dice by mutableStateOf(List(diceAmount){0}) //lista di 5 mutable state = 0s
-
+    //da mettere nell'entity
+    var p1YahtzeeBonusCount by mutableStateOf(0) //quantità di yahtzee da 100p ottenuti
+    var p2YahtzeeBonusCount by mutableStateOf(0)
+    val usedCombos = mutableStateMapOf<String, Int>() // es: "Full house" -> 25
+    var totalScore by mutableStateOf(0)
     var bonusJustAwarded by mutableStateOf(false)
-    var yahtzeeAmount by mutableStateOf(0)
-    var multiPlayer by mutableStateOf(false) // parte falso e verrà settato a true
+    var yahtzeeAmount by mutableStateOf(0) //YahtzeeBonusCount
     var upperSectionBonus by mutableStateOf(0)
+
+
+    //parametri gamemode
+    var multiPlayer by mutableStateOf(false) // parte falso e verrà settato a true //sostituisci con playerAmount
+    var playerAmount by mutableStateOf(0)
+    var diceAmount : Int = 5
     val bonusThreshold = 1
     val bonusAmount = 35
-
     var rollsLeft = 3
+
+    //variabili logica di gioco
+    var currentPlayer by mutableStateOf(0) //numero giocatore di cui è il turno
+    var selectedDice : MutableList<Boolean> = mutableStateListOf<Boolean>(false,false,false,false,false) //TODO inizializzalo col numero dinamico
+    var hasRolled by mutableStateOf(false)
+    var dice by mutableStateOf(List(diceAmount){0}) //lista di 5 mutable state = 0s
     var roundsPlayed = 0
     var gameOver by mutableStateOf(false)
     var bonusShown = false
+
+    var currentPlayerStatus : PlayerStatus? = null //entity PlayerStatus per il giocatore che sta giocando
+    var playerStatuses : Array<PlayerStatus> = emptyArray() //lista dei playerstatus di tutti i giocatori.  spero non vada fatta mutable
 
 
 // Giocatore 1
@@ -64,6 +67,18 @@ var p2UpperSectionBonus by mutableStateOf(0)
 
     fun getYahtzee(){
         dice = List(diceAmount) { 1 }
+    }
+
+    fun initGame(playerAmount : Int){
+        //variabili gamelogic
+        currentPlayer = 1
+        selectedDice = mutableStateListOf<Boolean>(false,false,false,false,false)
+
+        playerStatuses = Array(playerAmount){PlayerStatus()}
+        for(i in 1..playerAmount){
+            Log.d("GameLogic", "inizializzo il giocatore $i")
+            //playerStatuses[i] = PlayerStatus() //mi sa che lo fa già quando inizializzo l'array?
+        }
     }
 
 // funzione di reset
@@ -114,14 +129,6 @@ var p2UpperSectionBonus by mutableStateOf(0)
 
     val currentTotalScore: Int
         get() = if (isPlayerOneTurn) p1TotalScore else p2TotalScore // score per quando sono in mutli poi al massimo lo sistemo
-
-
-
-
-/////////////////
-
-
-
 
 
 
@@ -205,7 +212,6 @@ var p2UpperSectionBonus by mutableStateOf(0)
 
         if (selectedDice.any { it == true }) {
             rollsLeft--
-
         }
 
 

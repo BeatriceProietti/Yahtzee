@@ -297,8 +297,13 @@ var screenWidth : Dp = 0.dp
                     else{
                         gameLogic.bonusJustAwarded
                     }
-                    val yahtzeeBonusCount = if (gameLogic.isPlayerOneTurn) gameLogic.p1YahtzeeBonusCount else gameLogic.p2YahtzeeBonusCount
 
+                    val yahtzeeCounter =  if(gameLogic.multiPlayer){
+                        if (gameLogic.isPlayerOneTurn) gameLogic.p1YahtzeeBonusCount else gameLogic.p2YahtzeeBonusCount
+                    }
+                    else{
+                        gameLogic.yahtzeeAmount
+                    }
                     Text(
                         text = if (upperBonusGot) "Bonus Upper ottenuto" else "No bonus Upper",
                         fontSize = 14.sp,

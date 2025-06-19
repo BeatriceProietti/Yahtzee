@@ -95,7 +95,7 @@ fun MainScreen(navController: NavController) {
             verticalAlignment = CenterVertically,
         ) {
             composables?.funButton3D(
-                onClick = { navController.navigate("GameScreen") },
+                onClick = { navController.navigate("GameScreen");gameLogic.initGame(1) },
                 text = stringResource(R.string.mode_singleplayer),
                 color = Color.Red,
                 depth = 10,
@@ -122,7 +122,7 @@ fun MainScreen(navController: NavController) {
         ) {
             composables?.funButton3D(
                 onClick = {
-                    navController.navigate("GameScreen"); gameLogic.multiPlayer = true
+                    navController.navigate("GameScreen");gameLogic.initGame(2)
                 }, // col punto e virgola posso fargli fare più cose
                 text = stringResource(R.string.mode_multiplayer),
                 color = Color.Red,
@@ -314,22 +314,20 @@ fun GameScreen(gameLogic: GameLogic, navController: NavController) {
                     .padding(top = screenHeight * 0.05f, bottom = screenHeight * 0.05f)
             ) {
                 Row() {
-                    val scoreToShow =
-                        if (gameLogic.multiPlayer) gameLogic.currentTotalScore else gameLogic.totalScore
                     Text(
-                        text = "Punteggio: $scoreToShow",
+                        text = "Punteggio: ${gameLogic.playerStatuses[gameLogic.currentPlayer].totalScore}",
                         fontSize = 18.sp,
                         color = Color.White,
                         modifier = Modifier.padding(8.dp)
                     )
-                    if (gameLogic.multiPlayer) {
-                        Text(
-                            text = if (gameLogic.isPlayerOneTurn) "G1" else "G2",
-                            fontSize = 18.sp,
-                            color = Color.White,
-                            modifier = Modifier.padding(8.dp)
-                        )
-                    }
+
+                    Text(
+                        text = "G" + gameLogic.currentPlayer + " di " + gameLogic.playerAmount,
+                        fontSize = 18.sp,
+                        color = Color.White,
+                        modifier = Modifier.padding(8.dp)
+                    )
+
                 }
             }
             Spacer(modifier = Modifier.height(4.dp))
@@ -338,25 +336,14 @@ fun GameScreen(gameLogic: GameLogic, navController: NavController) {
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
 
-                val upperBonusGot = if (gameLogic.multiPlayer) {
-                    if (gameLogic.isPlayerOneTurn) gameLogic.playerOneBonusAwarded else gameLogic.playerTwoBonusAwarded
-                } else {
-                    gameLogic.bonusJustAwarded
-                }
-
-                val yahtzeeCounter = if (gameLogic.multiPlayer) {
-                    if (gameLogic.isPlayerOneTurn) gameLogic.p1YahtzeeBonusCount else gameLogic.p2YahtzeeBonusCount
-                } else {
-                    gameLogic.yahtzeeAmount
-                }
                 Text(
-                    text = if (upperBonusGot) "Bonus Upper ottenuto" else "No bonus Upper",
+                    text = if (gameLogic.playerStatuses[gameLogic.currentPlayer].bonusJustAwarded) "Bonus Upper ottenuto" else "No bonus Upper",
                     fontSize = 14.sp,
                     color = Color.LightGray,
                     modifier = Modifier.padding(horizontal = 8.dp)
                 )
                 Text(
-                    text = "Yahtzee Bonus: " + gameLogic.yahtzeeAmount,
+                    text = "Yahtzee Bonus: " + gameLogic.playerStatuses[gameLogic.currentPlayer].YahtzeeBonusCount,
                     fontSize = 14.sp,
                     color = Color.LightGray,
                     modifier = Modifier.padding(horizontal = 8.dp)

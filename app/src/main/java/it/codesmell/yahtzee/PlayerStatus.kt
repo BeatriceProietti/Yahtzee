@@ -9,9 +9,18 @@ import androidx.compose.runtime.setValue
 class PlayerStatus {
     var playerNo by mutableStateOf(1) //numero giocatore
     var totalScore by mutableStateOf(0)
+    var upperSectionScores = mutableStateMapOf<String, Int?>(
+        "Ones" to null,
+        "Twos" to null,
+        "Threes" to null,
+        "Fours" to null,
+        "Fives" to null,
+        "Sixes" to null,
+    )
+
 
     var YahtzeeBonusCount by mutableStateOf(0) //quantità di yahtzee bonus (100p) ottenuti
-    val usedCombos = mutableStateMapOf<String, Int>() // es: "Full house" -> 25
+    var usedCombos = mutableStateMapOf<String, Int>() // es: "Full house" -> 25
 
     var bonusJustAwarded by mutableStateOf(false)
     var upperSectionBonus by mutableStateOf(0)

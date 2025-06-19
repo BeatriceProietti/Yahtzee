@@ -34,14 +34,14 @@ class GameLogic : ViewModel() {
 
     //parametri gamemode
     var multiPlayer by mutableStateOf(false) // parte falso e verrà settato a true //sostituisci con playerAmount
-    var playerAmount by mutableStateOf(0)
+    var playerAmount by mutableStateOf(1)
     var diceAmount : Int = 5
     val bonusThreshold = 1
     val bonusAmount = 35
     var rollsLeft = 3
 
     //variabili logica di gioco
-    var currentPlayer by mutableStateOf(0) //numero giocatore di cui è il turno
+    var currentPlayer by mutableStateOf(0) //numero giocatore di cui è il turno parte da 1
     var selectedDice : MutableList<Boolean> = mutableStateListOf<Boolean>(false,false,false,false,false) //TODO inizializzalo col numero dinamico
     var hasRolled by mutableStateOf(false)
     var dice by mutableStateOf(List(diceAmount){0}) //lista di 5 mutable state = 0s
@@ -69,15 +69,26 @@ var p2UpperSectionBonus by mutableStateOf(0)
         dice = List(diceAmount) { 1 }
     }
 
-    fun initGame(playerAmount : Int){
+    fun initGame(numOfPlayers : Int){// si prende il player
         //variabili gamelogic
         currentPlayer = 1
         selectedDice = mutableStateListOf<Boolean>(false,false,false,false,false)
-
-        playerStatuses = Array(playerAmount){PlayerStatus()}
-        for(i in 1..playerAmount){
+        dice = List(diceAmount) { 0 }
+        playerAmount = numOfPlayers
+        playerStatuses = Array(playerAmount+1){PlayerStatus()}
+        for(i in 1..playerAmount+1){
             Log.d("GameLogic", "inizializzo il giocatore $i")
             //playerStatuses[i] = PlayerStatus() //mi sa che lo fa già quando inizializzo l'array?
+            playerStatuses[currentPlayer].playerNo = 1 //numero giocatore
+            playerStatuses[currentPlayer].totalScore = 0
+            playerStatuses[currentPlayer].upperSectionScores.keys.forEach {  playerStatuses[currentPlayer].upperSectionScores[it] = null }
+
+
+            playerStatuses[currentPlayer].YahtzeeBonusCount = 0 //quantità di yahtzee bonus (100p) ottenuti
+            playerStatuses[currentPlayer].usedCombos = mutableStateMapOf<String, Int>() // es: "Full house" -> 25
+
+            playerStatuses[currentPlayer].bonusJustAwarded = false
+            playerStatuses[currentPlayer].upperSectionBonus = 0
         }
     }
 
@@ -86,8 +97,6 @@ var p2UpperSectionBonus by mutableStateOf(0)
         // Reset variabili di gioco
         isPlayerOneTurn = true
 
-        playerOneBonusAwarded = false
-        playerTwoBonusAwarded = false
         bonusJustAwarded = false
         upperSectionBonus = 0
         rollsLeft = 3
@@ -267,30 +276,15 @@ var p2UpperSectionBonus by mutableStateOf(0)
     // sbobba chatgpt da rifare vv----------------------------------------------------------------------------------------------
 
     //Funzione che si calcola il bonus dei dadini
-    var playerOneBonusAwarded by mutableStateOf(false)
-    var playerTwoBonusAwarded by mutableStateOf(false)
     fun checkAndApplyUpperSectionBonus() {
-        val upperTotal = currentUpperSectionScores.values.filterNotNull().sum()
-
-        if (upperTotal >= bonusThreshold) {
-            if (multiPlayer) {
-                if (isPlayerOneTurn && !playerOneBonusAwarded) {
-                    p1TotalScore += bonusAmount
-                    playerOneBonusAwarded = true
-                    bonusJustAwarded = true
-                } else if (!isPlayerOneTurn && !playerTwoBonusAwarded) {
-                    p2TotalScore += bonusAmount
-                    playerTwoBonusAwarded = true
-                    bonusJustAwarded = true
-                }
-            } else {
-                if (upperSectionBonus == 0) {
-                    upperSectionBonus = bonusAmount
-                    totalScore += bonusAmount
-                    bonusJustAwarded = true
-                }
-            }
+        val upperTotal = playerStatuses[currentPlayer].upperSectionScores.values.filterNotNull().sum()
+        if (upperTotal >= bonusThreshold && !playerStatuses[currentPlayer].bonusJustAwarded) {
+            playerStatuses[currentPlayer].totalScore += 35
+            var mealmeal = playerStatuses[currentPlayer].totalScore
+            Log.d("totalScore", "$mealmeal")
+            playerStatuses[currentPlayer].bonusJustAwarded = true
         }
+        Log.d("uppertotal", "$upperTotal")
     }
 
     //calcolo punteggi upper section
@@ -313,31 +307,21 @@ var p2UpperSectionBonus by mutableStateOf(0)
     fun checkYahtzeeBonus(dice: List<Int>) {
         val valueCounts = dice.groupingBy { it }.eachCount()
 
-        val isYahtzee = valueCounts.values.any { it == 5 }
-
+        val isYahtzee = valueCounts.values.any { it == 5 } && valueCounts[0] == 0
         if (isYahtzee && rollsLeft < 300) {
             // Verifica che la combo Yahtzee sia già stata usata
-            val yahtzeeAlreadyUsed = currentUsedCombos.containsKey("combo_5kind")
+            val yahtzeeAlreadyUsed = playerStatuses[currentPlayer].usedCombos.containsKey("combo_5kind")
 
             if (yahtzeeAlreadyUsed) {
                 // Assegna il bonus
-                if (multiPlayer) {
-                    if (isPlayerOneTurn) {
-                        p1TotalScore += 100
-                        p1YahtzeeBonusCount++
-                    } else {
-                        p2TotalScore += 100
-                        p2YahtzeeBonusCount++
-                    }
-                } else {
-                    totalScore += 100
-                    yahtzeeAmount++
+                playerStatuses[currentPlayer].totalScore+=100
                     Log.d("yahtzee bonus", "hai ottenuto il bonus")
                 }
+            playerStatuses[currentPlayer].YahtzeeBonusCount++
                 hfx?.click(1f)
             }
         }
-    }
+
 
 
 
@@ -348,7 +332,7 @@ var p2UpperSectionBonus by mutableStateOf(0)
     fun calculatePossibleScores(dice: List<Int>): Map<String, Int> {
         val valueCounts = dice.groupingBy { it }.eachCount()  // Esempio: {6=3, 2=2}
         val sum = dice.sum()
-        val yahtzee = 50+(100*(yahtzeeAmount-1).coerceAtLeast(0))
+        val yahtzee = 50
         fun hasNOfAKind(n: Int): Boolean {
             return valueCounts.values.any { it >= n }
 
@@ -392,42 +376,40 @@ var p2UpperSectionBonus by mutableStateOf(0)
 
     //quando premi un punteggio, fissa il punteggio
     fun confirmScore(combo: String, score: Int) {
-        //val combos = currentUsedCombos //le combo già confermate
-        //val upperScores = currentUpperSectionScores
 
-        if (!currentUsedCombos.containsKey(combo) && hasRolled) {
-            currentUsedCombos[combo] = score //aggiunge la coppia combo-punteggio
+        if (!playerStatuses[currentPlayer].usedCombos.containsKey(combo) && hasRolled) {
+            playerStatuses[currentPlayer].usedCombos[combo] = score //aggiunge la coppia combo-punteggio
 
-            if (combo in currentUpperSectionScores ) {
-                currentUpperSectionScores [combo] = score
+            if (combo in playerStatuses[currentPlayer].upperSectionScores ) {
+                playerStatuses[currentPlayer].upperSectionScores[combo] = score
             }
 
-            if (multiPlayer) {
-                checkAndApplyUpperSectionBonus()
-                if (isPlayerOneTurn) {
-                    p1TotalScore += score
-                } else {
-                    p2TotalScore += score
-                }
-            } else {
-                totalScore += score
-            }
+
+            playerStatuses[currentPlayer].totalScore += score
+
 
             // reset e passa al prossimo turno
             rollsLeft = 300
             roundsPlayed++
 
-            if (multiPlayer) {
-                isPlayerOneTurn = !isPlayerOneTurn
+
+            Log.d("player increment", "$currentPlayer")
+            Log.d("player amount", "$playerAmount")
+            //blocco rotazione turni
+            if (currentPlayer<playerAmount && currentPlayer > 0) {
+                Log.d("player increment", "$currentPlayer")
+                currentPlayer++
             }
+            else currentPlayer = 1
+            //
+
 
             Log.d("roundplay", "$roundsPlayed")
             Log.d("rolls", "$rollsLeft")
-            Log.d("roundplay", "$multiPlayer")
 
             checkAndApplyUpperSectionBonus()
             //fine partita
-            if ((multiPlayer && roundsPlayed >= 2) || (!multiPlayer && roundsPlayed >= 3)) {
+            if (roundsPlayed >= 13 * playerAmount) {
                 gameOver = true
                 Log.d("roundplay", "sono nel gameover la partita è finita dio cristo $gameOver")
             }

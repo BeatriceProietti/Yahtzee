@@ -52,8 +52,6 @@ import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.MotionScene
 import androidx.navigation.NavController
 import kotlinx.coroutines.delay
-import java.time.LocalDate
-import java.util.Calendar
 
 // qua mettiamo tutte le schermate dell'app
 
@@ -64,6 +62,9 @@ var isLandscape: Boolean = false
 var screenHeight: Dp = 0.dp
 var screenWidth: Dp = 0.dp
 
+var selectedPlayerAmount by mutableStateOf(2)
+
+
 @Composable
 fun MainScreen(navController: NavController) {
 
@@ -73,8 +74,6 @@ fun MainScreen(navController: NavController) {
 
     screenHeight = configuration.screenHeightDp.dp
     screenWidth = configuration.screenWidthDp.dp
-
-
 
 
 
@@ -123,15 +122,46 @@ fun MainScreen(navController: NavController) {
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            composables?.funButton3D(
-                onClick = {
-                    navController.navigate("GameScreen");gameLogic.initGame(2)
-                }, // col punto e virgola posso fargli fare più cose
-                text = stringResource(R.string.mode_multiplayer),
-                color = Color.Red,
-                depth = 10,
-                screenWidth * 0.9f, 50.dp
-            )
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(start = screenWidth * 0.05f, end = screenWidth * 0.05f),
+                horizontalArrangement = Arrangement.Center,
+                verticalAlignment = CenterVertically,
+            ) {
+                composables?.funButton3D(
+                    onClick = { navController.navigate("GameScreen");gameLogic.initGame(selectedPlayerAmount) },
+                    text = stringResource(R.string.mode_multiplayer),
+                    color = Color.Red,
+                    depth = 10,
+                    sizeX = screenWidth * 0.5f,
+                    sizeY = 70.dp
+                )
+                composables?.funButton3D(
+                    onClick = { provas() },
+                    text = "-",
+                    color = Color(0xFFFA9F76),
+                    depth = 10,
+                    sizeX = screenWidth * 0.1f,
+                    sizeY = 70.dp
+                )
+                composables?.funButton3D(
+                    onClick = { provas() },
+                    text = selectedPlayerAmount.toString(),
+                    color = Color(0xFFFF772E),
+                    depth = 10,
+                    sizeX = screenWidth * 0.2f,
+                    sizeY = 70.dp
+                )
+                composables?.funButton3D(
+                    onClick = { provas() },
+                    text = "+",
+                    color = Color(0xFFFA9F76),
+                    depth = 10,
+                    sizeX = screenWidth * 0.1f,
+                    sizeY = 70.dp
+                )
+            }
             composables?.funButton3D(
                 onClick = { navController.navigate("Screen2") },
                 text = stringResource(R.string.mode_testscreen),

@@ -888,10 +888,10 @@ class Composables {
 
     @Composable
     fun scoreDisplayLandscape(){
-        Column(){
-            Row(
+        Row(){
+            Column(
                 modifier = Modifier.fillMaxHeight(),
-                horizontalArrangement = Arrangement.SpaceBetween
+                verticalArrangement = Arrangement.SpaceBetween
             ) {
                 Text(
                     text = stringResource(R.string.game_score) + ": ${gameLogic.playerStatuses[gameLogic.currentPlayer].totalScore}",
@@ -899,20 +899,6 @@ class Composables {
                     color = Color.White,
                     modifier = Modifier.padding(8.dp)
                 )
-
-                Text(
-                    text = stringResource(R.string.game_player) + " : " + gameLogic.currentPlayer + " di " + gameLogic.playerAmount,
-                    fontSize = 18.sp,
-                    color = Color.White,
-                    modifier = Modifier.padding(8.dp)
-                )
-            }
-            Spacer(modifier = Modifier.height(4.dp))
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween
-            ) {
-
                 Text(
                     text = if (gameLogic.playerStatuses[gameLogic.currentPlayer].bonusJustAwarded) "Bonus Upper ottenuto" else "No bonus Upper",
                     fontSize = 14.sp,
@@ -924,6 +910,12 @@ class Composables {
                     fontSize = 14.sp,
                     color = Color.LightGray,
                     modifier = Modifier.padding(horizontal = 8.dp)
+                )
+                Text(
+                    text = stringResource(R.string.game_player) + " : " + gameLogic.currentPlayer + " di " + gameLogic.playerAmount,
+                    fontSize = 18.sp,
+                    color = Color.White,
+                    modifier = Modifier.padding(8.dp)
                 )
             }
         }

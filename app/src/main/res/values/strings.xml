@@ -17,4 +17,8 @@
     <string name="game_throwdice">game_throwdice</string>
     <string name="one_player">one_player</string>
     <string name="multi_player">multi_player</string>
+    <string name="game_score">game_score</string>
+    <string name="game_upperbonus">game_upperbonus</string>
+    <string name="game_player">game_player</string>
+    <string name="game_playeramount">game_playeramount</string>
 </resources>

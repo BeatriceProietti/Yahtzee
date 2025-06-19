@@ -313,42 +313,9 @@ fun GameScreen(gameLogic: GameLogic, navController: NavController) {
                 modifier = Modifier //punteggio
                     .padding(top = screenHeight * 0.05f, bottom = screenHeight * 0.05f)
             ) {
-                Row() {
-                    Text(
-                        text = "Punteggio: ${gameLogic.playerStatuses[gameLogic.currentPlayer].totalScore}",
-                        fontSize = 18.sp,
-                        color = Color.White,
-                        modifier = Modifier.padding(8.dp)
-                    )
-
-                    Text(
-                        text = "G" + gameLogic.currentPlayer + " di " + gameLogic.playerAmount,
-                        fontSize = 18.sp,
-                        color = Color.White,
-                        modifier = Modifier.padding(8.dp)
-                    )
-
-                }
+                composables?.scoreDisplay()
             }
-            Spacer(modifier = Modifier.height(4.dp))
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween
-            ) {
 
-                Text(
-                    text = if (gameLogic.playerStatuses[gameLogic.currentPlayer].bonusJustAwarded) "Bonus Upper ottenuto" else "No bonus Upper",
-                    fontSize = 14.sp,
-                    color = Color.LightGray,
-                    modifier = Modifier.padding(horizontal = 8.dp)
-                )
-                Text(
-                    text = "Yahtzee Bonus: " + gameLogic.playerStatuses[gameLogic.currentPlayer].YahtzeeBonusCount,
-                    fontSize = 14.sp,
-                    color = Color.LightGray,
-                    modifier = Modifier.padding(horizontal = 8.dp)
-                )
-            }
             Box() {
                 composables?.swappingCards()
             }
@@ -399,37 +366,7 @@ fun GameScreen(gameLogic: GameLogic, navController: NavController) {
                 modifier = Modifier //punteggio
                     .padding(top = screenHeight * 0.05f, bottom = screenHeight * 0.05f)
             ) {
-                Column() {
-
-                    val scoreToShow =
-                        if (gameLogic.multiPlayer) gameLogic.currentTotalScore else gameLogic.totalScore
-                    Text(
-                        text = "Punteggio: $scoreToShow",
-                        fontSize = 18.sp,
-                        color = Color.White,
-                        modifier = Modifier.padding(8.dp)
-                    )
-                    if (gameLogic.multiPlayer) {
-                        Text(
-                            text = if (gameLogic.isPlayerOneTurn) "G1" else "G2",
-                            fontSize = 18.sp,
-                            color = Color.White,
-                            modifier = Modifier.padding(8.dp)
-                        )
-                    }
-                    Spacer(modifier = Modifier.height(8.dp))
-
-                    Text(
-                        text = if (gameLogic.bonusJustAwarded) "Bonus Upper ottenuto" else "no Bonus Upper",
-                        fontSize = 14.sp,
-                        color = Color.LightGray
-                    )
-                    Text(
-                        text = "Yahtzee Bonus: ${gameLogic.yahtzeeAmount}",
-                        fontSize = 14.sp,
-                        color = Color.LightGray
-                    )
-                }
+                composables?.scoreDisplayLandscape()
             }
 
             Box() {

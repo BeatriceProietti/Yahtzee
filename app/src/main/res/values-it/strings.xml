@@ -18,4 +18,8 @@
     <string name="game_throwdice">Tira dadi</string>
     <string name="one_player">Un giocatore</string>
     <string name="multi_player">Più giocatori</string>
+    <string name="game_score">Punteggio</string>
+    <string name="game_upperbonus">Bonus Upper</string>
+    <string name="game_player">Giocatore</string>
+    <string name="game_playeramount">Giocatori</string>
 </resources>

@@ -18,4 +18,8 @@
     <string name="game_throwdice">Throw dice</string>
     <string name="one_player">One Player</string>
     <string name="multi_player">Multiplayer</string>
+    <string name="game_score">Score</string>
+    <string name="game_upperbonus">Upper Bonus</string>
+    <string name="game_player">Player</string>
+    <string name="game_playeramount">Players</string>
 </resources>

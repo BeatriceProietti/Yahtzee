@@ -54,175 +54,202 @@ import kotlinx.coroutines.delay
 
 // qua mettiamo tutte le schermate dell'app
 
-val configuration : ProvidableCompositionLocal<Configuration>? = null
-var isPortrait : Boolean = false
-var isLandscape : Boolean = false
+val configuration: ProvidableCompositionLocal<Configuration>? = null
+var isPortrait: Boolean = false
+var isLandscape: Boolean = false
 
-var screenHeight : Dp = 0.dp
-var screenWidth : Dp = 0.dp
+var screenHeight: Dp = 0.dp
+var screenWidth: Dp = 0.dp
 
-    @Composable
-    fun MainScreen(navController: NavController) {
+@Composable
+fun MainScreen(navController: NavController) {
 
-        val configuration = LocalConfiguration.current
-        isPortrait = configuration.orientation == Configuration.ORIENTATION_PORTRAIT
-        isLandscape = configuration.orientation == Configuration.ORIENTATION_LANDSCAPE
+    val configuration = LocalConfiguration.current
+    isPortrait = configuration.orientation == Configuration.ORIENTATION_PORTRAIT
+    isLandscape = configuration.orientation == Configuration.ORIENTATION_LANDSCAPE
 
-        screenHeight = configuration.screenHeightDp.dp
-        screenWidth = configuration.screenWidthDp.dp
-
-
+    screenHeight = configuration.screenHeightDp.dp
+    screenWidth = configuration.screenWidthDp.dp
 
 
 
-        Column(
-            modifier = Modifier.fillMaxSize(),
-            verticalArrangement = Arrangement.Center,
-            horizontalAlignment = CenterHorizontally
+
+
+    Column(
+        modifier = Modifier.fillMaxSize(),
+        verticalArrangement = Arrangement.Center,
+        horizontalAlignment = CenterHorizontally
+    ) {
+        //Titolo
+        composables?.title()
+
+        Spacer(modifier = Modifier.height(screenHeight * 0.075f))
+
+        //Riga un giocatore - Classifica
+        composables?.titleLabel(stringResource(R.string.one_player))
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(start = screenWidth * 0.05f, end = screenWidth * 0.05f),
+            horizontalArrangement = Arrangement.Center,
+            verticalAlignment = CenterVertically,
         ) {
-            //Titolo
-            composables?.title()
-
-            Spacer(modifier = Modifier.height(screenHeight*0.075f))
-
-            //Riga un giocatore - Classifica
-            composables?.titleLabel(stringResource(R.string.one_player))
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(start = screenWidth*0.05f, end = screenWidth*0.05f),
-                horizontalArrangement = Arrangement.Center,
-                verticalAlignment = CenterVertically,
-            ) {
-                composables?.funButton3D(
-                    onClick = { navController.navigate("GameScreen") },
-                    text = stringResource(R.string.mode_singleplayer),
-                    color = Color.Red,
-                    depth = 10,
-                    sizeX = screenWidth*0.55f,
-                    sizeY = 70.dp
-                )
-                composables?.funButton3D(
-                    onClick = { provas() },
-                    text = stringResource(R.string.highscores),
-                    color = Color(0xFFFF772E),
-                    depth = 10,
-                    sizeX = screenWidth*0.35f,
-                    sizeY = 70.dp
-                )
-            }
-
-
-            //Riga più giocatori
-            Spacer(modifier = Modifier.height(15.dp))
-            composables?.titleLabel(stringResource(R.string.multi_player))
-            Column(
-                verticalArrangement = Arrangement.Center,
-                horizontalAlignment = Alignment.CenterHorizontally) {
-                composables?.funButton3D(
-                    onClick = { navController.navigate("GameScreen"); gameLogic.multiPlayer=true}, // col punto e virgola posso fargli fare più cose
-                    text = stringResource(R.string.mode_multiplayer),
-                    color = Color.Red,
-                    depth = 10,
-                    screenWidth*0.9f,50.dp
-                )
-                composables?.funButton3D(
-                    onClick = { navController.navigate("Screen2") },
-                    text = stringResource(R.string.mode_testscreen),
-                    color = Color.Blue,
-                    depth = 10,
-                    screenWidth*0.9f,50.dp
-                )
-
-                composables?.funButton3D(
-                    onClick = { navController.navigate("OptionScreen") },
-                    text = stringResource(R.string.settings),
-                    color = Color.Blue,
-                    depth = 10,
-                    screenWidth*0.9f,50.dp
-                )
-            }
+            composables?.funButton3D(
+                onClick = { navController.navigate("GameScreen") },
+                text = stringResource(R.string.mode_singleplayer),
+                color = Color.Red,
+                depth = 10,
+                sizeX = screenWidth * 0.55f,
+                sizeY = 70.dp
+            )
+            composables?.funButton3D(
+                onClick = { provas() },
+                text = stringResource(R.string.highscores),
+                color = Color(0xFFFF772E),
+                depth = 10,
+                sizeX = screenWidth * 0.35f,
+                sizeY = 70.dp
+            )
         }
-    }
 
-    @Composable
-    fun OptionScreen(navController: NavController){
+
+        //Riga più giocatori
+        Spacer(modifier = Modifier.height(15.dp))
+        composables?.titleLabel(stringResource(R.string.multi_player))
         Column(
-            modifier = Modifier.fillMaxSize(),
-            verticalArrangement = Arrangement.spacedBy(24.dp, Alignment.CenterVertically),
+            verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             composables?.funButton3D(
-                ::switchVibMode,
-                stringResource(R.string.settings_hapticsMode),
-                color = if(hfx?.hasRichHaptics == true) Color.Blue else Color.Red,
+                onClick = {
+                    navController.navigate("GameScreen"); gameLogic.multiPlayer = true
+                }, // col punto e virgola posso fargli fare più cose
+                text = stringResource(R.string.mode_multiplayer),
+                color = Color.Red,
                 depth = 10,
-                150.dp,
-                50.dp
+                screenWidth * 0.9f, 50.dp
             )
             composables?.funButton3D(
-                ::switchTheme,
-                if (darkTheme) "☾" else "☼",
+                onClick = { navController.navigate("Screen2") },
+                text = stringResource(R.string.mode_testscreen),
                 color = Color.Blue,
                 depth = 10,
-                150.dp,
-                50.dp
+                screenWidth * 0.9f, 50.dp
+            )
+
+            composables?.funButton3D(
+                onClick = { navController.navigate("OptionScreen") },
+                text = stringResource(R.string.settings),
+                color = Color.Blue,
+                depth = 10,
+                screenWidth * 0.9f, 50.dp
+            )
+        }
+    }
+}
+
+@Composable
+fun OptionScreen(navController: NavController) {
+    Column(
+        modifier = Modifier.fillMaxSize(),
+        verticalArrangement = Arrangement.spacedBy(24.dp, Alignment.CenterVertically),
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        composables?.funButton3D(
+            ::switchVibMode,
+            stringResource(R.string.settings_hapticsMode),
+            color = if (hfx?.hasRichHaptics == true) Color.Blue else Color.Red,
+            depth = 10,
+            150.dp,
+            50.dp
+        )
+        composables?.funButton3D(
+            ::switchTheme,
+            if (darkTheme) "☾" else "☼",
+            color = Color.Blue,
+            depth = 10,
+            150.dp,
+            50.dp
+        )
+    }
+}
+
+
+@Composable
+fun Screen2(
+    navController: NavController,
+    viewModel: ScoreListViewModel,
+    onEvent: (ScoreListEvent) -> Unit
+) {
+    val state by viewModel.state.collectAsState()
+
+    var selectedScoreId by rememberSaveable { mutableStateOf<Int?>(null) }
+    var showDialog by rememberSaveable { mutableStateOf(false) }
+
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(10.dp, 40.dp),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        //verticalArrangement = Arrangement.Center
+    ) {
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .horizontalScroll(rememberScrollState()),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.Center
+        ) {
+            SortType.values().forEach { sortType ->
+                Row(
+                    modifier = Modifier
+                        .clickable {
+                            onEvent(ScoreListEvent.sortScores(sortType))
+                        },
+                    horizontalArrangement = Arrangement.Center,
+                    verticalAlignment = CenterVertically,
+                ) {
+                    RadioButton(
+                        selected = state.sortType == sortType,
+                        onClick = { onEvent(ScoreListEvent.sortScores(sortType)) }
+                    )
+                    Text(text = sortType.toString())
+                }
+            }
+        }
+
+        LazyColumn() {
+            items(state.scores) { score ->
+                composables?.funButton3D(
+                    onClick = { selectedScoreId = score.id },
+                    text = "${score.finalScore} ${score.date}", //valori delo score
+                    color = Color.Blue,
+                    depth = 15,
+                    screenWidth * 0.87f, 50.dp
+                )
+
+            }
+        }
+
+        // find the TableScore that has been selected
+        val selectedScore = state.scores.find { it.id == selectedScoreId }
+
+        // show corresponding popup
+        if (selectedScore != null) {
+            ScoresPopUp(
+                showDialog = true,
+                onDismiss = { selectedScoreId = null },
+                onEvent = onEvent,
+                tableScore = selectedScore
             )
         }
     }
 
-
-@Composable
-    fun Screen2(navController: NavController, viewModel: ScoreListViewModel, onEvent: (ScoreListEvent) -> Unit) {
-        val state by viewModel.state.collectAsState()
-
-        Column(modifier = Modifier.fillMaxSize()
-            .padding(10.dp, 40.dp),
-            horizontalAlignment = Alignment.CenterHorizontally,
-            //verticalArrangement = Arrangement.Center
-        ) {
-            Row(modifier = Modifier
-                .fillMaxWidth()
-                .horizontalScroll(rememberScrollState()),
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.Center
-            ){
-                SortType.values().forEach{ sortType ->
-                    Row(
-                        modifier = Modifier
-                            .clickable {
-                                onEvent(ScoreListEvent.sortScores(sortType))
-                            },
-                        horizontalArrangement = Arrangement.Center,
-                        verticalAlignment = CenterVertically,
-                    ){
-                        RadioButton(
-                            selected = state.sortType == sortType,
-                            onClick = {onEvent(ScoreListEvent.sortScores(sortType))}
-                        )
-                        Text(text = sortType.toString())
-                    }
-                }
-            }
-
-            LazyColumn(){
-                items(state.scores){ score ->
-                    composables?.funButton3D(
-                        onClick = {  },
-                        text = "${score.finalScore} ${score.date}", //valori delo score
-                        color = Color.Blue,
-                        depth = 15,
-                        screenWidth*0.87f,50.dp
-                    )
-                }
-            }
-        }
-
-    }
+}
 
 
 @Composable
-fun GameScreen(gameLogic: GameLogic,navController: NavController) {
+fun GameScreen(gameLogic: GameLogic, navController: NavController) {
     var showOverlay by remember { mutableStateOf(false) }
     val context = LocalContext.current
     BackHandler { // mi serve sennò non mi setta le variabili del multiplayer a falso e il gioco parte sempre in multi
@@ -246,8 +273,9 @@ fun GameScreen(gameLogic: GameLogic,navController: NavController) {
             showOverlay = true
         }
     }
-    var showToastAni : Boolean
-    showToastAni = gameLogic.bonusJustAwarded // mi creo una variabile che si prende lo stato del bonus jusr awarded e poi lo usa per mostrare il toast
+    var showToastAni: Boolean
+    showToastAni =
+        gameLogic.bonusJustAwarded // mi creo una variabile che si prende lo stato del bonus jusr awarded e poi lo usa per mostrare il toast
     LaunchedEffect(showToastAni) {
         if (showToastAni) {
             Log.d("bonus", "🎉 Bonus attivato!")
@@ -267,8 +295,6 @@ fun GameScreen(gameLogic: GameLogic,navController: NavController) {
     }
 
 
-
-
     var dr = IntArray(gameLogic.diceAmount)
     for (i in 0..gameLogic.diceAmount - 1) {
         dr[i] = gameLogic.dice[i] //i dadi presi da gameLogic, da mandare all'interfaccia
@@ -278,14 +304,16 @@ fun GameScreen(gameLogic: GameLogic,navController: NavController) {
     //Portrait ------------------------------------------------------------------------------------------------------------
     if (LocalConfiguration.current.orientation == Configuration.ORIENTATION_PORTRAIT) {
 
-        Column(modifier = Modifier.fillMaxSize(),
+        Column(
+            modifier = Modifier.fillMaxSize(),
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Bottom
         ) {
-            Box(modifier = Modifier //punteggio
-                .padding(top = screenHeight*0.05f, bottom = screenHeight*0.05f)
-            ){
-                Row(){
+            Box(
+                modifier = Modifier //punteggio
+                    .padding(top = screenHeight * 0.05f, bottom = screenHeight * 0.05f)
+            ) {
+                Row() {
                     val scoreToShow =
                         if (gameLogic.multiPlayer) gameLogic.currentTotalScore else gameLogic.totalScore
                     Text(
@@ -310,17 +338,15 @@ fun GameScreen(gameLogic: GameLogic,navController: NavController) {
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
 
-                val upperBonusGot =  if(gameLogic.multiPlayer){
+                val upperBonusGot = if (gameLogic.multiPlayer) {
                     if (gameLogic.isPlayerOneTurn) gameLogic.playerOneBonusAwarded else gameLogic.playerTwoBonusAwarded
-                }
-                else{
+                } else {
                     gameLogic.bonusJustAwarded
                 }
 
-                val yahtzeeCounter =  if(gameLogic.multiPlayer){
+                val yahtzeeCounter = if (gameLogic.multiPlayer) {
                     if (gameLogic.isPlayerOneTurn) gameLogic.p1YahtzeeBonusCount else gameLogic.p2YahtzeeBonusCount
-                }
-                else{
+                } else {
                     gameLogic.yahtzeeAmount
                 }
                 Text(
@@ -336,35 +362,37 @@ fun GameScreen(gameLogic: GameLogic,navController: NavController) {
                     modifier = Modifier.padding(horizontal = 8.dp)
                 )
             }
-            Box(){
+            Box() {
                 composables?.swappingCards()
             }
-            Box(modifier = Modifier // riga di dadi di merda
-                .padding(bottom = screenHeight*0.05f, top = screenHeight*0.05f)
+            Box(
+                modifier = Modifier // riga di dadi di merda
+                    .padding(bottom = screenHeight * 0.05f, top = screenHeight * 0.05f)
             ) {
                 composables?.diceRow(dice = dr.toTypedArray(), gameLogic = gameLogic)
 
             }
-            Box(modifier = Modifier // bottone DUCE di merda
-                .padding(bottom = screenHeight*0.05f)
+            Box(
+                modifier = Modifier // bottone DUCE di merda
+                    .padding(bottom = screenHeight * 0.05f)
             ) {
 
                 val canRoll = gameLogic.rollsLeft > 0 && !gameLogic.gameOver
 
-                Column(){
+                Column() {
                     composables?.funButton3D(
                         onClick = { gameLogic.getYahtzee() },
                         text = "Ottieni Palle",
                         color = Color.Red,
                         depth = 10,
-                        150.dp,50.dp
+                        150.dp, 50.dp
                     )
                     composables?.funButton3D(
                         onClick = { if (canRoll) gameLogic.rollSelectedDice() },
                         text = if (canRoll) "Tira Dadi" else "Scegli una combo",
                         color = MaterialTheme.colorScheme.primary,
                         depth = 10,
-                        150.dp,50.dp
+                        150.dp, 50.dp
                     )
                 }
 
@@ -372,17 +400,19 @@ fun GameScreen(gameLogic: GameLogic,navController: NavController) {
         }
     }
     //Landscape ------------------------------------------------------------------------------------------------------------
-    else{
+    else {
 
-        Row(modifier = Modifier.fillMaxSize(),
+        Row(
+            modifier = Modifier.fillMaxSize(),
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.Center
         ) {
 
-            Box(modifier = Modifier //punteggio
-                .padding(top = screenHeight*0.05f, bottom = screenHeight*0.05f)
-            ){
-                Column(){
+            Box(
+                modifier = Modifier //punteggio
+                    .padding(top = screenHeight * 0.05f, bottom = screenHeight * 0.05f)
+            ) {
+                Column() {
 
                     val scoreToShow =
                         if (gameLogic.multiPlayer) gameLogic.currentTotalScore else gameLogic.totalScore
@@ -415,17 +445,18 @@ fun GameScreen(gameLogic: GameLogic,navController: NavController) {
                 }
             }
 
-            Box(){
+            Box() {
                 composables?.swappingCards()
             }
-            Column(modifier = Modifier
-                .rotate(-90f)
-                .offset(y = 50.dp),
+            Column(
+                modifier = Modifier
+                    .rotate(-90f)
+                    .offset(y = 50.dp),
 
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.Center
 
-            ){//colonnadiceRow
+            ) {//colonnadiceRow
                 Box(
                     modifier = Modifier // riga di dadi di merda
                         .padding()
@@ -444,7 +475,7 @@ fun GameScreen(gameLogic: GameLogic,navController: NavController) {
                         text = if (canRoll) "Tira Dadi" else "Scegli una combo",
                         color = MaterialTheme.colorScheme.primary,
                         depth = 10,
-                        150.dp,50.dp
+                        150.dp, 50.dp
                     )
 
                 }

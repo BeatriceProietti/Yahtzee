@@ -2,6 +2,7 @@ package it.codesmell.yahtzee.dao
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
+import kotlinx.serialization.Serializable
 
 @Entity //tabella nel DB
 data class TableScore(

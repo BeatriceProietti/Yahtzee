@@ -138,7 +138,7 @@ fun MainScreen(navController: NavController) {
                     sizeY = 70.dp
                 )
                 composables?.funButton3D(
-                    onClick = { provas() },
+                    onClick = { if(selectedPlayerAmount > 2) selectedPlayerAmount-- },
                     text = "-",
                     color = Color(0xFFFA9F76),
                     depth = 10,
@@ -154,7 +154,7 @@ fun MainScreen(navController: NavController) {
                     sizeY = 70.dp
                 )
                 composables?.funButton3D(
-                    onClick = { provas() },
+                    onClick = { selectedPlayerAmount++ },
                     text = "+",
                     color = Color(0xFFFA9F76),
                     depth = 10,
@@ -353,14 +353,14 @@ fun GameScreen(gameLogic: GameLogic, navController: NavController) {
                 composables?.swappingCards()
             }
             Box(
-                modifier = Modifier // riga di dadi di merda
+                modifier = Modifier
                     .padding(bottom = screenHeight * 0.05f, top = screenHeight * 0.05f)
             ) {
                 composables?.diceRow(dice = dr.toTypedArray(), gameLogic = gameLogic)
 
             }
             Box(
-                modifier = Modifier // bottone DUCE di merda
+                modifier = Modifier
                     .padding(bottom = screenHeight * 0.05f)
             ) {
 
@@ -368,7 +368,7 @@ fun GameScreen(gameLogic: GameLogic, navController: NavController) {
 
                 Column() {
                     composables?.funButton3D(
-                        onClick = { gameLogic.savePlayerStatus(gameLogic.playerStatuses[gameLogic.currentPlayer]) },
+                        onClick = { gameLogic.getWinner() },
                         text = "Ottieni Palle",
                         color = Color.Red,
                         depth = 10,
@@ -415,13 +415,13 @@ fun GameScreen(gameLogic: GameLogic, navController: NavController) {
 
             ) {//colonnadiceRow
                 Box(
-                    modifier = Modifier // riga di dadi di merda
+                    modifier = Modifier
                         .padding()
                 ) {
                     composables?.diceRow(dice = dr.toTypedArray(), gameLogic = gameLogic)
                 }
                 Box(
-                    modifier = Modifier // bottone DUCE di merda
+                    modifier = Modifier
                         .padding(50.dp)
                         .rotate(90f)
                 ) {

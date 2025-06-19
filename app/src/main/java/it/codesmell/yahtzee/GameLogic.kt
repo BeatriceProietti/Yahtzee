@@ -264,7 +264,6 @@ class GameLogic : ViewModel() {
     }
 
 
-    // sbobba chatgpt da rifare vv----------------------------------------------------------------------------------------------
 
     //Funzione che si calcola il bonus dei dadini
     fun checkAndApplyUpperSectionBonus() {
@@ -295,7 +294,6 @@ class GameLogic : ViewModel() {
     }
 
 
-    //pisello e palle
 
     fun checkYahtzeeBonus(dice: List<Int>) {
         val valueCounts = dice.groupingBy { it }.eachCount()
@@ -437,6 +435,15 @@ class GameLogic : ViewModel() {
 
         dice = List(diceAmount) { 0 }
         hasRolled = false
+    }
+
+
+    fun getWinner() : Int{
+        var winner = 1
+        var maxScore = 0
+
+        Log.d("getWinner", "Vince il giocatore $winner")
+        return winner
     }
 
 

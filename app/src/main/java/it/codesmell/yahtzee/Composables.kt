@@ -114,17 +114,6 @@ class Composables {
             )
         }
 
-        // 🔁 Localizzazione qui (se vuoi), per ora lasciamo testo statico
-        val resultText = if (!isMultiplayer) {
-            "Partita terminata\nPunteggio: ${gameLogic.totalScore}"
-        } else {
-            when {
-                p1Score > p2Score -> "Ha vinto il Giocatore 1 con $p1Score punti!"
-                p2Score > p1Score -> "Ha vinto il Giocatore 2 con $p2Score punti!"
-                else -> "Pareggio! Entrambi i giocatori hanno $p1Score punti."
-            }
-        }
-
         Box(
             modifier = Modifier.fillMaxSize(),
             contentAlignment = Alignment.Center // 🔁 Ora centra il box!
@@ -153,7 +142,7 @@ class Composables {
                         contentAlignment = Alignment.Center
                     ) {
                         Text(
-                            text = resultText,
+                            text = "Gulyx",
                             color = Color.Black,
                             textAlign = TextAlign.Center,
                             fontSize = 18.sp,

@@ -225,8 +225,10 @@ var screenWidth : Dp = 0.dp
                 showOverlay = true
             }
         }
-        LaunchedEffect(gameLogic.bonusJustAwarded) {
-            if (gameLogic.bonusJustAwarded) {
+        var showToastAni : Boolean
+        showToastAni = gameLogic.bonusJustAwarded // mi creo una variabile che si prende lo stato del bonus jusr awarded e poi lo usa per mostrare il toast
+        LaunchedEffect(showToastAni) {
+            if (showToastAni) {
                 Log.d("bonus", "🎉 Bonus attivato!")
 
                 Toast.makeText(
@@ -238,7 +240,7 @@ var screenWidth : Dp = 0.dp
                 // Ritarda il reset giusto per evitare race condition visiva (facoltativo)
                 delay(300)
 
-                gameLogic.bonusJustAwarded = false // Reset flag
+                showToastAni = false // Reset flag
                 Log.d("bonus", "✅ bonusJustAwarded reset a ${gameLogic.bonusJustAwarded}")
             }
         }
@@ -288,7 +290,13 @@ var screenWidth : Dp = 0.dp
                     modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.SpaceBetween
                 ) {
-                    val upperBonusGot = if (gameLogic.isPlayerOneTurn) gameLogic.p1BonusJustAwarded else gameLogic.p2BonusJustAwarded
+
+                    val upperBonusGot =  if(gameLogic.multiPlayer){
+                        if (gameLogic.isPlayerOneTurn) gameLogic.playerOneBonusAwarded else gameLogic.playerTwoBonusAwarded
+                    }
+                    else{
+                        gameLogic.bonusJustAwarded
+                    }
                     val yahtzeeBonusCount = if (gameLogic.isPlayerOneTurn) gameLogic.p1YahtzeeBonusCount else gameLogic.p2YahtzeeBonusCount
 
                     Text(
@@ -341,6 +349,7 @@ var screenWidth : Dp = 0.dp
                     .padding(top = screenHeight*0.05f, bottom = screenHeight*0.05f)
                 ){
                     Column(){
+
                         val scoreToShow =
                             if (gameLogic.multiPlayer) gameLogic.currentTotalScore else gameLogic.totalScore
                         Text(
@@ -359,18 +368,13 @@ var screenWidth : Dp = 0.dp
                         }
                         Spacer(modifier = Modifier.height(8.dp))
 
-                        val upperBonusGot =
-                            if (gameLogic.isPlayerOneTurn) gameLogic.p1BonusJustAwarded else gameLogic.p2BonusJustAwarded
-                        val yahtzeeBonusCount =
-                            if (gameLogic.isPlayerOneTurn) gameLogic.p1YahtzeeBonusCount else gameLogic.p2YahtzeeBonusCount
-
                         Text(
-                            text = if (upperBonusGot) "Bonus Upper ottenuto" else "no Bonus Upper",
+                            text = if (gameLogic.bonusJustAwarded) "Bonus Upper ottenuto" else "no Bonus Upper",
                             fontSize = 14.sp,
                             color = Color.LightGray
                         )
                         Text(
-                            text = "Yahtzee Bonus: $yahtzeeBonusCount",
+                            text = "Yahtzee Bonus: ${gameLogic.yahtzeeAmount}",
                             fontSize = 14.sp,
                             color = Color.LightGray
                         )

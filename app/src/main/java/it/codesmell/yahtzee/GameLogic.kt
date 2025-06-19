@@ -284,8 +284,6 @@ var p2UpperSectionBonus by mutableStateOf(0)
         }
     }
 
-
-
     //calcolo punteggi upper section
     fun calculateUpperSectionScore(combo: String, dice: List<Int>): Int {
         val target = when (combo) {

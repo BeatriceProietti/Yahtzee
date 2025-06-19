@@ -51,13 +51,14 @@ lateinit var mozione : motionManager
 class MainActivity : ComponentActivity() {
 
     // DB building
-    private val db by lazy{
+    val db by lazy{
         Room.databaseBuilder(
             applicationContext,
             TableScoreDatabase::class.java,
             "scores.db"
         ).build()
     }
+
 
     // ViewModel factory - creating a ViewModel with parameters
     private val viewModel by viewModels<ScoreListViewModel>(
@@ -79,7 +80,7 @@ class MainActivity : ComponentActivity() {
             controller.hide(WindowInsetsCompat.Type.systemBars())
             controller.systemBarsBehavior =
                 WindowInsetsControllerCompat.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
-/*
+
             //insert di prova
             lifecycleScope.launch {
                 val exampleScore = TableScore(
@@ -126,7 +127,7 @@ class MainActivity : ComponentActivity() {
 
                 db.dao.storeTable(exampleScore2)
             }
- */
+
         }
 
         gthis = this

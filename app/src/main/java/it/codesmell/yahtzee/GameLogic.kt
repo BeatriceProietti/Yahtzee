@@ -7,16 +7,22 @@ import androidx.compose.runtime.mutableStateMapOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.viewModelScope
+import it.codesmell.yahtzee.dao.TableScore
+import it.codesmell.yahtzee.dao.TableScoreDao
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import java.time.LocalDate
 import kotlin.random.Random
 
 
-
 class GameLogic : ViewModel() {
+
+    var dao: TableScoreDao? = null
 
     val rng = Random(System.currentTimeMillis()) //prendo come seed l'ora attuale
 
@@ -35,64 +41,76 @@ class GameLogic : ViewModel() {
     //parametri gamemode
     var multiPlayer by mutableStateOf(false) // parte falso e verrà settato a true //sostituisci con playerAmount
     var playerAmount by mutableStateOf(1)
-    var diceAmount : Int = 5
+    var diceAmount: Int = 5
     val bonusThreshold = 1
     val bonusAmount = 35
     var rollsLeft = 3
 
     //variabili logica di gioco
     var currentPlayer by mutableStateOf(0) //numero giocatore di cui è il turno parte da 1
-    var selectedDice : MutableList<Boolean> = mutableStateListOf<Boolean>(false,false,false,false,false) //TODO inizializzalo col numero dinamico
+    var selectedDice: MutableList<Boolean> = mutableStateListOf<Boolean>(
+        false,
+        false,
+        false,
+        false,
+        false
+    ) //TODO inizializzalo col numero dinamico
     var hasRolled by mutableStateOf(false)
-    var dice by mutableStateOf(List(diceAmount){0}) //lista di 5 mutable state = 0s
+    var dice by mutableStateOf(List(diceAmount) { 0 }) //lista di 5 mutable state = 0s
     var roundsPlayed = 0
     var gameOver by mutableStateOf(false)
     var bonusShown = false
 
-    var currentPlayerStatus : PlayerStatus? = null //entity PlayerStatus per il giocatore che sta giocando
-    var playerStatuses : Array<PlayerStatus> = emptyArray() //lista dei playerstatus di tutti i giocatori.  spero non vada fatta mutable
+    var currentPlayerStatus: PlayerStatus? =
+        null //entity PlayerStatus per il giocatore che sta giocando
+    var playerStatuses: Array<PlayerStatus> =
+        emptyArray() //lista dei playerstatus di tutti i giocatori.  spero non vada fatta mutable
 
 
 // Giocatore 1
 
-var p1TotalScore by mutableStateOf(0)
-var p1BonusJustAwarded by mutableStateOf(false)
-var p1UpperSectionBonus by mutableStateOf(0)
+    var p1TotalScore by mutableStateOf(0)
+    var p1BonusJustAwarded by mutableStateOf(false)
+    var p1UpperSectionBonus by mutableStateOf(0)
 
-// Giocatore 2
-var p2TotalScore by mutableStateOf(0)
-var p2BonusJustAwarded by mutableStateOf(false)
-var p2UpperSectionBonus by mutableStateOf(0)
+    // Giocatore 2
+    var p2TotalScore by mutableStateOf(0)
+    var p2BonusJustAwarded by mutableStateOf(false)
+    var p2UpperSectionBonus by mutableStateOf(0)
 
 
-    fun getYahtzee(){
+    fun getYahtzee() {
         dice = List(diceAmount) { 1 }
     }
 
-    fun initGame(numOfPlayers : Int){// si prende il player
+    fun initGame(numOfPlayers: Int) {// si prende il player
         //variabili gamelogic
         currentPlayer = 1
-        selectedDice = mutableStateListOf<Boolean>(false,false,false,false,false)
+        selectedDice = mutableStateListOf<Boolean>(false, false, false, false, false)
         dice = List(diceAmount) { 0 }
         playerAmount = numOfPlayers
-        playerStatuses = Array(playerAmount+1){PlayerStatus()}
-        for(i in 1..playerAmount+1){
+        playerStatuses = Array(playerAmount + 1) { PlayerStatus() }
+        for (i in 1..playerAmount + 1) {
             Log.d("GameLogic", "inizializzo il giocatore $i")
             //playerStatuses[i] = PlayerStatus() //mi sa che lo fa già quando inizializzo l'array?
             playerStatuses[currentPlayer].playerNo = 1 //numero giocatore
             playerStatuses[currentPlayer].totalScore = 0
-            playerStatuses[currentPlayer].upperSectionScores.keys.forEach {  playerStatuses[currentPlayer].upperSectionScores[it] = null }
+            playerStatuses[currentPlayer].upperSectionScores.keys.forEach {
+                playerStatuses[currentPlayer].upperSectionScores[it] = null
+            }
 
 
-            playerStatuses[currentPlayer].YahtzeeBonusCount = 0 //quantità di yahtzee bonus (100p) ottenuti
-            playerStatuses[currentPlayer].usedCombos = mutableStateMapOf<String, Int>() // es: "Full house" -> 25
+            playerStatuses[currentPlayer].YahtzeeBonusCount =
+                0 //quantità di yahtzee bonus (100p) ottenuti
+            playerStatuses[currentPlayer].usedCombos =
+                mutableStateMapOf<String, Int>() // es: "Full house" -> 25
 
             playerStatuses[currentPlayer].bonusJustAwarded = false
             playerStatuses[currentPlayer].upperSectionBonus = 0
         }
     }
 
-// funzione di reset
+    // funzione di reset
     fun resetGame() {
         // Reset variabili di gioco
         isPlayerOneTurn = true
@@ -140,9 +158,6 @@ var p2UpperSectionBonus by mutableStateOf(0)
         get() = if (isPlayerOneTurn) p1TotalScore else p2TotalScore // score per quando sono in mutli poi al massimo lo sistemo
 
 
-
-
-
     val p1UpperSectionScores = mutableStateMapOf<String, Int?>(
         "Ones" to null,
         "Twos" to null,
@@ -152,8 +167,6 @@ var p2UpperSectionBonus by mutableStateOf(0)
         "Sixes" to null,
     )
     val p1UsedCombos = mutableStateMapOf<String, Int>() // es: "Full house" -> 25
-
-
 
 
     val p2UpperSectionScores = mutableStateMapOf<String, Int?>(
@@ -167,7 +180,6 @@ var p2UpperSectionBonus by mutableStateOf(0)
     val p2UsedCombos = mutableStateMapOf<String, Int>() // es: "Full house" -> 25
 
 
-
     val currentUpperSectionScores: MutableMap<String, Int?>
         get() = if (isPlayerOneTurn) p1UpperSectionScores else p2UpperSectionScores
 
@@ -175,46 +187,35 @@ var p2UpperSectionBonus by mutableStateOf(0)
         get() = if (isPlayerOneTurn) p1UsedCombos else p2UsedCombos
 
 
-
-
-
 ///////////
 
 
-
-
-
-
-
-
-
-
-
-
     //Tira un dado a scelta. which: quale dado tirare. size: numero massimo del dado
-    fun rollDie(which : Int, size : Int) { //quale dado da tirare, dimensione del dado
+    fun rollDie(which: Int, size: Int) { //quale dado da tirare, dimensione del dado
         val newList = dice.toMutableList()
         newList[which] = (1..size).random(rng) //numero random tra 1 e size
         dice = newList
     }
 
     //Tira un dado a scelta, con animazione
-    suspend fun rollDieAnimated(which : Int, size : Int){
-        var rolls : Int = (3..13).random(rng)
-        var delay : Long = 25 //millisecondi
-        for(i in 1..rolls){
+    suspend fun rollDieAnimated(which: Int, size: Int) {
+        var rolls: Int = (3..13).random(rng)
+        var delay: Long = 25 //millisecondi
+        for (i in 1..rolls) {
             //animazione dado che gira prima di ogni roll, durante il delay
             rollDie(which, size)
             hfx?.click(1f)
             delay(delay)
-            if(i>rolls-5){delay += 0}//posso modificare il delay
+            if (i > rolls - 5) {
+                delay += 0
+            }//posso modificare il delay
         }
     }
 
     //Tira i dadi appartenenti a selectedDice
     fun rollSelectedDice() {
 
-        if(gameOver) return
+        if (gameOver) return
         if (rollsLeft <= 0) return
 
         hasRolled = true
@@ -238,29 +239,28 @@ var p2UpperSectionBonus by mutableStateOf(0)
     }
 
 
-
     //Tira tutti i dadi. per la prima fase
-    fun rollAllDice(){
-        for(i in 0..diceAmount-1){
+    fun rollAllDice() {
+        for (i in 0..diceAmount - 1) {
             CoroutineScope(Dispatchers.IO).launch {
-                rollDieAnimated(i,6)
+                rollDieAnimated(i, 6)
                 resetDie(i)
             }
         }
     }
 
     //abbassa un dado
-    fun resetDie(index : Int){
+    fun resetDie(index: Int) {
         Log.d("GameLogic", "abbasso il dado $index")
         selectedDice[index] = false
         statusText = "Dadi selezionati: $selectedDice"
     }
 
     //Aggiungi un dado alla lista dei dadi da tenere
-    fun selectDie(which : Int){
+    fun selectDie(which: Int) {
         //Controlla se è già tra i selezionati. se si, rimuovilo.
-        for(i in 0..selectedDice.size-1){
-            if(selectedDice[which] == true){
+        for (i in 0..selectedDice.size - 1) {
+            if (selectedDice[which] == true) {
                 selectedDice[which] = false
                 Log.d("GameLogic", "abbasso il dado $which")
                 //statusText = "Dadi selezionati: $selectedDice"
@@ -277,7 +277,8 @@ var p2UpperSectionBonus by mutableStateOf(0)
 
     //Funzione che si calcola il bonus dei dadini
     fun checkAndApplyUpperSectionBonus() {
-        val upperTotal = playerStatuses[currentPlayer].upperSectionScores.values.filterNotNull().sum()
+        val upperTotal =
+            playerStatuses[currentPlayer].upperSectionScores.values.filterNotNull().sum()
         if (upperTotal >= bonusThreshold && !playerStatuses[currentPlayer].bonusJustAwarded) {
             playerStatuses[currentPlayer].totalScore += 35
             var mealmeal = playerStatuses[currentPlayer].totalScore
@@ -298,7 +299,8 @@ var p2UpperSectionBonus by mutableStateOf(0)
             "Sixes" -> 6
             else -> 0
         }
-        return dice.filter { it == target }.sum() //restituisce la somma del valore di tutti i dadi di un certo valore
+        return dice.filter { it == target }
+            .sum() //restituisce la somma del valore di tutti i dadi di un certo valore
     }
 
 
@@ -310,22 +312,52 @@ var p2UpperSectionBonus by mutableStateOf(0)
         val isYahtzee = valueCounts.values.any { it == 5 } && valueCounts[0] == 0
         if (isYahtzee && rollsLeft < 300) {
             // Verifica che la combo Yahtzee sia già stata usata
-            val yahtzeeAlreadyUsed = playerStatuses[currentPlayer].usedCombos.containsKey("combo_5kind")
+            val yahtzeeAlreadyUsed =
+                playerStatuses[currentPlayer].usedCombos.containsKey("combo_5kind")
 
             if (yahtzeeAlreadyUsed) {
                 // Assegna il bonus
-                playerStatuses[currentPlayer].totalScore+=100
-                    Log.d("yahtzee bonus", "hai ottenuto il bonus")
-                }
-            playerStatuses[currentPlayer].YahtzeeBonusCount++
-                hfx?.click(1f)
+                playerStatuses[currentPlayer].totalScore += 100
+                Log.d("yahtzee bonus", "hai ottenuto il bonus")
             }
+            playerStatuses[currentPlayer].YahtzeeBonusCount++
+            hfx?.click(1f)
+        }
+    }
+
+
+
+
+    fun savePlayerStatus(ps: PlayerStatus, dao: TableScoreDao){
+        viewModelScope.launch{
+            val gameData = TableScore(
+                date = (LocalDate.now().monthValue.toString()+"-"+
+                        LocalDate.now().dayOfMonth.toString()+"-"+
+                        LocalDate.now().year.toString()),
+                aces = ps.upperSectionScores.get("Ones")?:0,
+                twos = ps.upperSectionScores.get("Twos")?:0,
+                threes = ps.upperSectionScores.get("Threes")?:0,
+                fours = ps.upperSectionScores.get("Fours")?:0,
+                fives = ps.upperSectionScores.get("Fives")?:0,
+                sixes = ps.upperSectionScores.get("Sixes")?:0,
+                bonusUpperSection = if (ps.bonusJustAwarded) 35 else 0,
+                threeOfAKind = ps.usedCombos.get("combo_3kind")?:0,
+                fourOfAKind = ps.usedCombos.get("combo_4kind")?:0,
+                fullHouse = ps.usedCombos.get("combo_fullhouse")?:0,
+                smallStraight = ps.usedCombos.get("combo_sstraight")?:0,
+                largeStraight = ps.usedCombos.get("combo_lstraight")?:0,
+                chance = ps.usedCombos.get("combo_chance")?:0,
+                yahtzee = ps.usedCombos.get("combo_5kind")?:0,
+                yahtzeeBonus = ps.YahtzeeBonusCount,
+                finalScore = ps.totalScore
+                //ª
+            )
+
+            dao.storeTable(gameData)
+
         }
 
-
-
-
-
+    }
 
 
     //prende una lista di dadi e restituisce i possibili punteggi per ciascuna combinazione
@@ -368,19 +400,17 @@ var p2UpperSectionBonus by mutableStateOf(0)
         )
 
 
-
-
     }
-
 
 
     //quando premi un punteggio, fissa il punteggio
     fun confirmScore(combo: String, score: Int) {
 
         if (!playerStatuses[currentPlayer].usedCombos.containsKey(combo) && hasRolled) {
-            playerStatuses[currentPlayer].usedCombos[combo] = score //aggiunge la coppia combo-punteggio
+            playerStatuses[currentPlayer].usedCombos[combo] =
+                score //aggiunge la coppia combo-punteggio
 
-            if (combo in playerStatuses[currentPlayer].upperSectionScores ) {
+            if (combo in playerStatuses[currentPlayer].upperSectionScores) {
                 playerStatuses[currentPlayer].upperSectionScores[combo] = score
             }
 
@@ -396,11 +426,10 @@ var p2UpperSectionBonus by mutableStateOf(0)
             Log.d("player increment", "$currentPlayer")
             Log.d("player amount", "$playerAmount")
             //blocco rotazione turni
-            if (currentPlayer<playerAmount && currentPlayer > 0) {
+            if (currentPlayer < playerAmount && currentPlayer > 0) {
                 Log.d("player increment", "$currentPlayer")
                 currentPlayer++
-            }
-            else currentPlayer = 1
+            } else currentPlayer = 1
             //
 
 

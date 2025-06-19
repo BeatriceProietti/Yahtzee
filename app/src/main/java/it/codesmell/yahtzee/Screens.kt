@@ -23,6 +23,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.material3.Label
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.RadioButton
 import androidx.compose.runtime.Composable
@@ -51,6 +52,8 @@ import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.MotionScene
 import androidx.navigation.NavController
 import kotlinx.coroutines.delay
+import java.time.LocalDate
+import java.util.Calendar
 
 // qua mettiamo tutte le schermate dell'app
 
@@ -335,7 +338,7 @@ fun GameScreen(gameLogic: GameLogic, navController: NavController) {
 
                 Column() {
                     composables?.funButton3D(
-                        onClick = { gameLogic.getYahtzee() },
+                        onClick = { gameLogic.savePlayerStatus(gameLogic.playerStatuses[gameLogic.currentPlayer], ) },
                         text = "Ottieni Palle",
                         color = Color.Red,
                         depth = 10,

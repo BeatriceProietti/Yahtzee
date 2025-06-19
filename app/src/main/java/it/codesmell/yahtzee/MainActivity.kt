@@ -2,10 +2,12 @@ package it.codesmell.yahtzee
 
 //import DataBase
 import android.os.Bundle
+import android.util.Log
 import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.activity.viewModels
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -13,6 +15,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
@@ -22,10 +25,18 @@ import androidx.compose.ui.text.intl.Locale
 import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.WindowInsetsControllerCompat
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import androidx.room.Room
+import it.codesmell.yahtzee.dao.TableScore
+import it.codesmell.yahtzee.dao.TableScoreDatabase
 import it.codesmell.yahtzee.ui.theme.YahtzeeTheme
+import kotlinx.coroutines.launch
+
 //sborras
 
 var gthis : MainActivity? = null
@@ -38,6 +49,27 @@ var darkTheme by mutableStateOf(true)
 lateinit var mozione : motionManager
 
 class MainActivity : ComponentActivity() {
+
+    // DB building
+    private val db by lazy{
+        Room.databaseBuilder(
+            applicationContext,
+            TableScoreDatabase::class.java,
+            "scores.db"
+        ).build()
+    }
+
+    // ViewModel factory - creating a ViewModel with parameters
+    private val viewModel by viewModels<ScoreListViewModel>(
+        factoryProducer = {
+            object : ViewModelProvider.Factory{
+                override fun <T : ViewModel> create(modelClass: Class<T>): T {
+                    return ScoreListViewModel(db.dao) as T
+                }
+            }
+        }
+    )
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
@@ -47,12 +79,38 @@ class MainActivity : ComponentActivity() {
             controller.hide(WindowInsetsCompat.Type.systemBars())
             controller.systemBarsBehavior =
                 WindowInsetsControllerCompat.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
+
+/*
+            //insert di prova
+            lifecycleScope.launch {
+                val exampleScore = TableScore(
+                    date = "2025-06-10",
+                    aces = 3,
+                    twos = 6,
+                    threes = 9,
+                    fours = 8,
+                    fives = 10,
+                    sixes = 12,
+                    bonusUpperSection = 35,
+                    threeOfAKind = 20,
+                    fourOfAKind = 25,
+                    fullHouse = 25,
+                    smallStraight = 30,
+                    largeStraight = 40,
+                    chance = 23,
+                    yahtzee = 50,
+                    yahtzeeBonus = 100,
+                    finalScore = 700
+                )
+
+                db.dao.storeTable(exampleScore)
+                System.out.println("DB - Dati inseriti correttamente!")
+            }
+
+ */
+
+
         }
-        /*val db = Room.databaseBuilder(
-            applicationContext,
-            DataBase::class.java,
-            "yahtzee-db"
-        ).build()*/
 
         gthis = this
         hfx = hapticEffects(this)
@@ -75,7 +133,7 @@ class MainActivity : ComponentActivity() {
 
                         composable(
                             route = "Screen2"
-                        ){Screen2(navCon)}
+                        ){Screen2(navCon, viewModel, onEvent = viewModel::onEvent)}
 
                         composable(
                             route = "GameScreen"

@@ -19,7 +19,7 @@ interface TableScoreDao {
     @Query("SELECT * FROM tablescore ORDER BY finalScore DESC")
     fun getTablesByScore(): Flow<List<TableScore>>
 
-    @Query("SELECT * FROM tablescore ORDER BY date ASC")
+    @Query("SELECT * FROM tablescore ORDER BY date DESC")
     fun getTablesByDate(): Flow<List<TableScore>>
 
 }

@@ -26,6 +26,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.material3.Text
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.ProvidableCompositionLocal
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -154,15 +155,19 @@ var screenWidth : Dp = 0.dp
 
 
 @Composable
-    fun Screen2(navController: NavController, state: ScoreListState, onEvent: ScoreListEvent) {
-        Column(modifier = Modifier.fillMaxSize(),
+    fun Screen2(navController: NavController, viewModel: ScoreListViewModel, onEvent: (ScoreListEvent) -> Unit) {
+        val state by viewModel.state.collectAsState()
+
+        Column(modifier = Modifier.fillMaxSize()
+            .padding(10.dp, 40.dp),
             horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.Center
+            //verticalArrangement = Arrangement.Center
         ) {
             Row(modifier = Modifier
                 .fillMaxWidth()
                 .horizontalScroll(rememberScrollState()),
-                verticalAlignment = Alignment.CenterVertically
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.Center
             ){
                 SortType.values().forEach{ sortType ->
                     Row(
@@ -177,7 +182,7 @@ var screenWidth : Dp = 0.dp
                             selected = state.sortType == sortType,
                             onClick = {onEvent(ScoreListEvent.sortScores(sortType))}
                         )
-                        Text(text = sortType.name)
+                        Text(text = sortType.toString())
                     }
                 }
             }
@@ -188,8 +193,8 @@ var screenWidth : Dp = 0.dp
                         onClick = {  },
                         text = "${score.finalScore} ${score.date}", //valori delo score
                         color = Color.Blue,
-                        depth = 10,
-                        screenWidth*0.9f,50.dp
+                        depth = 15,
+                        screenWidth*0.87f,50.dp
                     )
                 }
             }

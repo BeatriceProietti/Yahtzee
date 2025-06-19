@@ -37,7 +37,17 @@ var selectedDice : MutableList<Boolean> = mutableStateListOf<Boolean>(false,fals
 var hasRolled by mutableStateOf(false)
 var dice by mutableStateOf(List(diceAmount){0}) //lista di 5 mutable state = 0s
 
+    var bonusJustAwarded by mutableStateOf(false)
+    var yahtzeeAmount by mutableStateOf(0)
+    var multiPlayer by mutableStateOf(false) // parte falso e verrà settato a true
+    var upperSectionBonus by mutableStateOf(0)
+    val bonusThreshold = 1
+    val bonusAmount = 35
 
+    var rollsLeft = 3
+    var roundsPlayed = 0
+    var gameOver by mutableStateOf(false)
+    var bonusShown = false
 
 
 // Giocatore 1
@@ -52,8 +62,11 @@ var p2BonusJustAwarded by mutableStateOf(false)
 var p2UpperSectionBonus by mutableStateOf(0)
 
 
-// funzione di reset
+    fun getYahtzee(){
+        dice = List(diceAmount) { 1 }
+    }
 
+// funzione di reset
     fun resetGame() {
         // Reset variabili di gioco
         isPlayerOneTurn = true
@@ -103,17 +116,7 @@ var p2UpperSectionBonus by mutableStateOf(0)
         get() = if (isPlayerOneTurn) p1TotalScore else p2TotalScore // score per quando sono in mutli poi al massimo lo sistemo
 
 
-    var bonusJustAwarded by mutableStateOf(false)
-    var yahtzeeAmount = 0
-    var multiPlayer by mutableStateOf(false) // parte falso e verrà settato a true
-    var upperSectionBonus by mutableStateOf(0)
-    val bonusThreshold = 1
-    val bonusAmount = 35
 
-    var rollsLeft = 3
-    var roundsPlayed = 0
-    var gameOver by mutableStateOf(false)
-    var bonusShown = false
 
 /////////////////
 

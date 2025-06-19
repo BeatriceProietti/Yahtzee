@@ -306,7 +306,7 @@ var screenWidth : Dp = 0.dp
                         modifier = Modifier.padding(horizontal = 8.dp)
                     )
                     Text(
-                        text = "Yahtzee Bonus: $yahtzeeBonusCount",
+                        text = "Yahtzee Bonus: " + gameLogic.yahtzeeAmount,
                         fontSize = 14.sp,
                         color = Color.LightGray,
                         modifier = Modifier.padding(horizontal = 8.dp)
@@ -327,13 +327,23 @@ var screenWidth : Dp = 0.dp
 
                     val canRoll = gameLogic.rollsLeft > 0 && !gameLogic.gameOver
 
-                    composables?.funButton3D(
-                        onClick = { if (canRoll) gameLogic.rollSelectedDice() },
-                        text = if (canRoll) "Tira Dadi" else "Scegli una combo",
-                        color = MaterialTheme.colorScheme.primary,
-                        depth = 10,
-                        150.dp,50.dp
-                    )
+                    Column(){
+                        composables?.funButton3D(
+                            onClick = { gameLogic.getYahtzee() },
+                            text = "Ottieni Palle",
+                            color = Color.Red,
+                            depth = 10,
+                            150.dp,50.dp
+                        )
+                        composables?.funButton3D(
+                            onClick = { if (canRoll) gameLogic.rollSelectedDice() },
+                            text = if (canRoll) "Tira Dadi" else "Scegli una combo",
+                            color = MaterialTheme.colorScheme.primary,
+                            depth = 10,
+                            150.dp,50.dp
+                        )
+                    }
+
                 }
             }
         }

@@ -338,7 +338,7 @@ fun GameScreen(gameLogic: GameLogic, navController: NavController) {
 
                 Column() {
                     composables?.funButton3D(
-                        onClick = { gameLogic.savePlayerStatus(gameLogic.playerStatuses[gameLogic.currentPlayer], ) },
+                        onClick = { gameLogic.savePlayerStatus(gameLogic.playerStatuses[gameLogic.currentPlayer]) },
                         text = "Ottieni Palle",
                         color = Color.Red,
                         depth = 10,

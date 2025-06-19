@@ -29,12 +29,9 @@ class GameLogic : ViewModel() {
     var statusText by mutableStateOf("status")
 
     //da mettere nell'entity
-    var p1YahtzeeBonusCount by mutableStateOf(0) //quantità di yahtzee da 100p ottenuti
-    var p2YahtzeeBonusCount by mutableStateOf(0)
     val usedCombos = mutableStateMapOf<String, Int>() // es: "Full house" -> 25
     var totalScore by mutableStateOf(0)
     var bonusJustAwarded by mutableStateOf(false)
-    var yahtzeeAmount by mutableStateOf(0) //YahtzeeBonusCount
     var upperSectionBonus by mutableStateOf(0)
 
 
@@ -48,13 +45,7 @@ class GameLogic : ViewModel() {
 
     //variabili logica di gioco
     var currentPlayer by mutableStateOf(0) //numero giocatore di cui è il turno parte da 1
-    var selectedDice: MutableList<Boolean> = mutableStateListOf<Boolean>(
-        false,
-        false,
-        false,
-        false,
-        false
-    ) //TODO inizializzalo col numero dinamico
+    var selectedDice: MutableList<Boolean> = mutableStateListOf<Boolean>(false, false, false, false, false) //TODO inizializzalo col numero dinamico
     var hasRolled by mutableStateOf(false)
     var dice by mutableStateOf(List(diceAmount) { 0 }) //lista di 5 mutable state = 0s
     var roundsPlayed = 0
@@ -328,12 +319,12 @@ class GameLogic : ViewModel() {
 
 
 
-    fun savePlayerStatus(ps: PlayerStatus, dao: TableScoreDao){
+    fun savePlayerStatus(ps: PlayerStatus){
         viewModelScope.launch{
             val gameData = TableScore(
-                date = (LocalDate.now().monthValue.toString()+"-"+
-                        LocalDate.now().dayOfMonth.toString()+"-"+
-                        LocalDate.now().year.toString()),
+                date = (LocalDate.now().year.toString()+"-"+
+                        LocalDate.now().monthValue.toString()+"-"+
+                        LocalDate.now().dayOfYear.toString()),
                 aces = ps.upperSectionScores.get("Ones")?:0,
                 twos = ps.upperSectionScores.get("Twos")?:0,
                 threes = ps.upperSectionScores.get("Threes")?:0,
@@ -353,7 +344,7 @@ class GameLogic : ViewModel() {
                 //ª
             )
 
-            dao.storeTable(gameData)
+            dao?.storeTable(gameData)
 
         }
 

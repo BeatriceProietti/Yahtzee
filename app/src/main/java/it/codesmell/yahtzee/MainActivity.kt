@@ -74,59 +74,13 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
+        gameLogic.dao = db.dao
 
         WindowCompat.setDecorFitsSystemWindows(window, false)
         WindowInsetsControllerCompat(window, window.decorView).let { controller ->
             controller.hide(WindowInsetsCompat.Type.systemBars())
             controller.systemBarsBehavior =
                 WindowInsetsControllerCompat.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
-
-            //insert di prova
-            lifecycleScope.launch {
-                val exampleScore = TableScore(
-                    date = "2025-06-16",
-                    aces = 3,
-                    twos = 6,
-                    threes = 9,
-                    fours = 8,
-                    fives = 10,
-                    sixes = 12,
-                    bonusUpperSection = 35,
-                    threeOfAKind = 20,
-                    fourOfAKind = 25,
-                    fullHouse = 25,
-                    smallStraight = 30,
-                    largeStraight = 40,
-                    chance = 23,
-                    yahtzee = 50,
-                    yahtzeeBonus = 100,
-                    finalScore = 200
-                )
-
-                db.dao.storeTable(exampleScore)
-
-                val exampleScore2 = TableScore(
-                    date = "2025-06-10",
-                    aces = 3,
-                    twos = 6,
-                    threes = 9,
-                    fours = 8,
-                    fives = 10,
-                    sixes = 12,
-                    bonusUpperSection = 35,
-                    threeOfAKind = 20,
-                    fourOfAKind = 25,
-                    fullHouse = 25,
-                    smallStraight = 30,
-                    largeStraight = 40,
-                    chance = 23,
-                    yahtzee = 50,
-                    yahtzeeBonus = 100,
-                    finalScore = 700
-                )
-
-                db.dao.storeTable(exampleScore2)
-            }
 
         }
 

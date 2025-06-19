@@ -13,8 +13,10 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
@@ -203,102 +205,224 @@ var screenWidth : Dp = 0.dp
     }
 
 
-    @Composable
-    fun GameScreen(gameLogic: GameLogic,navController: NavController) {
-        var showOverlay by remember { mutableStateOf(false) }
-        val context = LocalContext.current
-        BackHandler { // mi serve sennò non mi setta le variabili del multiplayer a falso e il gioco parte sempre in multi
-            navController.popBackStack()
-            gameLogic.multiPlayer = false
+@Composable
+fun GameScreen(gameLogic: GameLogic,navController: NavController) {
+    var showOverlay by remember { mutableStateOf(false) }
+    val context = LocalContext.current
+    BackHandler { // mi serve sennò non mi setta le variabili del multiplayer a falso e il gioco parte sempre in multi
+        navController.popBackStack()
+        gameLogic.multiPlayer = false
+    }
+
+
+    var hasReset by rememberSaveable { mutableStateOf(false) }
+
+    LaunchedEffect(Unit) {
+        if (!hasReset) {
+            gameLogic.resetGame()
+            hasReset = true
         }
+    }
 
 
-        var hasReset by rememberSaveable { mutableStateOf(false) }
-
-        LaunchedEffect(Unit) {
-            if (!hasReset) {
-                gameLogic.resetGame()
-                hasReset = true
-            }
+    LaunchedEffect(gameLogic.gameOver) {
+        if (gameLogic.gameOver) {
+            showOverlay = true
         }
+    }
+    var showToastAni : Boolean
+    showToastAni = gameLogic.bonusJustAwarded // mi creo una variabile che si prende lo stato del bonus jusr awarded e poi lo usa per mostrare il toast
+    LaunchedEffect(showToastAni) {
+        if (showToastAni) {
+            Log.d("bonus", "🎉 Bonus attivato!")
 
+            Toast.makeText(
+                context,
+                "Hai ottenuto il bonus di +35 punti!",
+                Toast.LENGTH_SHORT
+            ).show()
 
-        LaunchedEffect(gameLogic.gameOver) {
-            if (gameLogic.gameOver) {
-                showOverlay = true
-            }
+            // Ritarda il reset giusto per evitare race condition visiva (facoltativo)
+            delay(300)
+
+            showToastAni = false // Reset flag
+            Log.d("bonus", "✅ bonusJustAwarded reset a ${gameLogic.bonusJustAwarded}")
         }
-        LaunchedEffect(gameLogic.bonusJustAwarded) {
-            if (gameLogic.bonusJustAwarded) {
-                Log.d("bonus", "🎉 Bonus attivato!")
-
-                Toast.makeText(
-                    context,
-                    "Hai ottenuto il bonus di +35 punti!",
-                    Toast.LENGTH_SHORT
-                ).show()
-
-                // Ritarda il reset giusto per evitare race condition visiva (facoltativo)
-                delay(300)
-
-                gameLogic.bonusJustAwarded = false // Reset flag
-                Log.d("bonus", "✅ bonusJustAwarded reset a ${gameLogic.bonusJustAwarded}")
-            }
-        }
+    }
 
 
 
-        //var totalScore by remember { mutableStateOf(0) }
+    //var totalScore by remember { mutableStateOf(0) }
 
 
-        var dr = IntArray(gameLogic.diceAmount)
-        for (i in 0..gameLogic.diceAmount - 1) {
-            dr[i] = gameLogic.dice[i] //i dadi presi da gameLogic, da mandare all'interfaccia
-        }
-        val configuration = LocalConfiguration.current
+    var dr = IntArray(gameLogic.diceAmount)
+    for (i in 0..gameLogic.diceAmount - 1) {
+        dr[i] = gameLogic.dice[i] //i dadi presi da gameLogic, da mandare all'interfaccia
+    }
+    val configuration = LocalConfiguration.current
 
-        //Portrait ------------------------------------------------------------------------------------------------------------
-        if (LocalConfiguration.current.orientation == Configuration.ORIENTATION_PORTRAIT) {
+    //Portrait ------------------------------------------------------------------------------------------------------------
+    if (LocalConfiguration.current.orientation == Configuration.ORIENTATION_PORTRAIT) {
 
-            Column(modifier = Modifier.fillMaxSize(),
-                horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.Bottom
-            ) {
-                Box(modifier = Modifier //punteggio
-                    .padding(top = screenHeight*0.05f, bottom = screenHeight*0.05f)
-                ){
-                    Row(){
-                        val scoreToShow =
+        Column(modifier = Modifier.fillMaxSize(),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Bottom
+        ) {
+            Box(modifier = Modifier //punteggio
+                .padding(top = screenHeight*0.05f, bottom = screenHeight*0.05f)
+            ){
+                Row(){
+                    val scoreToShow =
                         if (gameLogic.multiPlayer) gameLogic.currentTotalScore else gameLogic.totalScore
+                    Text(
+                        text = "Punteggio: $scoreToShow",
+                        fontSize = 18.sp,
+                        color = Color.White,
+                        modifier = Modifier.padding(8.dp)
+                    )
+                    if (gameLogic.multiPlayer) {
                         Text(
-                            text = "Punteggio: $scoreToShow",
+                            text = if (gameLogic.isPlayerOneTurn) "G1" else "G2",
                             fontSize = 18.sp,
                             color = Color.White,
                             modifier = Modifier.padding(8.dp)
                         )
-                        if (gameLogic.multiPlayer) {
-                            Text(
-                                text = if (gameLogic.isPlayerOneTurn) "G1" else "G2",
-                                fontSize = 18.sp,
-                                color = Color.White,
-                                modifier = Modifier.padding(8.dp)
-                            )
-                        }
                     }
                 }
-                Box(){
-                    composables?.swappingCards()
+            }
+            Spacer(modifier = Modifier.height(4.dp))
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween
+            ) {
+
+                val upperBonusGot =  if(gameLogic.multiPlayer){
+                    if (gameLogic.isPlayerOneTurn) gameLogic.playerOneBonusAwarded else gameLogic.playerTwoBonusAwarded
                 }
-                Box(modifier = Modifier // riga di dadi di merda
-                    .padding(bottom = screenHeight*0.05f, top = screenHeight*0.05f)
+                else{
+                    gameLogic.bonusJustAwarded
+                }
+
+                val yahtzeeCounter =  if(gameLogic.multiPlayer){
+                    if (gameLogic.isPlayerOneTurn) gameLogic.p1YahtzeeBonusCount else gameLogic.p2YahtzeeBonusCount
+                }
+                else{
+                    gameLogic.yahtzeeAmount
+                }
+                Text(
+                    text = if (upperBonusGot) "Bonus Upper ottenuto" else "No bonus Upper",
+                    fontSize = 14.sp,
+                    color = Color.LightGray,
+                    modifier = Modifier.padding(horizontal = 8.dp)
+                )
+                Text(
+                    text = "Yahtzee Bonus: " + gameLogic.yahtzeeAmount,
+                    fontSize = 14.sp,
+                    color = Color.LightGray,
+                    modifier = Modifier.padding(horizontal = 8.dp)
+                )
+            }
+            Box(){
+                composables?.swappingCards()
+            }
+            Box(modifier = Modifier // riga di dadi di merda
+                .padding(bottom = screenHeight*0.05f, top = screenHeight*0.05f)
+            ) {
+                composables?.diceRow(dice = dr.toTypedArray(), gameLogic = gameLogic)
+
+            }
+            Box(modifier = Modifier // bottone DUCE di merda
+                .padding(bottom = screenHeight*0.05f)
+            ) {
+
+                val canRoll = gameLogic.rollsLeft > 0 && !gameLogic.gameOver
+
+                Column(){
+                    composables?.funButton3D(
+                        onClick = { gameLogic.getYahtzee() },
+                        text = "Ottieni Palle",
+                        color = Color.Red,
+                        depth = 10,
+                        150.dp,50.dp
+                    )
+                    composables?.funButton3D(
+                        onClick = { if (canRoll) gameLogic.rollSelectedDice() },
+                        text = if (canRoll) "Tira Dadi" else "Scegli una combo",
+                        color = MaterialTheme.colorScheme.primary,
+                        depth = 10,
+                        150.dp,50.dp
+                    )
+                }
+
+            }
+        }
+    }
+    //Landscape ------------------------------------------------------------------------------------------------------------
+    else{
+
+        Row(modifier = Modifier.fillMaxSize(),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.Center
+        ) {
+
+            Box(modifier = Modifier //punteggio
+                .padding(top = screenHeight*0.05f, bottom = screenHeight*0.05f)
+            ){
+                Column(){
+
+                    val scoreToShow =
+                        if (gameLogic.multiPlayer) gameLogic.currentTotalScore else gameLogic.totalScore
+                    Text(
+                        text = "Punteggio: $scoreToShow",
+                        fontSize = 18.sp,
+                        color = Color.White,
+                        modifier = Modifier.padding(8.dp)
+                    )
+                    if (gameLogic.multiPlayer) {
+                        Text(
+                            text = if (gameLogic.isPlayerOneTurn) "G1" else "G2",
+                            fontSize = 18.sp,
+                            color = Color.White,
+                            modifier = Modifier.padding(8.dp)
+                        )
+                    }
+                    Spacer(modifier = Modifier.height(8.dp))
+
+                    Text(
+                        text = if (gameLogic.bonusJustAwarded) "Bonus Upper ottenuto" else "no Bonus Upper",
+                        fontSize = 14.sp,
+                        color = Color.LightGray
+                    )
+                    Text(
+                        text = "Yahtzee Bonus: ${gameLogic.yahtzeeAmount}",
+                        fontSize = 14.sp,
+                        color = Color.LightGray
+                    )
+                }
+            }
+
+            Box(){
+                composables?.swappingCards()
+            }
+            Column(modifier = Modifier
+                .rotate(-90f)
+                .offset(y = 50.dp),
+
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.Center
+
+            ){//colonnadiceRow
+                Box(
+                    modifier = Modifier // riga di dadi di merda
+                        .padding()
                 ) {
                     composables?.diceRow(dice = dr.toTypedArray(), gameLogic = gameLogic)
-
                 }
-                Box(modifier = Modifier // bottone DUCE di merda
-                    .padding(bottom = screenHeight*0.05f)
+                Box(
+                    modifier = Modifier // bottone DUCE di merda
+                        .padding(50.dp)
+                        .rotate(90f)
                 ) {
-
                     val canRoll = gameLogic.rollsLeft > 0 && !gameLogic.gameOver
 
                     composables?.funButton3D(
@@ -308,86 +432,22 @@ var screenWidth : Dp = 0.dp
                         depth = 10,
                         150.dp,50.dp
                     )
+
                 }
-            }
-        }
-        //Landscape ------------------------------------------------------------------------------------------------------------
-        else{
-
-            Row(modifier = Modifier.fillMaxSize(),
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.Center
-                ) {
-
-                Box(modifier = Modifier //punteggio
-                    .padding(top = screenHeight*0.05f, bottom = screenHeight*0.05f)
-                ){
-                    Column(){
-                        val scoreToShow =
-                            if (gameLogic.multiPlayer) gameLogic.currentTotalScore else gameLogic.totalScore
-                        Text(
-                            text = "Punteggio: $scoreToShow",
-                            fontSize = 18.sp,
-                            color = Color.White,
-                            modifier = Modifier.padding(8.dp)
-                        )
-                        if (gameLogic.multiPlayer) {
-                            Text(
-                                text = if (gameLogic.isPlayerOneTurn) "G1" else "G2",
-                                fontSize = 18.sp,
-                                color = Color.White,
-                                modifier = Modifier.padding(8.dp)
-                            )
-                        }
-                    }
-                }
-                Box(){
-                    composables?.swappingCards()
-                }
-                Column(modifier = Modifier
-                    .rotate(-90f)
-                    .offset(y = 50.dp),
-
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                    verticalArrangement = Arrangement.Center
-
-                ){//colonnadiceRow
-                    Box(
-                        modifier = Modifier // riga di dadi di merda
-                            .padding()
-                    ) {
-                        composables?.diceRow(dice = dr.toTypedArray(), gameLogic = gameLogic)
-                    }
-                    Box(
-                        modifier = Modifier // bottone DUCE di merda
-                            .padding(50.dp)
-                            .rotate(90f)
-                    ) {
-                        val canRoll = gameLogic.rollsLeft > 0 && !gameLogic.gameOver
-
-                        composables?.funButton3D(
-                            onClick = { if (canRoll) gameLogic.rollSelectedDice() },
-                            text = if (canRoll) "Tira Dadi" else "Scegli una combo",
-                            color = MaterialTheme.colorScheme.primary,
-                            depth = 10,
-                            150.dp,50.dp
-                        )
-
-                    }
-                }
-
             }
 
         }
-        composables?.EndGameSquare(
-            show = showOverlay,
-            onDismiss = { showOverlay = false; gameLogic.resetGame() },
-            p1Score = gameLogic.p1TotalScore,
-            p2Score = gameLogic.p2TotalScore,
-            isMultiplayer = gameLogic.multiPlayer
-        )
 
     }
+    composables?.EndGameSquare(
+        show = showOverlay,
+        onDismiss = { showOverlay = false; gameLogic.resetGame() },
+        p1Score = gameLogic.p1TotalScore,
+        p2Score = gameLogic.p2TotalScore,
+        isMultiplayer = gameLogic.multiPlayer
+    )
+
+}
 
 // -----
 

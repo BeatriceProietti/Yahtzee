@@ -438,12 +438,8 @@ class GameLogic : ViewModel() {
     }
 
 
-    fun getWinner() : Int{
-        var winner = 1
-        var maxScore = 0
+    fun getWinner(){
 
-        Log.d("getWinner", "Vince il giocatore $winner")
-        return winner
     }
 
 

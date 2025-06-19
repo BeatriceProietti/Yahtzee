@@ -20,7 +20,12 @@ class GameLogic : ViewModel() {
 
 val rng = Random(System.currentTimeMillis()) //prendo come seed l'ora attuale
 
-var diceAmount : Int = 5
+
+var p1YahtzeeBonusCount by mutableStateOf(0)
+var p2YahtzeeBonusCount by mutableStateOf(0)
+
+
+    var diceAmount : Int = 5
 val usedCombos = mutableStateMapOf<String, Int>() // es: "Full house" -> 25
 var totalScore by mutableStateOf(0)
 var statusText by mutableStateOf("status")
@@ -32,7 +37,17 @@ var selectedDice : MutableList<Boolean> = mutableStateListOf<Boolean>(false,fals
 var hasRolled by mutableStateOf(false)
 var dice by mutableStateOf(List(diceAmount){0}) //lista di 5 mutable state = 0s
 
+    var bonusJustAwarded by mutableStateOf(false)
+    var yahtzeeAmount by mutableStateOf(0)
+    var multiPlayer by mutableStateOf(false) // parte falso e verrà settato a true
+    var upperSectionBonus by mutableStateOf(0)
+    val bonusThreshold = 1
+    val bonusAmount = 35
 
+    var rollsLeft = 3
+    var roundsPlayed = 0
+    var gameOver by mutableStateOf(false)
+    var bonusShown = false
 
 
 // Giocatore 1
@@ -47,8 +62,11 @@ var p2BonusJustAwarded by mutableStateOf(false)
 var p2UpperSectionBonus by mutableStateOf(0)
 
 
-// funzione di reset
+    fun getYahtzee(){
+        dice = List(diceAmount) { 1 }
+    }
 
+// funzione di reset
     fun resetGame() {
         // Reset variabili di gioco
         isPlayerOneTurn = true
@@ -98,17 +116,7 @@ var p2UpperSectionBonus by mutableStateOf(0)
         get() = if (isPlayerOneTurn) p1TotalScore else p2TotalScore // score per quando sono in mutli poi al massimo lo sistemo
 
 
-    var bonusJustAwarded by mutableStateOf(false)
 
-    var multiPlayer by mutableStateOf(false) // parte falso e verrà settato a true
-    var upperSectionBonus by mutableStateOf(0)
-    val bonusThreshold = 1
-    val bonusAmount = 35
-
-    var rollsLeft = 3
-    var roundsPlayed = 0
-    var gameOver by mutableStateOf(false)
-    var bonusShown = false
 
 /////////////////
 
@@ -210,6 +218,7 @@ var p2UpperSectionBonus by mutableStateOf(0)
                     }
                 }
             }
+            checkYahtzeeBonus(dice)
         }
     }
 
@@ -278,8 +287,6 @@ var p2UpperSectionBonus by mutableStateOf(0)
         }
     }
 
-
-
     //calcolo punteggi upper section
     fun calculateUpperSectionScore(combo: String, dice: List<Int>): Int {
         val target = when (combo) {
@@ -297,16 +304,48 @@ var p2UpperSectionBonus by mutableStateOf(0)
 
     //pisello e palle
 
+    fun checkYahtzeeBonus(dice: List<Int>) {
+        val valueCounts = dice.groupingBy { it }.eachCount()
+
+        val isYahtzee = valueCounts.values.any { it == 5 }
+
+        if (isYahtzee && rollsLeft < 300) {
+            // Verifica che la combo Yahtzee sia già stata usata
+            val yahtzeeAlreadyUsed = currentUsedCombos.containsKey("combo_5kind")
+
+            if (yahtzeeAlreadyUsed) {
+                // Assegna il bonus
+                if (multiPlayer) {
+                    if (isPlayerOneTurn) {
+                        p1TotalScore += 100
+                        p1YahtzeeBonusCount++
+                    } else {
+                        p2TotalScore += 100
+                        p2YahtzeeBonusCount++
+                    }
+                } else {
+                    totalScore += 100
+                    yahtzeeAmount++
+                    Log.d("yahtzee bonus", "hai ottenuto il bonus")
+                }
+                hfx?.click(1f)
+            }
+        }
+    }
+
+
+
+
 
 
     //prende una lista di dadi e restituisce i possibili punteggi per ciascuna combinazione
     fun calculatePossibleScores(dice: List<Int>): Map<String, Int> {
         val valueCounts = dice.groupingBy { it }.eachCount()  // Esempio: {6=3, 2=2}
         val sum = dice.sum()
-
-
+        val yahtzee = 50+(100*(yahtzeeAmount-1).coerceAtLeast(0))
         fun hasNOfAKind(n: Int): Boolean {
             return valueCounts.values.any { it >= n }
+
         }
 
         fun isSmallStraight(): Boolean {
@@ -325,7 +364,6 @@ var p2UpperSectionBonus by mutableStateOf(0)
         }
 
         fun isFullHouse(): Boolean {
-            Log.d("full", "il full house funziona")
             return valueCounts.values.contains(3) && valueCounts.values.contains(2)
         }
 
@@ -335,9 +373,13 @@ var p2UpperSectionBonus by mutableStateOf(0)
             "combo_fullhouse" to if (isFullHouse()) 25 else 0, //full
             "combo_sstraight" to if (isSmallStraight()) 30 else 0, //sstraight
             "combo_lstraight" to if (isLargeStraight()) 40 else 0,//lstraight
-            "combo_5kind" to if (hasNOfAKind(5)) 50 else 0,//yahtzee
+            "combo_5kind" to if (hasNOfAKind(5)) yahtzee else 0,//yahtzee
             "combo_chance" to sum //chance
         )
+
+
+
+
     }
 
 
@@ -356,7 +398,6 @@ var p2UpperSectionBonus by mutableStateOf(0)
 
             if (multiPlayer) {
                 checkAndApplyUpperSectionBonus()
-
                 if (isPlayerOneTurn) {
                     p1TotalScore += score
                 } else {
@@ -379,9 +420,8 @@ var p2UpperSectionBonus by mutableStateOf(0)
             Log.d("roundplay", "$multiPlayer")
 
             checkAndApplyUpperSectionBonus()
-
             //fine partita
-            if ((multiPlayer && roundsPlayed >= 2) || (!multiPlayer && roundsPlayed >= 2)) {
+            if ((multiPlayer && roundsPlayed >= 2) || (!multiPlayer && roundsPlayed >= 3)) {
                 gameOver = true
                 Log.d("roundplay", "sono nel gameover la partita è finita dio cristo $gameOver")
             }

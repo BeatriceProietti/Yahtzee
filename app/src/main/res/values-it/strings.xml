@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">Yahtzee!</string>
-    <string name="mode_singleplayer">Un giocatore</string>
-    <string name="mode_multiplayer">Due giocatori</string>
-    <string name="highscores">Classifica punteggi</string>
+    <string name="app_name">yahtzee!</string>
+    <string name="mode_singleplayer">Gioca</string>
+    <string name="mode_multiplayer">Modalità VS</string>
+    <string name="highscores">Classifica</string>
     <string name="settings">Impostazioni</string>
     <string name="settings_hapticsMode">Modalità vibrazione</string>
     <string name="settings_theme">Cambia tema</string>
@@ -16,4 +16,6 @@
     <string name="combo_lstraight">Grande scala</string>
     <string name="combo_chance">Chance</string>
     <string name="game_throwdice">Tira dadi</string>
+    <string name="one_player">Un giocatore</string>
+    <string name="multi_player">Più giocatori</string>
 </resources>

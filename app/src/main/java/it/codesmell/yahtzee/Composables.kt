@@ -63,11 +63,13 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.runtime.derivedStateOf
+import androidx.compose.ui.Alignment.Companion.CenterHorizontally
 import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.graphics.drawscope.Fill
 import androidx.compose.ui.graphics.lerp
 import androidx.compose.ui.platform.LocalWindowInfo
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 
@@ -651,6 +653,7 @@ class Composables {
                 modifier = Modifier
                     .size(sizeX, sizeY)
                     .background(lerp(Color(0xffffffff), color, saturation))
+                    .padding(8.dp)
                     .pointerInput(Unit) {
                         awaitEachGesture {
                             //evento pressione del tasto
@@ -680,6 +683,7 @@ class Composables {
                 Text(
                     text,
                     fontSize = 20.sp,
+                    fontFamily = font_Squarewise,
                     color = MaterialTheme.colorScheme.onPrimary,
                 )
             }
@@ -816,6 +820,28 @@ class Composables {
         }
     }
 
+    @Composable
+    fun title(){
+        Box(
+            contentAlignment = Alignment.Center,
+            modifier = Modifier.fillMaxWidth(),
+        ){
+            Text(
+                text = stringResource(R.string.app_name),
+                fontFamily = font_Square,
+                fontSize = 72.sp,
+            )
+        }
+    }
+
+    @Composable
+    fun titleLabel(s : String){
+        Text(
+            text = s,
+            fontFamily = font_Hershey,
+            fontSize = 24.sp
+        )
+    }
 
 }
 

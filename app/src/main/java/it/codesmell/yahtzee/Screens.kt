@@ -19,6 +19,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
@@ -72,35 +73,50 @@ var screenWidth : Dp = 0.dp
 
 
 
+
+
         Column(
             modifier = Modifier.fillMaxSize(),
             verticalArrangement = Arrangement.Center,
-            horizontalAlignment = Alignment.CenterHorizontally
+            horizontalAlignment = CenterHorizontally
         ) {
+            //Titolo
+            composables?.title()
+
+            Spacer(modifier = Modifier.height(screenHeight*0.075f))
+
+            //Riga un giocatore - Classifica
+            composables?.titleLabel(stringResource(R.string.one_player))
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(start = screenWidth*0.05f, end = screenWidth*0.05f),
                 horizontalArrangement = Arrangement.Center,
-                verticalAlignment = Alignment.CenterVertically,
+                verticalAlignment = CenterVertically,
             ) {
                 composables?.funButton3D(
                     onClick = { navController.navigate("GameScreen") },
                     text = stringResource(R.string.mode_singleplayer),
                     color = Color.Red,
                     depth = 10,
-                    screenWidth*0.6f,50.dp
+                    sizeX = screenWidth*0.55f,
+                    sizeY = 70.dp
                 )
                 composables?.funButton3D(
                     onClick = { provas() },
                     text = stringResource(R.string.highscores),
                     color = Color(0xFFFF772E),
                     depth = 10,
-                    screenWidth*0.3f,50.dp
+                    sizeX = screenWidth*0.35f,
+                    sizeY = 70.dp
                 )
             }
 
-            Column(modifier = Modifier.fillMaxWidth().padding(top = 15.dp),
+
+            //Riga più giocatori
+            Spacer(modifier = Modifier.height(15.dp))
+            composables?.titleLabel(stringResource(R.string.multi_player))
+            Column(
                 verticalArrangement = Arrangement.Center,
                 horizontalAlignment = Alignment.CenterHorizontally) {
                 composables?.funButton3D(
@@ -251,8 +267,6 @@ fun GameScreen(gameLogic: GameLogic,navController: NavController) {
     }
 
 
-
-    //var totalScore by remember { mutableStateOf(0) }
 
 
     var dr = IntArray(gameLogic.diceAmount)

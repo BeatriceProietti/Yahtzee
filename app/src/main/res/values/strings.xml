@@ -15,4 +15,6 @@
     <string name="combo_lstraight">combo_lstraight</string>
     <string name="combo_chance">combo_chance</string>
     <string name="game_throwdice">game_throwdice</string>
+    <string name="one_player">one_player</string>
+    <string name="multi_player">multi_player</string>
 </resources>

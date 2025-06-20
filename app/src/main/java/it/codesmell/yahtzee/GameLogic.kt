@@ -121,6 +121,7 @@ class GameLogic : ViewModel() {
         }
     }
 
+    var canroll by mutableStateOf(true)
     //Tira i dadi appartenenti a selectedDice
     fun rollSelectedDice() {
 
@@ -131,6 +132,9 @@ class GameLogic : ViewModel() {
 
         if (selectedDice.any { it == true }) {
             rollsLeft--
+            if (rollsLeft <= 0){
+                canroll = false
+            }
         }
 
 
@@ -309,7 +313,6 @@ class GameLogic : ViewModel() {
 
     }
 
-
     //quando premi un punteggio, fissa il punteggio
     fun confirmScore(combo: String, score: Int) {
 
@@ -333,6 +336,7 @@ class GameLogic : ViewModel() {
                 withContext(Dispatchers.Main) {
                     // reset e passa al prossimo turno
                     rollsLeft = 3
+                    canroll = true
                     roundsPlayed++
 
                     Log.d("player increment", "$currentPlayer")
@@ -364,6 +368,7 @@ class GameLogic : ViewModel() {
 
         dice = List(diceAmount) { 0 }
         hasRolled = false
+
     }
 
 

@@ -285,6 +285,9 @@ fun Screen2(
 
 @Composable
 fun GameScreen(gameLogic: GameLogic, navController: NavController) {
+
+
+    var canRoll = gameLogic.canroll
     var showOverlay by remember { mutableStateOf(false) }
     val context = LocalContext.current
     BackHandler { // mi serve sennò non mi setta le variabili del multiplayer a falso e il gioco parte sempre in multi
@@ -356,7 +359,6 @@ fun GameScreen(gameLogic: GameLogic, navController: NavController) {
                     .padding(bottom = screenHeight * 0.05f)
             ) {
 
-                val canRoll = gameLogic.rollsLeft > 0 && !gameLogic.gameOver
 
                 Column() {
                     composables?.funButton3D(
@@ -411,7 +413,7 @@ fun GameScreen(gameLogic: GameLogic, navController: NavController) {
                         .padding(50.dp)
                         .rotate(90f)
                 ) {
-                    val canRoll = gameLogic.rollsLeft > 0 && !gameLogic.gameOver
+
 
                     composables?.funButton3D(
                         onClick = { if (canRoll) gameLogic.rollSelectedDice() },

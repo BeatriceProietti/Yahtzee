@@ -366,18 +366,18 @@ class GameLogic : ViewModel() {
     }
 
 
-    fun getWinner(): Int{ //
-
+    fun getWinner(): Int {
         var winner = 1
-        for(i in 2..playerAmount-1){
-
-            if(playerStatuses[winner].totalScore<playerStatuses[i+1].totalScore){
-                winner=i
+        for (i in 2..playerAmount) {
+            if (playerStatuses[i].totalScore > playerStatuses[winner].totalScore) {
+                winner = i
             }
         }
         Log.d("winner", "$winner")
         return winner
     }
+
+
 
 
 }

@@ -792,7 +792,7 @@ class Composables {
                 )
 
                 Text(
-                    text = stringResource(R.string.game_player) + " : " + gameLogic.currentPlayer + " di " + gameLogic.playerAmount,
+                    text = stringResource(R.string.game_player) + " : " + gameLogic.currentPlayer + " / " + gameLogic.playerAmount,
                     fontSize = 18.sp,
                     color = Color.White,
                     modifier = Modifier.padding(8.dp)
@@ -846,7 +846,7 @@ class Composables {
                     modifier = Modifier.padding(horizontal = 8.dp)
                 )
                 Text(
-                    text = stringResource(R.string.game_player) + " : " + gameLogic.currentPlayer + " di " + gameLogic.playerAmount,
+                    text = stringResource(R.string.game_player) + " : " + gameLogic.currentPlayer + " / " + gameLogic.playerAmount,
                     fontSize = 18.sp,
                     color = Color.White,
                     modifier = Modifier.padding(8.dp)

@@ -1,6 +1,7 @@
 package it.codesmell.yahtzee
 
 //import DataBase
+import android.content.Context
 import android.os.Bundle
 import android.widget.Toast
 import androidx.activity.ComponentActivity
@@ -27,6 +28,7 @@ import androidx.navigation.compose.rememberNavController
 import androidx.room.Room
 import it.codesmell.yahtzee.dao.TableScoreDatabase
 import it.codesmell.yahtzee.ui.theme.YahtzeeTheme
+import androidx.core.content.edit
 
 //sborras
 
@@ -39,6 +41,7 @@ var composables : Composables? = null
 var darkTheme by mutableStateOf(true)
 
 lateinit var mozione : motionManager
+
 
 class MainActivity : ComponentActivity() {
 
@@ -117,9 +120,21 @@ class MainActivity : ComponentActivity() {
     }
 
 
+
 }
 
-
+/* non funziona nulla
+fun applySettings(context : Context){
+    context.getSharedPreferences("hapticsMode", Context.MODE_PRIVATE).edit() {
+        putString("enableSounds", hfx?.hapticsMode?:"Rich")
+    }
+    context.getSharedPreferences("darkTheme", Context.MODE_PRIVATE).edit() {
+        putBoolean("enableSounds", darkTheme)
+    }
+    context.getSharedPreferences("enableSounds", Context.MODE_PRIVATE).edit() {
+        putBoolean("enableSounds", sfx?.enableSounds?:true)
+    }
+}*/
 
 fun provas(){
     //Toast.makeText(gthis, "Szsszzziù!!!!", Toast.LENGTH_SHORT).show()
@@ -127,7 +142,6 @@ fun provas(){
 
 fun switchTheme(){
     darkTheme = !darkTheme
-    Toast.makeText(gthis, "darkTheme = $darkTheme", Toast.LENGTH_SHORT).show()
 }
 
 fun switchVibMode(){ //alterna tra le API di vibrazione

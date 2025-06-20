@@ -39,4 +39,9 @@
     <string name="lowersection">Sezione inferiore</string>
     <string name="date">Data</string>
     <string name="game_round">Turno</string>
+    <string name="scoredetails">Dettagli Punteggio</string>
+    <string name="delete">Cancella</string>
+    <string name="gameover">Partita Terminata!</string>
+    <string name="close">Chiudi</string>
+    <string name="winner">Vincitore</string>
 </resources>

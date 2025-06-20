@@ -26,7 +26,6 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -68,6 +67,7 @@ import androidx.compose.material3.BasicAlertDialog
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.draw.drawBehind
@@ -78,6 +78,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import it.codesmell.yahtzee.dao.TableScore
+import it.codesmell.yahtzee.font_handwriting
 
 
 //mettiamo qui i composable, per avere un po' di ordine e per averli standardizzati per tutte le schermate
@@ -95,20 +96,26 @@ class Composables {
         if (showPopup) {
             val message = if (gameLogic.playerAmount > 1) {
                 val winner = gameLogic.getWinner()
-                "Vincitore: Giocatore $winner\nPunteggio: ${gameLogic.playerStatuses[winner].totalScore}"
+                "${stringResource(R.string.winner)}: ${stringResource(R.string.game_player)} $winner\n${stringResource(R.string.game_score)}: ${gameLogic.playerStatuses[winner].totalScore}"
             } else {
-                "Punteggio: ${gameLogic.playerStatuses[gameLogic.currentPlayer].totalScore}"
+                "${stringResource(R.string.game_score)}: ${gameLogic.playerStatuses[gameLogic.currentPlayer].totalScore}"
             }
 
             AlertDialog(
+                //modifier = Modifier.clip(shape = RoundedCornerShape(0.dp)), //non funziona?
                 onDismissRequest = onDismiss,
-                title = { Text("Partita terminata") },
+                title = { Text(stringResource(R.string.gameover)) },
                 text = { Text(message) },
                 confirmButton = {
-                    Button(onClick = onDismiss) {
-                        Text("Chiudi")
-                    }
-                }
+                    composables?.funButton3D(
+                        onClick = onDismiss,
+                        text = stringResource(R.string.close),
+                        color = Color(0xFFEE3F62),
+                        depth = 8,
+                        120.dp, 50.dp
+                    )
+                },
+
             )
         }
     }
@@ -266,7 +273,8 @@ class Composables {
                             Column(horizontalAlignment = Alignment.CenterHorizontally) {
                                 Text(
                                     text = diceEmojis.getOrNull(index) ?: "🎲",
-                                    fontSize = 30.sp
+                                    fontSize = 30.sp,
+                                    color = Color.White
                                 )
                                 Text(
                                     text = confirmedScore?.toString() ?: "$potentialScore",
@@ -274,7 +282,7 @@ class Composables {
                                         isUsed -> Color.White
                                         else -> Color(0xFF62775B)
                                     },
-                                        fontSize = 32.sp,
+                                        fontSize = 30.sp,
                                     fontFamily = font_handwriting,
                                     fontWeight = FontWeight.ExtraBold
                                 )
@@ -392,7 +400,12 @@ class Composables {
                             contentAlignment = Alignment.Center
                         ) {
                             if (col == 0) {
-                                Text(label, color = Color.White, fontSize = 14.sp)
+                                Text(label,
+                                    color = Color.White,
+                                    fontSize = 18.sp,
+                                    fontFamily = font_Hershey,
+                                    fontWeight = FontWeight.Bold
+                                )
                             } else {
                                 Text(
                                     text = score.toString(),
@@ -598,8 +611,6 @@ class Composables {
 
         var saturation = 0.7f
 
-        //var color by mutableStateOf(Color.Magenta)
-
         MealCalendar(
             perspective = Composables.Perspective.Left(
                 bottomEdgeColor = lerp(Color(0x878787ff), color, saturation),
@@ -790,6 +801,7 @@ class Composables {
                 text = stringResource(R.string.app_name),
                 fontFamily = font_Square,
                 fontSize = 72.sp,
+                color = MaterialTheme.colorScheme.primary
             )
         }
     }
@@ -814,21 +826,21 @@ class Composables {
                 Text(
                     text = "${gameLogic.playerStatuses[gameLogic.currentPlayer].totalScore}",
                     fontSize = 48.sp,
-                    color = Color.White,
+                    color = MaterialTheme.colorScheme.primary,
                     modifier = Modifier.padding(8.dp),
                     fontFamily = font_Squarewise
                 )
                 Text(
                     text = stringResource(R.string.game_player) + " : " + gameLogic.currentPlayer + " / " + gameLogic.playerAmount,
                     fontSize = 18.sp,
-                    color = Color.White,
+                    color = MaterialTheme.colorScheme.tertiary,
                     modifier = Modifier.padding(8.dp),
                     fontFamily = font_Hershey
                 )
                 Text(
                     text = stringResource(R.string.game_round) + " : " + ((gameLogic.roundNumber/gameLogic.playerAmount) + 1) + " / " + 13,
                     fontSize = 18.sp,
-                    color = Color.White,
+                    color = MaterialTheme.colorScheme.tertiary,
                     modifier = Modifier.padding(8.dp),
                     fontFamily = font_Hershey
                 )
@@ -837,15 +849,19 @@ class Composables {
             Column(verticalArrangement = Arrangement.Center){
                 Text(
                     text = if (gameLogic.playerStatuses[gameLogic.currentPlayer].bonusJustAwarded) "Bonus Upper ottenuto" else "No bonus Upper",
-                    fontSize = 14.sp,
-                    color = Color.LightGray,
-                    modifier = Modifier.padding(horizontal = 8.dp)
+                    fontSize = 16.sp,
+                    color = MaterialTheme.colorScheme.secondary,
+                    modifier = Modifier.padding(horizontal = 8.dp),
+                    fontFamily = font_Hershey,
+                    fontWeight = FontWeight.Bold
                 )
                 Text(
                     text = "Yahtzee Bonus: " + gameLogic.playerStatuses[gameLogic.currentPlayer].YahtzeeBonusCount,
-                    fontSize = 14.sp,
-                    color = Color.LightGray,
-                    modifier = Modifier.padding(horizontal = 8.dp)
+                    fontSize = 16.sp,
+                    color = MaterialTheme.colorScheme.secondary,
+                    modifier = Modifier.padding(horizontal = 8.dp),
+                    fontFamily = font_Hershey,
+                    fontWeight = FontWeight.Bold
                 )
             }
         }
@@ -863,21 +879,21 @@ class Composables {
                     Text(
                         text = "${gameLogic.playerStatuses[gameLogic.currentPlayer].totalScore}",
                         fontSize = 22.sp,
-                        color = Color.White,
+                        color = MaterialTheme.colorScheme.primary,
                         modifier = Modifier.padding(8.dp),
                         fontFamily = font_Squarewise
                     )
                     Text(
                         text = stringResource(R.string.game_player) + " : " + gameLogic.currentPlayer + " / " + gameLogic.playerAmount,
                         fontSize = 18.sp,
-                        color = Color.White,
+                        color = MaterialTheme.colorScheme.tertiary,
                         modifier = Modifier.padding(8.dp),
                         fontFamily = font_Hershey
                     )
                     Text(
                         text = stringResource(R.string.game_round) + " : " + ((gameLogic.roundNumber/gameLogic.playerAmount) + 1) + " / " + 13,
                         fontSize = 18.sp,
-                        color = Color.White,
+                        color = MaterialTheme.colorScheme.tertiary,
                         modifier = Modifier.padding(8.dp),
                         fontFamily = font_Hershey
                     )
@@ -886,15 +902,20 @@ class Composables {
                 Column(){
                     Text(
                         text = if (gameLogic.playerStatuses[gameLogic.currentPlayer].bonusJustAwarded) "Bonus Upper ottenuto" else "No bonus Upper",
-                        fontSize = 14.sp,
-                        color = Color.LightGray,
-                        modifier = Modifier.padding(horizontal = 8.dp)
+                        fontSize = 16.sp,
+                        color = MaterialTheme.colorScheme.secondary,
+                        modifier = Modifier.padding(horizontal = 8.dp),
+                        fontFamily = font_Hershey,
+                        fontWeight = FontWeight.Bold
+
                     )
                     Text(
                         text = "Yahtzee Bonus: " + gameLogic.playerStatuses[gameLogic.currentPlayer].YahtzeeBonusCount,
-                        fontSize = 14.sp,
-                        color = Color.LightGray,
-                        modifier = Modifier.padding(horizontal = 8.dp)
+                        fontSize = 16.sp,
+                        color = MaterialTheme.colorScheme.secondary,
+                        modifier = Modifier.padding(horizontal = 8.dp),
+                        fontFamily = font_Hershey,
+                        fontWeight = FontWeight.Bold
                     )
                 }
             }
@@ -939,7 +960,7 @@ class Composables {
                                 contentScale = ContentScale.Fit,
                             )
 
-                            Text(text = "Dettagli punteggio:", fontSize = 20.sp)
+                            Text(text = stringResource(R.string.scoredetails), fontSize = 20.sp)
                         }
 
                         //table content
@@ -978,8 +999,8 @@ class Composables {
                         // delete button
                         composables?.funButton3D(
                             onClick = { onEvent(ScoreListEvent.deleteScore(tableScore)) }, //send action to viewModel
-                            text = "Cancella",
-                            color = Color.Blue,
+                            text = stringResource(R.string.delete),
+                            color = Color.Red,
                             depth = 5,
                             screenWidth * 0.50f, 50.dp
                         )

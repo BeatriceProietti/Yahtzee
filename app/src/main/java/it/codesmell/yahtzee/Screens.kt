@@ -368,8 +368,7 @@ fun GameScreen(gameLogic: GameLogic, navController: NavController) {
                         sizeY = 75.dp
                     )
                 }
-
-                composables?.EndGameSquare(showOverlay,onDismiss = { showOverlay = false; navController.popBackStack(); gameLogic.gameOver = false; gameLogic.currentPlayer=1}, gameLogic.playerStatuses[gameLogic.currentPlayer] )
+                composables?.WinnerPopup(showOverlay, onDismiss = {showOverlay = false; navController.popBackStack();})
             }
         }
     }
@@ -425,9 +424,8 @@ fun GameScreen(gameLogic: GameLogic, navController: NavController) {
 
                 }
             }
-
         }
-
+        composables?.WinnerPopup(showOverlay, onDismiss = {showOverlay = false; navController.popBackStack();})
     }
 
 

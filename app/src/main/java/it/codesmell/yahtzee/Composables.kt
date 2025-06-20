@@ -64,6 +64,7 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.BasicAlertDialog
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
@@ -94,83 +95,29 @@ class Composables {
     //quadrato di fine partita
 
     @Composable
-    fun EndGameSquare(
-        show: Boolean,
-        onDismiss: () -> Unit,
-        playerStatus: PlayerStatus
-    ) {
-        val configuration = LocalConfiguration.current
-        val screenWidthDp = configuration.screenWidthDp.dp
-        val screenHeightDp = configuration.screenHeightDp.dp
+    fun WinnerPopup(showPopup: Boolean, onDismiss: () -> Unit) {
+        if (showPopup) {
+            val message = if (gameLogic.playerAmount > 1) {
+                val winner = gameLogic.getWinner()
+                "Vincitore: Giocatore $winner\nPunteggio: ${gameLogic.playerStatuses[winner].totalScore}"
+            } else {
+                "Punteggio: ${gameLogic.playerStatuses[gameLogic.currentPlayer].totalScore}"
+            }
 
-        val boxWidth = screenWidthDp * 0.7f
-        val boxHeight = screenHeightDp * 0.5f
-
-        // 🔁 Cambiato: parte da ben fuori lo schermo (positivo = va in basso)
-        val offScreenTargetY = screenHeightDp.value
-        val offsetY = remember { Animatable(offScreenTargetY) }
-
-        LaunchedEffect(show) {
-            val target = if (show) 0f else offScreenTargetY
-            offsetY.animateTo(
-                target,
-                animationSpec = spring(
-                    dampingRatio = Spring.DampingRatioMediumBouncy,
-                    stiffness = Spring.StiffnessLow
-                )
-            )
-        }
-
-        Box(
-            modifier = Modifier.fillMaxSize(),
-            contentAlignment = Alignment.Center // 🔁 Ora centra il box!
-        ) {
-            Box(
-                modifier = Modifier
-                    .size(boxWidth, boxHeight)
-                    .offset(y = offsetY.value.dp) // 🔁 Si anima solo verticalmente
-                    .clip(RoundedCornerShape(14.dp))
-                    .background(Color.White)
-            ) {
-                Column(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .padding(12.dp),
-                    verticalArrangement = Arrangement.SpaceBetween,
-                    horizontalAlignment = Alignment.CenterHorizontally
-                ) {
-                    Box(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .weight(0.7f)
-                            .clip(RoundedCornerShape(10.dp))
-                            .background(Color.Gray)
-                            .padding(8.dp), // 🔁 aggiunto padding per far "respirare" il testo
-                        contentAlignment = Alignment.Center
-                    ) {
-                        Text(
-                            text = playerStatus.totalScore.toString(),
-                            color = Color.Black,
-                            textAlign = TextAlign.Center,
-                            fontSize = 18.sp,
-                            maxLines = 4,
-                            overflow = TextOverflow.Ellipsis,
-                            softWrap = true,
-                            modifier = Modifier.fillMaxWidth()
-                        )
-                    }
-
-
-                    Button(
-                        onClick = onDismiss,
-                        modifier = Modifier.padding(top = 6.dp)
-                    ) {
+            AlertDialog(
+                onDismissRequest = onDismiss,
+                title = { Text("Partita terminata") },
+                text = { Text(message) },
+                confirmButton = {
+                    Button(onClick = onDismiss) {
                         Text("Chiudi")
                     }
                 }
-            }
+            )
         }
     }
+
+
 
 
 

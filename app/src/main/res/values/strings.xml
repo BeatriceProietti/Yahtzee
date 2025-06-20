@@ -21,4 +21,5 @@
     <string name="game_upperbonus">game_upperbonus</string>
     <string name="game_player">game_player</string>
     <string name="game_playeramount">game_playeramount</string>
+    <string name="game_chooseCombo">game_chooseCombo</string>
 </resources>

@@ -28,13 +28,6 @@ class GameLogic : ViewModel() {
 
     var statusText by mutableStateOf("status")
 
-    //da mettere nell'entity
-    val usedCombos = mutableStateMapOf<String, Int>() // es: "Full house" -> 25
-    var totalScore by mutableStateOf(0)
-    var bonusJustAwarded by mutableStateOf(false)
-    var upperSectionBonus by mutableStateOf(0)
-
-
     //parametri gamemode
     var multiPlayer by mutableStateOf(false) // parte falso e verrà settato a true //sostituisci con playerAmount
     var playerAmount by mutableStateOf(1)
@@ -57,8 +50,6 @@ class GameLogic : ViewModel() {
     var playerStatuses: Array<PlayerStatus> =
         emptyArray() //lista dei playerstatus di tutti i giocatori.  spero non vada fatta mutable
 
-
-// Giocatore 1
 
 
 
@@ -93,31 +84,7 @@ class GameLogic : ViewModel() {
         }
     }
 
-    // funzione di reset
-    fun resetGame() {
-        // Reset variabili di gioco
 
-        bonusJustAwarded = false
-        upperSectionBonus = 0
-        rollsLeft = 3
-        roundsPlayed = 0
-        gameOver = false
-        bonusShown = false
-        hasRolled = false
-
-        // Reset punteggi
-        totalScore = 0
-
-        // Reset punteggi combo e upper section
-        usedCombos.clear()
-
-        // Reset dadi e selezioni dadi
-        dice = List(diceAmount) { 0 }
-        selectedDice.clear()
-        repeat(diceAmount) { selectedDice.add(false) }
-
-        statusText = "status"
-    }
 
 
 //

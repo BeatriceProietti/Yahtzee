@@ -101,15 +101,15 @@ fun MainScreen(navController: NavController) {
                 text = stringResource(R.string.mode_singleplayer),
                 color = Color.Red,
                 depth = 10,
-                sizeX = screenWidth * 0.55f,
+                sizeX = screenWidth * 0.45f,
                 sizeY = 70.dp
             )
             composables?.funButton3D(
-                onClick = { provas() },
+                onClick = { navController.navigate("Screen2") },
                 text = stringResource(R.string.highscores),
                 color = Color(0xFFFF772E),
                 depth = 10,
-                sizeX = screenWidth * 0.35f,
+                sizeX = screenWidth * 0.45f,
                 sizeY = 70.dp
             )
         }
@@ -134,7 +134,7 @@ fun MainScreen(navController: NavController) {
                     text = stringResource(R.string.mode_multiplayer),
                     color = Color.Red,
                     depth = 10,
-                    sizeX = screenWidth * 0.5f,
+                    sizeX = screenWidth * 0.45f,
                     sizeY = 70.dp
                 )
                 composables?.funButton3D(
@@ -142,7 +142,7 @@ fun MainScreen(navController: NavController) {
                     text = "-",
                     color = Color(0xFFFA9F76),
                     depth = 10,
-                    sizeX = screenWidth * 0.1f,
+                    sizeX = screenWidth * 0.125f,
                     sizeY = 70.dp
                 )
                 composables?.funButton3D(
@@ -158,24 +158,19 @@ fun MainScreen(navController: NavController) {
                     text = "+",
                     color = Color(0xFFFA9F76),
                     depth = 10,
-                    sizeX = screenWidth * 0.1f,
+                    sizeX = screenWidth * 0.125f,
                     sizeY = 70.dp
                 )
             }
-            composables?.funButton3D(
-                onClick = { navController.navigate("Screen2") },
-                text = stringResource(R.string.mode_testscreen),
-                color = Color.Blue,
-                depth = 10,
-                screenWidth * 0.9f, 50.dp
-            )
+
+            Spacer(modifier = Modifier.height(screenHeight * 0.05f))
 
             composables?.funButton3D(
                 onClick = { navController.navigate("OptionScreen") },
                 text = stringResource(R.string.settings),
                 color = Color.Blue,
                 depth = 10,
-                screenWidth * 0.9f, 50.dp
+                screenWidth * 0.7f, 50.dp
             )
         }
     }
@@ -291,24 +286,14 @@ fun GameScreen(gameLogic: GameLogic, navController: NavController) {
     }
 
 
-    var hasReset by rememberSaveable { mutableStateOf(false) }
-
-    LaunchedEffect(Unit) {
-        if (!hasReset) {
-            gameLogic.resetGame()
-            hasReset = true
-        }
-    }
-
-
     LaunchedEffect(gameLogic.gameOver) {
         if (gameLogic.gameOver) {
             showOverlay = true
         }
     }
     var showToastAni: Boolean
-    showToastAni =
-        gameLogic.bonusJustAwarded // mi creo una variabile che si prende lo stato del bonus jusr awarded e poi lo usa per mostrare il toast
+    showToastAni = false //TODO
+
     LaunchedEffect(showToastAni) {
         if (showToastAni) {
             Log.d("bonus", "🎉 Bonus attivato!")
@@ -323,7 +308,7 @@ fun GameScreen(gameLogic: GameLogic, navController: NavController) {
             delay(300)
 
             showToastAni = false // Reset flag
-            Log.d("bonus", "✅ bonusJustAwarded reset a ${gameLogic.bonusJustAwarded}")
+            Log.d("bonus", "✅ bonusJustAwarded reset a a") //TODO
         }
     }
 
@@ -376,10 +361,11 @@ fun GameScreen(gameLogic: GameLogic, navController: NavController) {
                     )
                     composables?.funButton3D(
                         onClick = { if (canRoll) gameLogic.rollSelectedDice() },
-                        text = if (canRoll) "Tira Dadi" else "Scegli una combo",
+                        text = if (canRoll) stringResource(R.string.game_throwdice) else stringResource(R.string.game_chooseCombo),
                         color = MaterialTheme.colorScheme.primary,
                         depth = 10,
-                        150.dp, 50.dp
+                        sizeX = screenWidth*0.9f,
+                        sizeY = 125.dp
                     )
                 }
 

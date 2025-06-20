@@ -219,7 +219,7 @@ class Composables {
         val spacing = 4.dp
         val padding = 4.dp
 
-        val labels = listOf("Ones", "Twos", "Threes", "Fours", "Fives", "Sixes")
+        val labels = listOf("Aces", "Twos", "Threes", "Fours", "Fives", "Sixes")
         val diceEmojis = listOf("⚀", "⚁", "⚂", "⚃", "⚄", "⚅")
 
         BoxWithConstraints(

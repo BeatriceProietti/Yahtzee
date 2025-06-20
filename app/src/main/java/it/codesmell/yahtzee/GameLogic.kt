@@ -31,7 +31,7 @@ class GameLogic : ViewModel() {
     var multiPlayer by mutableStateOf(false) // parte falso e verrà settato a true //sostituisci con playerAmount
     var playerAmount by mutableStateOf(1)
     var diceAmount: Int = 5
-    val bonusThreshold = 0
+    val bonusThreshold = 63
     val bonusAmount = 35
     var rollsLeft = 3
 

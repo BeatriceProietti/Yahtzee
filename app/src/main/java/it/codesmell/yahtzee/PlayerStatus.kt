@@ -10,12 +10,12 @@ class PlayerStatus {
     var playerNo by mutableStateOf(1) //numero giocatore
     var totalScore by mutableStateOf(0)
     var upperSectionScores = mutableStateMapOf<String, Int?>(
-        "upper_aces" to null,
-        "upper_twos" to null,
-        "upper_threes" to null,
-        "upper_fours" to null,
-        "upper_fives" to null,
-        "upper_sixes" to null,
+        "Aces" to null,
+        "Twos" to null,
+        "Threes" to null,
+        "Fours" to null,
+        "Fives" to null,
+        "Sixes" to null,
     )
 
 

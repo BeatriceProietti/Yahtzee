@@ -43,6 +43,7 @@ var gthis : MainActivity? = null
 val gameLogic : GameLogic = GameLogic()
 
 var hfx : hapticEffects? = null
+var sfx : soundEffects? = null
 var composables : Composables? = null
 var darkTheme by mutableStateOf(true)
 
@@ -86,6 +87,8 @@ class MainActivity : ComponentActivity() {
 
         gthis = this
         hfx = hapticEffects(this)
+        sfx = soundEffects()
+        sfx?.loadSounds(applicationContext)
         composables = Composables()
 
 

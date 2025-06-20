@@ -1,5 +1,7 @@
 package it.codesmell.yahtzee
 
+import android.os.VibrationEffect
+import android.os.VibrationEffect.EFFECT_HEAVY_CLICK
 import android.util.Log
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
@@ -212,7 +214,7 @@ class GameLogic : ViewModel() {
         val valueCounts = dice.groupingBy { it }.eachCount()
 
         val isYahtzee = valueCounts.values.any { it == 5 } && valueCounts[0] == 0
-        if (isYahtzee && rollsLeft < 300) {
+        if (isYahtzee && rollsLeft < 3) {
             // Verifica che la combo Yahtzee sia già stata usata
             val yahtzeeAlreadyUsed =
                 playerStatuses[currentPlayer].usedCombos.containsKey("combo_5kind")
@@ -320,30 +322,38 @@ class GameLogic : ViewModel() {
             playerStatuses[currentPlayer].totalScore += score
 
 
-            // reset e passa al prossimo turno
-            rollsLeft = 300
-            roundsPlayed++
+            //pausa per mostrare il punteggio
+            //fa partire un altro thread, che attende e poi fa partire la seconda parte dell'effetto
+            CoroutineScope(Dispatchers.IO).launch {
+                delay(1500)
+                withContext(Dispatchers.Main) {
+                    // reset e passa al prossimo turno
+                    rollsLeft = 3
+                    roundsPlayed++
+
+                    Log.d("player increment", "$currentPlayer")
+                    Log.d("player amount", "$playerAmount")
+                    //blocco rotazione turni
+                    if (currentPlayer < playerAmount && currentPlayer > 0) {
+                        Log.d("player increment", "$currentPlayer")
+                        currentPlayer++
+                    } else currentPlayer = 1
+                    //
 
 
-            Log.d("player increment", "$currentPlayer")
-            Log.d("player amount", "$playerAmount")
-            //blocco rotazione turni
-            if (currentPlayer < playerAmount && currentPlayer > 0) {
-                Log.d("player increment", "$currentPlayer")
-                currentPlayer++
-            } else currentPlayer = 1
-            //
+                    Log.d("roundplay", "$roundsPlayed")
+                    Log.d("rolls", "$rollsLeft")
 
-
-            Log.d("roundplay", "$roundsPlayed")
-            Log.d("rolls", "$rollsLeft")
-
-            checkAndApplyUpperSectionBonus()
-            //fine partita
-            if (roundsPlayed >= 13 * playerAmount) {
-                gameOver = true
-                Log.d("roundplay", "sono nel gameover la partita è finita dio cristo $gameOver")
+                    checkAndApplyUpperSectionBonus()
+                    //fine partita
+                    if (roundsPlayed >= 13 * playerAmount) {
+                        gameOver = true
+                        Log.d("roundplay", "sono nel gameover la partita è finita ?Bu) $gameOver")
+                    }
+                }
             }
+
+
         }
 
         dice = List(diceAmount) { 0 }

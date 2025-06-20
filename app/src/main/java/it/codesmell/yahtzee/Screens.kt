@@ -177,7 +177,7 @@ fun OptionScreen(navController: NavController) {
     ) {
         composables?.funButton3D(
             ::switchVibMode,
-            text = stringResource(R.string.settings_hapticsMode) + " : " + hfx?.hapticsMode,
+            text = stringResource(R.string.settings_hapticsMode) + ": " + hfx?.hapticsMode,
             color = Color.Blue,
             depth = 10,
             sizeX = screenWidth*0.9f,

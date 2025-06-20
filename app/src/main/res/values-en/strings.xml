@@ -34,4 +34,8 @@
     <string name="upper_fives">Fives</string>
     <string name="upper_sixes">Sixes</string>
     <string name="game_swapsection">Switch section</string>
+    <string name="finalscore">Final Score</string>
+    <string name="uppersection">Upper Section</string>
+    <string name="lowersection">Lower Section</string>
+    <string name="date">Date</string>
 </resources>

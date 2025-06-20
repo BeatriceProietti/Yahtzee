@@ -78,6 +78,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalWindowInfo
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
@@ -898,7 +899,7 @@ class Composables {
                         }
 
                         //table content
-                        Text(text = "data: ${tableScore.date} ", fontSize = 20.sp)
+                        Text(text = stringResource(R.string.date) + " : ${tableScore.date} ", fontSize = 20.sp)
 
                         LazyColumn(
                             modifier = Modifier
@@ -906,25 +907,27 @@ class Composables {
                                 .weight(1f),
                             verticalArrangement = Arrangement.spacedBy(4.dp)
                         ) {
-                            item { Text("Final Score: ${tableScore.finalScore}", fontSize = 18.sp, modifier = Modifier.padding(top = 8.dp)) }
-                            item { Text("Upper", fontSize = 18.sp) }
-                            item { Text("Aces: ${tableScore.aces}") }
-                            item { Text("Twos: ${tableScore.twos}") }
-                            item { Text("Threes: ${tableScore.threes}") }
-                            item { Text("Fours: ${tableScore.fours}") }
-                            item { Text("Fives: ${tableScore.fives}") }
-                            item { Text("Sixes: ${tableScore.sixes}") }
-                            item { Text("Bonus: ${tableScore.bonusUpperSection}") }
+                            item { Text(stringResource(R.string.finalscore) + " : ${tableScore.finalScore}", fontSize = 18.sp, modifier = Modifier.padding(top = 8.dp)) }
+                            item { Spacer(modifier = Modifier.height(8.dp))}
+                            item { Text(stringResource(R.string.uppersection), fontSize = 18.sp, fontWeight = FontWeight.ExtraBold) }
+                            item { Text(stringResource(R.string.upper_aces) + " : " + tableScore.aces) }
+                            item { Text(stringResource(R.string.upper_twos) + " : " + tableScore.twos) }
+                            item { Text(stringResource(R.string.upper_threes) + " : " + tableScore.threes) }
+                            item { Text(stringResource(R.string.upper_fours) + " : " + tableScore.fours) }
+                            item { Text(stringResource(R.string.upper_fives) + " : " + tableScore.fives) }
+                            item { Text(stringResource(R.string.upper_sixes) + " : " + tableScore.sixes) }
+                            item { Text("Bonus : ${tableScore.bonusUpperSection}") }
 
-                            item { Text("Lower:", fontSize = 18.sp, modifier = Modifier.padding(top = 8.dp)) }
-                            item { Text("Three of a Kind: ${tableScore.threeOfAKind}") }
-                            item { Text("Four of a Kind: ${tableScore.fourOfAKind}") }
-                            item { Text("Full House: ${tableScore.fullHouse}") }
-                            item { Text("Small Straight: ${tableScore.smallStraight}") }
-                            item { Text("Large Straight: ${tableScore.largeStraight}") }
-                            item { Text("Chance: ${tableScore.chance}") }
-                            item { Text("Yahtzee: ${tableScore.yahtzee}") }
-                            item { Text("Yahtzee Bonus: ${tableScore.yahtzeeBonus}") }
+                            item { Spacer(modifier = Modifier.height(8.dp))}
+                            item { Text(stringResource(R.string.lowersection), fontSize = 18.sp, fontWeight = FontWeight.ExtraBold) }
+                            item { Text(stringResource(R.string.combo_3kind) + " : ${tableScore.threeOfAKind}") }
+                            item { Text(stringResource(R.string.combo_4kind) + " : ${tableScore.fourOfAKind}") }
+                            item { Text(stringResource(R.string.combo_fullhouse) + " : ${tableScore.fullHouse}") }
+                            item { Text(stringResource(R.string.combo_sstraight) + " : ${tableScore.smallStraight}") }
+                            item { Text(stringResource(R.string.combo_lstraight) + " : ${tableScore.largeStraight}") }
+                            item { Text(stringResource(R.string.combo_chance) + " : ${tableScore.chance}") }
+                            item { Text(stringResource(R.string.combo_5kind) + " : ${tableScore.yahtzee}") }
+                            item { Text("Yahtzee Bonus : ${tableScore.yahtzeeBonus}") }
                         }
 
 

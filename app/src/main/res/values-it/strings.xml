@@ -6,7 +6,7 @@
     <string name="highscores">Classifica</string>
     <string name="settings">Impostazioni</string>
     <string name="settings_hapticsMode">Vibrazione</string>
-    <string name="settings_theme">Cambia tema</string>
+    <string name="settings_theme">Tema</string>
     <string name="mode_testscreen">schermata di prova delle applicazioni</string>
     <string name="combo_4kind">Poker</string>
     <string name="combo_5kind">Yahtzee!</string>
@@ -34,4 +34,8 @@
     <string name="upper_fives">Cinque</string>
     <string name="upper_sixes">Sei</string>
     <string name="game_swapsection">Cambia sezione</string>
+    <string name="finalscore">Punteggio Finale</string>
+    <string name="uppersection">Sezione superiore</string>
+    <string name="lowersection">Sezione inferiore</string>
+    <string name="date">Data</string>
 </resources>

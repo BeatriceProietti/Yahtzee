@@ -199,6 +199,13 @@ fun OptionScreen(navController: NavController) {
             sizeX = screenWidth*0.9f,
             sizeY = 75.dp
         )
+        composables?.funButton3D(
+            onClick = { navController.popBackStack() },
+            text = stringResource(R.string.goback),
+            color = Color.Red,
+            depth = 10,
+            screenWidth * 0.7f, 50.dp
+        )
     }
 }
 

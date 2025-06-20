@@ -5,7 +5,7 @@
     <string name="mode_multiplayer">Versus</string>
     <string name="highscores">Classifica</string>
     <string name="settings">Impostazioni</string>
-    <string name="settings_hapticsMode">Modalità vibrazione</string>
+    <string name="settings_hapticsMode">Modalita\' vibrazione</string>
     <string name="settings_theme">Cambia tema</string>
     <string name="mode_testscreen">schermata di prova delle applicazioni</string>
     <string name="combo_4kind">Poker</string>
@@ -26,4 +26,5 @@
     <string name="settings_sound">Suoni</string>
     <string name="theme_light">Chiaro</string>
     <string name="theme_dark">Scuro</string>
+    <string name="goback">Indietro</string>
 </resources>

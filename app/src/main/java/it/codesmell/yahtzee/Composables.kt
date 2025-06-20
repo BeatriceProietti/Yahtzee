@@ -219,14 +219,7 @@ class Composables {
         val spacing = 4.dp
         val padding = 4.dp
 
-        val labels = listOf(stringResource(R.string.upper_aces),
-            stringResource(R.string.upper_twos),
-            stringResource(R.string.upper_threes),
-            stringResource(R.string.upper_fours),
-            stringResource(R.string.upper_fives),
-            stringResource(R.string.upper_sixes))
-
-
+        val labels = listOf("Ones", "Twos", "Threes", "Fours", "Fives", "Sixes")
         val diceEmojis = listOf("⚀", "⚁", "⚂", "⚃", "⚄", "⚅")
 
         BoxWithConstraints(
@@ -269,7 +262,7 @@ class Composables {
                             )
                             Spacer(modifier = Modifier.height(4.dp))
                             Text(
-                                text = confirmedScore?.toString() ?: "$label: $potentialScore",
+                                text = confirmedScore?.toString() ?: "$potentialScore",
                                 color = Color.White,
                                 fontSize = 20.sp
                             )

@@ -329,7 +329,7 @@ class GameLogic : ViewModel() {
             //fa partire un altro thread, che attende e poi fa partire la seconda parte dell'effetto
             CoroutineScope(Dispatchers.IO).launch {
                 delay(1500)
-                sfx?.bell()
+                if(playerAmount > 1) sfx?.bell()
                 withContext(Dispatchers.Main) {
                     // reset e passa al prossimo turno
                     rollsLeft = 3

@@ -22,5 +22,5 @@
     <string name="game_upperbonus">Upper Bonus</string>
     <string name="game_player">Player</string>
     <string name="game_playeramount">Players</string>
-    <string name="game_chooseCombo">Choose a combination</string>
+    <string name="game_chooseCombo">Choose a combo</string>
 </resources>

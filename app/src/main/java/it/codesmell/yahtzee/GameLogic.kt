@@ -237,7 +237,7 @@ class GameLogic : ViewModel() {
             val gameData = TableScore(
                 date = (LocalDate.now().year.toString()+"-"+
                         LocalDate.now().monthValue.toString()+"-"+
-                        LocalDate.now().dayOfYear.toString()),
+                        LocalDate.now().dayOfMonth.toString()),
                 aces = ps.upperSectionScores.get("Ones")?:0,
                 twos = ps.upperSectionScores.get("Twos")?:0,
                 threes = ps.upperSectionScores.get("Threes")?:0,

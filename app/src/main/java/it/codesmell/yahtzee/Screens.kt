@@ -264,7 +264,7 @@ fun Screen2(
 
         // show corresponding popup
         if (selectedScore != null) {
-            ScoresPopUp(
+            composables?.ScoresPopUp(
                 showDialog = true,
                 onDismiss = { selectedScoreId = null },
                 onEvent = onEvent,
@@ -353,7 +353,7 @@ fun GameScreen(gameLogic: GameLogic, navController: NavController) {
 
                 Column() {
                     composables?.funButton3D(
-                        onClick = { gameLogic.getWinner() },
+                        onClick = { gameLogic.savePlayerStatus(gameLogic.playerStatuses[gameLogic.currentPlayer]) },
                         text = "Ottieni Palle",
                         color = Color.Red,
                         depth = 10,

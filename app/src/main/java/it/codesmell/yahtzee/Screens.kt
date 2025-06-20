@@ -72,8 +72,8 @@ fun MainScreen(navController: NavController) {
     isPortrait = configuration.orientation == Configuration.ORIENTATION_PORTRAIT
     isLandscape = configuration.orientation == Configuration.ORIENTATION_LANDSCAPE
 
-    screenHeight = configuration.screenHeightDp.dp
-    screenWidth = configuration.screenWidthDp.dp
+    screenHeight = if(isPortrait) configuration.screenHeightDp.dp else configuration.screenWidthDp.dp
+    screenWidth = if(isPortrait) configuration.screenWidthDp.dp else configuration.screenHeightDp.dp
 
 
 
@@ -85,7 +85,7 @@ fun MainScreen(navController: NavController) {
         //Titolo
         composables?.title()
 
-        Spacer(modifier = Modifier.height(screenHeight * 0.075f))
+        Spacer(modifier =  Modifier.height(if(isPortrait) screenHeight * 0.075f else screenHeight * 0.01f))
 
         //Riga un giocatore - Classifica
         composables?.titleLabel(stringResource(R.string.one_player))
@@ -353,21 +353,15 @@ fun GameScreen(gameLogic: GameLogic, navController: NavController) {
 
                 Column() {
                     composables?.funButton3D(
-                        onClick = { gameLogic.savePlayerStatus(gameLogic.playerStatuses[gameLogic.currentPlayer]) },
-                        text = "Ottieni Palle",
-                        color = Color.Red,
-                        depth = 10,
-                        150.dp, 50.dp
-                    )
-                    composables?.funButton3D(
                         onClick = { if (canRoll) gameLogic.rollSelectedDice() },
                         text = if (canRoll) stringResource(R.string.game_throwdice) else stringResource(R.string.game_chooseCombo),
                         color = MaterialTheme.colorScheme.primary,
                         depth = 10,
-                        sizeX = screenWidth*0.9f,
-                        sizeY = 125.dp
+                        sizeX = 300.dp,
+                        sizeY = 75.dp
                     )
                 }
+
 
             }
         }
@@ -418,7 +412,8 @@ fun GameScreen(gameLogic: GameLogic, navController: NavController) {
                         text = if (canRoll) "Tira Dadi" else "Scegli una combo",
                         color = MaterialTheme.colorScheme.primary,
                         depth = 10,
-                        150.dp, 50.dp
+                        sizeX = 100.dp,
+                        sizeY = 75.dp
                     )
 
                 }

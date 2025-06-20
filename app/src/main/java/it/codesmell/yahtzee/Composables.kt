@@ -605,14 +605,6 @@ class Composables {
         }
     }
 
-    @Composable
-    fun GameCards(){
-
-
-
-    }
-
-
 
     //-------------------------------
     sealed class Perspective(
@@ -632,12 +624,7 @@ class Composables {
 
     @Composable
     fun funButton3D(onClick : () -> Unit, text : String, color : Color, depth: Long, sizeX : Dp, sizeY : Dp){
-        val configuration = LocalConfiguration.current
-        val isPortrait = configuration.orientation == Configuration.ORIENTATION_PORTRAIT
-        val isLandscape = configuration.orientation == Configuration.ORIENTATION_LANDSCAPE
 
-        val screenHeight = LocalWindowInfo.current.containerSize.height.dp
-        val screenWidth = LocalWindowInfo.current.containerSize.width.dp
         var saturation = 0.7f
 
         //var color by mutableStateOf(Color.Magenta)

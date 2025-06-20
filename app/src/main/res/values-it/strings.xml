@@ -27,4 +27,11 @@
     <string name="theme_light">Chiaro</string>
     <string name="theme_dark">Scuro</string>
     <string name="goback">Indietro</string>
+    <string name="upper_aces">Assi</string>
+    <string name="upper_twos">Due</string>
+    <string name="upper_threes">Tre</string>
+    <string name="upper_fours">Quattro</string>
+    <string name="upper_fives">Cinque</string>
+    <string name="upper_sixes">Sei</string>
+    <string name="game_swapsection">Cambia sezione</string>
 </resources>

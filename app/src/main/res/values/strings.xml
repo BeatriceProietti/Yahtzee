@@ -26,4 +26,11 @@
     <string name="theme_light">theme_light</string>
     <string name="theme_dark">theme_dark</string>
     <string name="goback">goback</string>
+    <string name="upper_aces">upper_aces</string>
+    <string name="upper_twos">upper_twos</string>
+    <string name="upper_threes">upper_threes</string>
+    <string name="upper_fours">upper_fours</string>
+    <string name="upper_fives">upper_fives</string>
+    <string name="upper_sixes">upper_sixes</string>
+    <string name="game_swapsection">game_swapsection</string>
 </resources>

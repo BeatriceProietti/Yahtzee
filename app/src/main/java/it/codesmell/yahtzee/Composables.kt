@@ -218,7 +218,7 @@ class Composables {
         val spacing = 4.dp
         val padding = 4.dp
 
-        val labels = listOf("Ones", "Twos", "Threes", "Fours", "Fives", "Sixes")
+        val labels = listOf(stringResource(R.string.upper_aces), stringResource(R.string.upper_twos), stringResource(R.string.upper_threes), stringResource(R.string.upper_fours), stringResource(R.string.upper_fives), stringResource(R.string.upper_sixes))
         val diceEmojis = listOf("⚀", "⚁", "⚂", "⚃", "⚄", "⚅")
 
         BoxWithConstraints(
@@ -541,10 +541,11 @@ class Composables {
             Box(modifier = Modifier.padding(top = 25.dp)) {
                 funButton3D(
                     onClick = { isFirstOnTop = !isFirstOnTop },
-                    "Scambia",
+                    stringResource(R.string.game_swapsection),
                     color = MaterialTheme.colorScheme.primary,
                     depth = 10,
-                    150.dp, 50.dp
+                    sizeX = screenWidth*0.7f,
+                    sizeY = 50.dp
                 )
             }
         }

@@ -97,9 +97,7 @@ class Composables {
     fun EndGameSquare(
         show: Boolean,
         onDismiss: () -> Unit,
-        p1Score: Int,
-        p2Score: Int,
-        isMultiplayer: Boolean
+        playerStatus: PlayerStatus
     ) {
         val configuration = LocalConfiguration.current
         val screenWidthDp = configuration.screenWidthDp.dp
@@ -151,7 +149,7 @@ class Composables {
                         contentAlignment = Alignment.Center
                     ) {
                         Text(
-                            text = "Gulyx",
+                            text = playerStatus.totalScore.toString(),
                             color = Color.Black,
                             textAlign = TextAlign.Center,
                             fontSize = 18.sp,

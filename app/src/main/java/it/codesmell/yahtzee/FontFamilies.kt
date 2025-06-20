@@ -20,3 +20,7 @@ val font_Squarewise = FontFamily(
     Font(R.font.squarewise, FontWeight.Normal)
 )
 
+val font_handwriting = FontFamily(
+    Font(R.font.handwrite, FontWeight.Normal)
+)
+

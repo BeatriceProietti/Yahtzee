@@ -333,54 +333,63 @@ class Composables {
                 emptyMap()
             }
         }
-
-        BoxWithConstraints(
-            modifier = Modifier
-                .width(cardWidth)
-                .height(cardHeight)
-                .padding(padding)
-        ) {
-            val usableHeight = maxHeight - spacing * (rows - 1)
-            val tileHeight = usableHeight / rows
-
-            LazyVerticalGrid(
-                columns = GridCells.Fixed(cols),
-                modifier = Modifier.fillMaxSize(),
-                verticalArrangement = Arrangement.spacedBy(spacing),
-                horizontalArrangement = Arrangement.spacedBy(spacing),
-                userScrollEnabled = false
+        Column(
+            modifier = Modifier.padding(4.dp),
+            horizontalAlignment = Alignment.CenterHorizontally
+        ){
+            Text(
+                text = stringResource(R.string.uppersection),
+                fontSize = 18.sp,
+                fontFamily = font_Squarewise,
+                color = Color.DarkGray,
+            )
+            BoxWithConstraints(
+                modifier = Modifier
+                    .width(cardWidth)
+                    .height(cardHeight)
+                    .padding(padding)
             ) {
-                items(rows * cols) { index ->
-                    val row = index / cols
-                    val col = index % cols
-                    val (comboKey, resId) = labels[row] // associa la key alla stringa localizzata
-                    val label = stringResource(resId)
-                    val isUsed = gameLogic.playerStatuses[gameLogic.currentPlayer].usedCombos.containsKey(comboKey)
-                    val score = if (isUsed) gameLogic.playerStatuses[gameLogic.currentPlayer].usedCombos[comboKey] ?: 0 else scores[comboKey] ?: 0
-                    //se ho già usato una combo ci mette il valore che ho salvato prima selezionando la combo nella tabella altrimenti mostro il nuovo punteggio generato
+                val usableHeight = maxHeight - spacing * (rows - 1)
+                val tileHeight = usableHeight / rows
+                LazyVerticalGrid(
+                    columns = GridCells.Fixed(cols),
+                    modifier = Modifier.fillMaxSize(),
+                    verticalArrangement = Arrangement.spacedBy(spacing),
+                    horizontalArrangement = Arrangement.spacedBy(spacing),
+                    userScrollEnabled = false
+                ) {
+                    items(rows * cols) { index ->
+                        val row = index / cols
+                        val col = index % cols
+                        val (comboKey, resId) = labels[row] // associa la key alla stringa localizzata
+                        val label = stringResource(resId)
+                        val isUsed = gameLogic.playerStatuses[gameLogic.currentPlayer].usedCombos.containsKey(comboKey)
+                        val score = if (isUsed) gameLogic.playerStatuses[gameLogic.currentPlayer].usedCombos[comboKey] ?: 0 else scores[comboKey] ?: 0
+                        //se ho già usato una combo ci mette il valore che ho salvato prima selezionando la combo nella tabella altrimenti mostro il nuovo punteggio generato
 
-                    Box(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .height(tileHeight)
-                            //.clip(RoundedCornerShape(8.dp))
-                            .background(Color.DarkGray)
-                            .clickable(enabled = col == 1 && !isUsed) { //la casella è cliccabile solo se non è stata già usata
-                                confirmedScores(comboKey, score)  //fissa la combinazione quando premi
-                            },
-                        contentAlignment = Alignment.Center
-                    ) {
-                        if (col == 0) {
-                            Text(label, color = Color.White, fontSize = 14.sp)
-                        } else {
-                            Text(
-                                text = score.toString(),
-                                color = when {
-                                    isUsed -> Color.White
-                                    else -> Color.LightGray
+                        Box(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .height(tileHeight)
+                                //.clip(RoundedCornerShape(8.dp))
+                                .background(Color.DarkGray)
+                                .clickable(enabled = col == 1 && !isUsed) { //la casella è cliccabile solo se non è stata già usata
+                                    confirmedScores(comboKey, score)  //fissa la combinazione quando premi
                                 },
-                                fontSize = 16.sp
-                            )
+                            contentAlignment = Alignment.Center
+                        ) {
+                            if (col == 0) {
+                                Text(label, color = Color.White, fontSize = 14.sp)
+                            } else {
+                                Text(
+                                    text = score.toString(),
+                                    color = when {
+                                        isUsed -> Color.DarkGray
+                                        else -> Color.White
+                                    },
+                                    fontSize = 16.sp
+                                )
+                            }
                         }
                     }
                 }
@@ -506,7 +515,7 @@ class Composables {
                         .zIndex(if (isFirstOnTop) 0f else 1f)
                         .size(cardWidth, cardHeight)
                         //.clip(RoundedCornerShape(12.dp))
-                        .background(Color.Green)
+                        .background(Color(0xFF92BB92))
                 ) {
                     CombosGridComposition2(
                         cardWidth = cardWidth,
@@ -910,7 +919,7 @@ class Composables {
                             item { Text(stringResource(R.string.finalscore) + " : ${tableScore.finalScore}", fontSize = 18.sp, modifier = Modifier.padding(top = 8.dp)) }
                             item { Spacer(modifier = Modifier.height(8.dp))}
                             item { Text(stringResource(R.string.uppersection), fontSize = 18.sp, fontWeight = FontWeight.ExtraBold) }
-                            item { Text(stringResource(R.string.upper_aces) + " : " + tableScore.aces) }
+                            item { Text(stringResource(R.string.upper_aces) + " : ${tableScore.aces}") }
                             item { Text(stringResource(R.string.upper_twos) + " : " + tableScore.twos) }
                             item { Text(stringResource(R.string.upper_threes) + " : " + tableScore.threes) }
                             item { Text(stringResource(R.string.upper_fours) + " : " + tableScore.fours) }

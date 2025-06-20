@@ -61,7 +61,7 @@ class soundEffects {
     fun bell(){
         if(enableSounds){
             Log.d("soundEffects", "bell")
-            soundPool.play(bell, 1f, 1f, 0, 0, 1f)
+            soundPool.play(bell, 0.5f, 0.5f, 0, 0, 1f)
         }
     }
 

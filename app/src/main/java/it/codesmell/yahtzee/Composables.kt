@@ -872,12 +872,13 @@ class Composables {
             val popUpHeight = screenHeight * 0.7f
             BasicAlertDialog(onDismissRequest = onDismiss) {
                 Card(
-                    shape = RoundedCornerShape(10.dp),
+                    shape = RoundedCornerShape(0.dp),
                     modifier = Modifier.padding(5.dp).size(popUpWidth, popUpHeight),
                     elevation = CardDefaults.cardElevation(8.dp)
                 ) {
                     Column(
-                        Modifier.size(popUpWidth, popUpHeight),
+                        Modifier.size(popUpWidth, popUpHeight)
+                            .padding(bottom = 20.dp),
                         horizontalAlignment = Alignment.CenterHorizontally,
                         verticalArrangement = Arrangement.spacedBy(12.dp)
                     ) {
@@ -889,7 +890,7 @@ class Composables {
                             Image(
                                 painter = painterResource(id = R.drawable.dice_icon),
                                 contentDescription = "",
-                                modifier = Modifier.size(80.dp),
+                                modifier = Modifier.size(60.dp),
                                 contentScale = ContentScale.Fit,
                             )
 
@@ -897,7 +898,7 @@ class Composables {
                         }
 
                         //table content
-                        Text(text = "${tableScore.date} ${tableScore.finalScore}", fontSize = 20.sp)
+                        Text(text = "data: ${tableScore.date} ", fontSize = 20.sp)
 
                         LazyColumn(
                             modifier = Modifier
@@ -905,6 +906,7 @@ class Composables {
                                 .weight(1f),
                             verticalArrangement = Arrangement.spacedBy(4.dp)
                         ) {
+                            item { Text("Final Score: ${tableScore.finalScore}", fontSize = 18.sp, modifier = Modifier.padding(top = 8.dp)) }
                             item { Text("Upper", fontSize = 18.sp) }
                             item { Text("Aces: ${tableScore.aces}") }
                             item { Text("Twos: ${tableScore.twos}") }
@@ -923,7 +925,6 @@ class Composables {
                             item { Text("Chance: ${tableScore.chance}") }
                             item { Text("Yahtzee: ${tableScore.yahtzee}") }
                             item { Text("Yahtzee Bonus: ${tableScore.yahtzeeBonus}") }
-                            item { Text("Final Score: ${tableScore.finalScore}", fontSize = 18.sp, modifier = Modifier.padding(top = 8.dp)) }
                         }
 
 
@@ -932,7 +933,7 @@ class Composables {
                             onClick = { onEvent(ScoreListEvent.deleteScore(tableScore)) }, //send action to viewModel
                             text = "Cancella",
                             color = Color.Blue,
-                            depth = 15,
+                            depth = 5,
                             screenWidth * 0.50f, 50.dp
                         )
                     }

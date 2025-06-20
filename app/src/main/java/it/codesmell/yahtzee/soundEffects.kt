@@ -13,6 +13,7 @@ import kotlin.random.Random
 var diceroll1 : Int = 0
 var diceroll2 : Int = 0
 var diceroll3 : Int = 0
+var bell : Int = 0
 
 var rng = Random(System.currentTimeMillis())
 
@@ -32,6 +33,7 @@ class soundEffects {
         diceroll1 = soundPool.load(context, R.raw.diceroll1, 1)
         diceroll2 = soundPool.load(context, R.raw.diceroll2, 1)
         diceroll3 = soundPool.load(context, R.raw.diceroll3, 1)
+        bell = soundPool.load(context, R.raw.bell1, 1)
     }
 
 
@@ -53,6 +55,13 @@ class soundEffects {
         if(enableSounds){
             Log.d("soundEffects", "btnDown")
             soundPool.play(diceroll1, 1f, 1f, 0, 0, rng.nextDouble(0.7, 1.3).toFloat())
+        }
+    }
+
+    fun bell(){
+        if(enableSounds){
+            Log.d("soundEffects", "bell")
+            soundPool.play(bell, 1f, 1f, 0, 0, 1f)
         }
     }
 

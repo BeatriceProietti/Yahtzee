@@ -199,6 +199,7 @@ class GameLogic : ViewModel() {
         Log.d("uppertotal", "$upperTotal")
     }
 
+    //blue label
     //calcolo punteggi upper section
     fun calculateUpperSectionScore(combo: String, dice: List<Int>): Int {
         val target = when (combo) {

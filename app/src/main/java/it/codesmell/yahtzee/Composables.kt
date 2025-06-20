@@ -70,18 +70,13 @@ import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.ui.Alignment
-import androidx.compose.ui.Alignment.Companion.CenterHorizontally
 import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.graphics.drawscope.Fill
 import androidx.compose.ui.graphics.lerp
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.platform.LocalWindowInfo
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.text.style.TextOverflow
 import it.codesmell.yahtzee.dao.TableScore
 
 
@@ -229,7 +224,7 @@ class Composables {
             horizontalAlignment = Alignment.CenterHorizontally
         ){
             Text(
-                text = stringResource(R.string.lowersection),
+                text = stringResource(R.string.uppersection),
                 fontSize = 18.sp,
                 fontFamily = font_Squarewise,
                 color = Color(0xFF414B3A),
@@ -356,7 +351,7 @@ class Composables {
             horizontalAlignment = Alignment.CenterHorizontally
         ){
             Text(
-                text = stringResource(R.string.uppersection),
+                text = stringResource(R.string.lowersection),
                 fontSize = 18.sp,
                 fontFamily = font_Squarewise,
                 color = Color.DarkGray,
@@ -830,6 +825,13 @@ class Composables {
                     modifier = Modifier.padding(8.dp),
                     fontFamily = font_Hershey
                 )
+                Text(
+                    text = stringResource(R.string.game_round) + " : " + ((gameLogic.roundNumber/gameLogic.playerAmount) + 1) + " / " + 13,
+                    fontSize = 18.sp,
+                    color = Color.White,
+                    modifier = Modifier.padding(8.dp),
+                    fontFamily = font_Hershey
+                )
             }
 
             Column(verticalArrangement = Arrangement.Center){
@@ -872,6 +874,14 @@ class Composables {
                         modifier = Modifier.padding(8.dp),
                         fontFamily = font_Hershey
                     )
+                    Text(
+                        text = stringResource(R.string.game_round) + " : " + ((gameLogic.roundNumber/gameLogic.playerAmount) + 1) + " / " + 13,
+                        fontSize = 18.sp,
+                        color = Color.White,
+                        modifier = Modifier.padding(8.dp),
+                        fontFamily = font_Hershey
+                    )
+
                 }
                 Column(){
                     Text(

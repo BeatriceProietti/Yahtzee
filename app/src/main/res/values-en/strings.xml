@@ -38,4 +38,5 @@
     <string name="uppersection">Upper Section</string>
     <string name="lowersection">Lower Section</string>
     <string name="date">Date</string>
+    <string name="game_round">Turn</string>
 </resources>

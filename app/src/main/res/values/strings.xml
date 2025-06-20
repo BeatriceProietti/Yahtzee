@@ -37,4 +37,5 @@
     <string name="uppersection">uppersection</string>
     <string name="lowersection">lowersection</string>
     <string name="date">date</string>
+    <string name="game_round">game_round</string>
 </resources>

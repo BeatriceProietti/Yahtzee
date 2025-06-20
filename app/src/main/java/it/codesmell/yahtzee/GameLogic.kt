@@ -1,7 +1,5 @@
 package it.codesmell.yahtzee
 
-import android.os.VibrationEffect
-import android.os.VibrationEffect.EFFECT_HEAVY_CLICK
 import android.util.Log
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
@@ -9,7 +7,6 @@ import androidx.compose.runtime.mutableStateMapOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.viewModelScope
 import it.codesmell.yahtzee.dao.TableScore
 import it.codesmell.yahtzee.dao.TableScoreDao
@@ -34,7 +31,7 @@ class GameLogic : ViewModel() {
     var multiPlayer by mutableStateOf(false) // parte falso e verrà settato a true //sostituisci con playerAmount
     var playerAmount by mutableStateOf(1)
     var diceAmount: Int = 5
-    val bonusThreshold = 1
+    val bonusThreshold = 0
     val bonusAmount = 35
     var rollsLeft = 3
 
@@ -43,7 +40,7 @@ class GameLogic : ViewModel() {
     var selectedDice: MutableList<Boolean> = mutableStateListOf<Boolean>(false, false, false, false, false) //TODO inizializzalo col numero dinamico
     var hasRolled by mutableStateOf(false)
     var dice by mutableStateOf(List(diceAmount) { 0 }) //lista di 5 mutable state = 0s
-    var roundsPlayed = 0
+    var roundNumber by mutableStateOf(1)
     var gameOver by mutableStateOf(false)
     var bonusShown = false
 
@@ -65,7 +62,7 @@ class GameLogic : ViewModel() {
         rollsLeft = 3
         canroll = true
         currentPlayer = 1
-        roundsPlayed = 0
+        roundNumber = 0
         selectedDice = mutableStateListOf<Boolean>(false, false, false, false, false)
         dice = List(diceAmount) { 0 }
         playerAmount = numOfPlayers
@@ -335,14 +332,16 @@ class GameLogic : ViewModel() {
             CoroutineScope(Dispatchers.IO).launch {
 
                 sfx?.snare()
-                delay(1500) //attendo un po' per mostrare il punteggio prima di cambiare turno
+                if(playerAmount > 1) {
+                    delay(1500)//attendo un po' per mostrare il punteggio prima di cambiare giocatore
+                    sfx?.bell()
+                }
 
-                if(playerAmount > 1) sfx?.bell()
                 withContext(Dispatchers.Main) {
                     // reset e passa al prossimo turno
                     rollsLeft = 3
                     canroll = true
-                    roundsPlayed++
+                    roundNumber++
 
                     Log.d("player increment", "$currentPlayer")
                     Log.d("player amount", "$playerAmount")
@@ -354,12 +353,12 @@ class GameLogic : ViewModel() {
                     //
 
 
-                    Log.d("roundplay", "$roundsPlayed")
+                    Log.d("roundplay", "$roundNumber")
                     Log.d("rolls", "$rollsLeft")
 
                     checkAndApplyUpperSectionBonus()
                     //fine partita
-                    if (roundsPlayed >= 13 * playerAmount) {
+                    if (roundNumber > 13 * playerAmount) {
                         gameOver = true
                         savePlayerStatus(playerStatuses[currentPlayer])
                         getWinner()

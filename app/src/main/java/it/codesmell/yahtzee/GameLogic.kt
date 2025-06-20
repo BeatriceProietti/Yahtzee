@@ -203,18 +203,9 @@ class GameLogic : ViewModel() {
     }
 
     //calcolo punteggi upper section
-    fun calculateUpperSectionScore(combo: String, dice: List<Int>): Int {
-        val target = when (combo) {
-            "Ones" -> 1
-            "Twos" -> 2
-            "Threes" -> 3
-            "Fours" -> 4
-            "Fives" -> 5
-            "Sixes" -> 6
-            else -> 0
-        }
-        return dice.filter { it == target }
-            .sum() //restituisce la somma del valore di tutti i dadi di un certo valore
+    fun calculateUpperSectionScore(combo: Int, dice: List<Int>): Int {
+        val valueCounts = dice.groupingBy { it }.eachCount()
+        return combo * valueCounts[combo] ?: 0
     }
 
 

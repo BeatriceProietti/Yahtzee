@@ -219,7 +219,14 @@ class Composables {
         val spacing = 4.dp
         val padding = 4.dp
 
-        val labels = listOf(stringResource(R.string.upper_aces), stringResource(R.string.upper_twos), stringResource(R.string.upper_threes), stringResource(R.string.upper_fours), stringResource(R.string.upper_fives), stringResource(R.string.upper_sixes))
+        val labels = listOf(stringResource(R.string.upper_aces),
+            stringResource(R.string.upper_twos),
+            stringResource(R.string.upper_threes),
+            stringResource(R.string.upper_fours),
+            stringResource(R.string.upper_fives),
+            stringResource(R.string.upper_sixes))
+
+
         val diceEmojis = listOf("⚀", "⚁", "⚂", "⚃", "⚄", "⚅")
 
         BoxWithConstraints(
@@ -239,10 +246,9 @@ class Composables {
                 userScrollEnabled = false
             ) {
                 items(labels.size) { index ->
-                    val label = labels[index]
-                    val confirmedScore = upperScores[label]
+                    val confirmedScore = upperScores[index]
                     // Calcolo punteggio attuale in base ai dadi correnti
-                    val potentialScore = gameLogic.calculateUpperSectionScore(label, dice)
+                    val potentialScore = gameLogic.calculateUpperSectionScore(index, dice)
 
                     Box(
                         modifier = Modifier
@@ -251,7 +257,7 @@ class Composables {
                             //.clip(RoundedCornerShape(8.dp))
                             .background(Color.DarkGray)
                             .clickable(enabled = confirmedScore == null && dice.isNotEmpty()) {
-                                onScoreConfirmed(label, potentialScore)
+                                onScoreConfirmed(index, potentialScore)
                             },
                         contentAlignment = Alignment.Center
                     ) {
@@ -262,7 +268,7 @@ class Composables {
                             )
                             Spacer(modifier = Modifier.height(4.dp))
                             Text(
-                                text = confirmedScore?.toString() ?: "$label: $potentialScore",
+                                text = confirmedScore?.toString() ?: "$index: $potentialScore",
                                 color = Color.White,
                                 fontSize = 20.sp
                             )

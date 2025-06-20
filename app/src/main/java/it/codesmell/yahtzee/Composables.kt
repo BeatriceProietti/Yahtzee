@@ -246,9 +246,10 @@ class Composables {
                 userScrollEnabled = false
             ) {
                 items(labels.size) { index ->
-                    val confirmedScore = upperScores[index]
+                    val label = labels[index]
+                    val confirmedScore = upperScores[label]
                     // Calcolo punteggio attuale in base ai dadi correnti
-                    val potentialScore = gameLogic.calculateUpperSectionScore(index, dice)
+                    val potentialScore = gameLogic.calculateUpperSectionScore(label, dice)
 
                     Box(
                         modifier = Modifier
@@ -257,7 +258,7 @@ class Composables {
                             //.clip(RoundedCornerShape(8.dp))
                             .background(Color.DarkGray)
                             .clickable(enabled = confirmedScore == null && dice.isNotEmpty()) {
-                                onScoreConfirmed(index, potentialScore)
+                                onScoreConfirmed(label, potentialScore)
                             },
                         contentAlignment = Alignment.Center
                     ) {
@@ -268,7 +269,7 @@ class Composables {
                             )
                             Spacer(modifier = Modifier.height(4.dp))
                             Text(
-                                text = confirmedScore?.toString() ?: "$index: $potentialScore",
+                                text = confirmedScore?.toString() ?: "$label: $potentialScore",
                                 color = Color.White,
                                 fontSize = 20.sp
                             )

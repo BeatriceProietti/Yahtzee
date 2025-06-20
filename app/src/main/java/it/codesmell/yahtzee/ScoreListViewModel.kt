@@ -42,7 +42,6 @@ class ScoreListViewModel(
                     dao.deleteTable(event.tableScore)
                 }
             }
-            //is ScoreListEvent.showTableScore ->
             is ScoreListEvent.sortScores -> _sortType.value = event.sortType
         }
     }

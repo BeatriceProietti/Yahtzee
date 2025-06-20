@@ -61,6 +61,7 @@ class GameLogic : ViewModel() {
 
     fun initGame(numOfPlayers: Int) {// si prende il player
         //variabili gamelogic
+        gameOver = false
         currentPlayer = 1
         selectedDice = mutableStateListOf<Boolean>(false, false, false, false, false)
         dice = List(diceAmount) { 0 }
@@ -347,8 +348,10 @@ class GameLogic : ViewModel() {
 
                     checkAndApplyUpperSectionBonus()
                     //fine partita
-                    if (roundsPlayed >= 13 * playerAmount) {
+                    if (roundsPlayed >= 1 * playerAmount) {
                         gameOver = true
+                        //savePlayerStatus(playerStatuses[currentPlayer])
+                        getWinner()
                         Log.d("roundplay", "sono nel gameover la partita è finita ?Bu) $gameOver")
                     }
                 }
@@ -362,8 +365,17 @@ class GameLogic : ViewModel() {
     }
 
 
-    fun getWinner(){
+    fun getWinner(): Int{ //
 
+        var winner = 1
+        for(i in 2..playerAmount-1){
+
+            if(playerStatuses[winner].totalScore<playerStatuses[i+1].totalScore){
+                winner=i
+            }
+        }
+        Log.d("winner", "$winner")
+        return winner
     }
 
 

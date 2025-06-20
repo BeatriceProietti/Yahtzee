@@ -362,7 +362,7 @@ fun GameScreen(gameLogic: GameLogic, navController: NavController) {
                     )
                 }
 
-
+                composables?.EndGameSquare(showOverlay,onDismiss = { showOverlay = false; navController.popBackStack(); gameLogic.gameOver = false; gameLogic.currentPlayer=1}, gameLogic.playerStatuses[gameLogic.currentPlayer] )
             }
         }
     }

@@ -1,12 +1,9 @@
 package it.codesmell.yahtzee
 
-import android.annotation.SuppressLint
 import android.content.res.Configuration
-import android.graphics.Bitmap
 import android.util.Log
 import android.widget.Toast
 import androidx.activity.compose.BackHandler
-import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
@@ -19,11 +16,9 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.material3.Label
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.RadioButton
 import androidx.compose.runtime.Composable
@@ -44,12 +39,9 @@ import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.platform.LocalWindowInfo
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
-import androidx.constraintlayout.compose.MotionScene
 import androidx.navigation.NavController
 import kotlinx.coroutines.delay
 
@@ -185,19 +177,27 @@ fun OptionScreen(navController: NavController) {
     ) {
         composables?.funButton3D(
             ::switchVibMode,
-            stringResource(R.string.settings_hapticsMode),
-            color = if (hfx?.hasRichHaptics == true) Color.Blue else Color.Red,
+            text = stringResource(R.string.settings_hapticsMode) + " : " + hfx?.hapticsMode,
+            color = Color.Blue,
             depth = 10,
-            150.dp,
-            50.dp
+            sizeX = screenWidth*0.9f,
+            sizeY = 75.dp
         )
         composables?.funButton3D(
             ::switchTheme,
-            if (darkTheme) "☾" else "☼",
+            text = stringResource(R.string.settings_theme) + " : " + if (darkTheme) stringResource(R.string.theme_dark) else stringResource(R.string.theme_light),
             color = Color.Blue,
             depth = 10,
-            150.dp,
-            50.dp
+            sizeX = screenWidth*0.9f,
+            sizeY = 75.dp
+        )
+        composables?.funButton3D(
+            { sfx?.enableSounds = if(sfx?.enableSounds == true) false else true }, //fatto brutto così perchè se no fa storie per la nullabilità
+            text = stringResource(R.string.settings_sound) + " : " + if (sfx?.enableSounds == true) "On" else "Off",
+            color = Color.Blue,
+            depth = 10,
+            sizeX = screenWidth*0.9f,
+            sizeY = 75.dp
         )
     }
 }

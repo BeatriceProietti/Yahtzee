@@ -21,5 +21,8 @@
     <string name="game_upperbonus">game_upperbonus</string>
     <string name="game_player">game_player</string>
     <string name="game_playeramount">game_playeramount</string>
-    <string name="game_chooseCombo">game_chooseCombo</string>
+    <string name="game_chooseCombo" translatable="false">game_chooseCombo</string>
+    <string name="settings_sound">settings_sound</string>
+    <string name="theme_light">theme_light</string>
+    <string name="theme_dark">theme_dark</string>
 </resources>

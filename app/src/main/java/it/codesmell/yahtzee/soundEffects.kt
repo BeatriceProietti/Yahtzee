@@ -3,14 +3,22 @@ package it.codesmell.yahtzee
 import android.content.Context
 import android.media.SoundPool
 import android.util.Log
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
+import kotlin.random.Random
 
-var enableSounds = true
+
 
 var diceroll1 : Int = 0
 var diceroll2 : Int = 0
 var diceroll3 : Int = 0
 
+var rng = Random(System.currentTimeMillis())
+
 class soundEffects {
+
+    var enableSounds by mutableStateOf(true)
 
     val soundPool = SoundPool.Builder()
         .setMaxStreams(5)  // Numero massimo di suoni simultanei
@@ -30,21 +38,21 @@ class soundEffects {
     fun btnDown(){
         if(enableSounds){
             Log.d("soundEffects", "btnDown")
-            soundPool.play(diceroll3, 1f, 1f, 0, 0, 1f)
+            soundPool.play(diceroll3, 1f, 1f, 0, 0, rng.nextDouble(0.9, 1.1).toFloat())
         }
     }
 
     fun btnUp(){
         if(enableSounds){
             Log.d("soundEffects", "btnDown")
-            soundPool.play(diceroll2, 1f, 1f, 0, 0, 1f)
+            soundPool.play(diceroll2, 1f, 1f, 0, 0, rng.nextDouble(0.9, 1.1).toFloat())
         }
     }
 
     fun diceRoll(){
         if(enableSounds){
             Log.d("soundEffects", "btnDown")
-            soundPool.play(diceroll1, 1f, 1f, 0, 0, 1f)
+            soundPool.play(diceroll1, 1f, 1f, 0, 0, rng.nextDouble(0.7, 1.3).toFloat())
         }
     }
 

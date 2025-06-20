@@ -23,4 +23,7 @@
     <string name="game_player">Giocatore</string>
     <string name="game_playeramount">Giocatori</string>
     <string name="game_chooseCombo">Scegli una combo</string>
+    <string name="settings_sound">Suoni</string>
+    <string name="theme_light">Chiaro</string>
+    <string name="theme_dark">Scuro</string>
 </resources>

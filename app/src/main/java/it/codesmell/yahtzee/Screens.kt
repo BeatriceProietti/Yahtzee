@@ -37,6 +37,7 @@ import androidx.compose.ui.Alignment.Companion.CenterVertically
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.lerp
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
@@ -160,7 +161,7 @@ fun MainScreen(navController: NavController) {
             composables?.funButton3D(
                 onClick = { navController.navigate("OptionScreen") },
                 text = stringResource(R.string.settings),
-                color = Color.Blue,
+                color = Color(0xFF3F80EE),
                 depth = 10,
                 screenWidth * 0.7f, 50.dp
             )
@@ -178,7 +179,7 @@ fun OptionScreen(navController: NavController) {
         composables?.funButton3D(
             ::switchVibMode,
             text = stringResource(R.string.settings_hapticsMode) + ": " + hfx?.hapticsMode,
-            color = Color.Blue,
+            color = Color(0xFF3F80EE),
             depth = 10,
             sizeX = screenWidth*0.9f,
             sizeY = 75.dp
@@ -186,7 +187,7 @@ fun OptionScreen(navController: NavController) {
         composables?.funButton3D(
             ::switchTheme,
             text = stringResource(R.string.settings_theme) + " : " + if (darkTheme) stringResource(R.string.theme_dark) else stringResource(R.string.theme_light),
-            color = Color.Blue,
+            color = Color(0xFF3F80EE),
             depth = 10,
             sizeX = screenWidth*0.9f,
             sizeY = 75.dp
@@ -194,7 +195,7 @@ fun OptionScreen(navController: NavController) {
         composables?.funButton3D(
             { sfx?.enableSounds = if(sfx?.enableSounds == true) false else true }, //fatto brutto così perchè se no fa storie per la nullabilità
             text = stringResource(R.string.settings_sound) + " : " + if (sfx?.enableSounds == true) "On" else "Off",
-            color = Color.Blue,
+            color = Color(0xFF3F80EE),
             depth = 10,
             sizeX = screenWidth*0.9f,
             sizeY = 75.dp
@@ -202,7 +203,7 @@ fun OptionScreen(navController: NavController) {
         composables?.funButton3D(
             onClick = { navController.popBackStack() },
             text = stringResource(R.string.goback),
-            color = Color.Red,
+            color = Color(0xFFEE3F62),
             depth = 10,
             screenWidth * 0.7f, 50.dp
         )
@@ -257,13 +258,14 @@ fun Screen2(
             items(state.scores) { score ->
                 composables?.funButton3D(
                     onClick = { selectedScoreId = score.id },
-                    text = "${score.finalScore} ${score.date}", //valori delo score
-                    color = Color.Blue,
-                    depth = 15,
+                    text = "${score.finalScore} " + "Pt    " + " ${score.date}", //valori dello score
+                    color = lerp(Color(0xFF619FFA), Color(0xFF86FF52), score.id/50f),
+                    depth = 8,
                     screenWidth * 0.87f, 50.dp
                 )
-
+                Spacer(modifier = Modifier.height(4.dp))
             }
+
         }
 
         // find the TableScore that has been selected
@@ -414,11 +416,11 @@ fun GameScreen(gameLogic: GameLogic, navController: NavController) {
 
                     composables?.funButton3D(
                         onClick = { if (canRoll) gameLogic.rollSelectedDice() },
-                        text = if (canRoll) "Tira Dadi" else "Scegli una combo",
+                        text = if(canRoll) stringResource(R.string.game_throwdice) else stringResource(R.string.game_chooseCombo),
                         color = MaterialTheme.colorScheme.primary,
                         depth = 10,
-                        sizeX = 100.dp,
-                        sizeY = 75.dp
+                        sizeX = 125.dp,
+                        sizeY = 85.dp
                     )
 
                 }

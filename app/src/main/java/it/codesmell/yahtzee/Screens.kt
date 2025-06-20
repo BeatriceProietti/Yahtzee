@@ -441,13 +441,7 @@ fun GameScreen(gameLogic: GameLogic, navController: NavController) {
         }
 
     }
-    composables?.EndGameSquare(
-        show = showOverlay,
-        onDismiss = { showOverlay = false; gameLogic.resetGame() },
-        p1Score = gameLogic.p1TotalScore,
-        p2Score = gameLogic.p2TotalScore,
-        isMultiplayer = gameLogic.multiPlayer
-    )
+
 
 }
 

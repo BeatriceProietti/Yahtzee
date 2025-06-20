@@ -60,14 +60,6 @@ class GameLogic : ViewModel() {
 
 // Giocatore 1
 
-    var p1TotalScore by mutableStateOf(0)
-    var p1BonusJustAwarded by mutableStateOf(false)
-    var p1UpperSectionBonus by mutableStateOf(0)
-
-    // Giocatore 2
-    var p2TotalScore by mutableStateOf(0)
-    var p2BonusJustAwarded by mutableStateOf(false)
-    var p2UpperSectionBonus by mutableStateOf(0)
 
 
     fun getYahtzee() {
@@ -104,7 +96,6 @@ class GameLogic : ViewModel() {
     // funzione di reset
     fun resetGame() {
         // Reset variabili di gioco
-        isPlayerOneTurn = true
 
         bonusJustAwarded = false
         upperSectionBonus = 0
@@ -116,19 +107,8 @@ class GameLogic : ViewModel() {
 
         // Reset punteggi
         totalScore = 0
-        p1TotalScore = 0
-        p2TotalScore = 0
-        p1UpperSectionBonus = 0
-        p2UpperSectionBonus = 0
-        p1BonusJustAwarded = false
-        p2BonusJustAwarded = false
 
         // Reset punteggi combo e upper section
-        p1UpperSectionScores.keys.forEach { p1UpperSectionScores[it] = null }
-        p2UpperSectionScores.keys.forEach { p2UpperSectionScores[it] = null }
-
-        p1UsedCombos.clear()
-        p2UsedCombos.clear()
         usedCombos.clear()
 
         // Reset dadi e selezioni dadi
@@ -142,40 +122,6 @@ class GameLogic : ViewModel() {
 
 //
 
-
-    var isPlayerOneTurn by mutableStateOf(true) // turno del giocatore, usato anche per il secondo
-
-    val currentTotalScore: Int
-        get() = if (isPlayerOneTurn) p1TotalScore else p2TotalScore // score per quando sono in mutli poi al massimo lo sistemo
-
-
-    val p1UpperSectionScores = mutableStateMapOf<String, Int?>(
-        "Ones" to null,
-        "Twos" to null,
-        "Threes" to null,
-        "Fours" to null,
-        "Fives" to null,
-        "Sixes" to null,
-    )
-    val p1UsedCombos = mutableStateMapOf<String, Int>() // es: "Full house" -> 25
-
-
-    val p2UpperSectionScores = mutableStateMapOf<String, Int?>(
-        "Ones" to null,
-        "Twos" to null,
-        "Threes" to null,
-        "Fours" to null,
-        "Fives" to null,
-        "Sixes" to null,
-    )
-    val p2UsedCombos = mutableStateMapOf<String, Int>() // es: "Full house" -> 25
-
-
-    val currentUpperSectionScores: MutableMap<String, Int?>
-        get() = if (isPlayerOneTurn) p1UpperSectionScores else p2UpperSectionScores
-
-    val currentUsedCombos: MutableMap<String, Int>
-        get() = if (isPlayerOneTurn) p1UsedCombos else p2UsedCombos
 
 
 ///////////

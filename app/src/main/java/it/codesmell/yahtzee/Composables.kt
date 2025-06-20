@@ -369,7 +369,7 @@ class Composables {
         val shouldShowScores = diceForScoring.isNotEmpty() && diceForScoring.any { it != 0 }
 
         // Uso remember con chiavi di dipendenza per ricalcolare i punteggi
-        val scores = remember(diceForScoring, gameLogic.currentUsedCombos) {
+        val scores = remember(diceForScoring, gameLogic.playerStatuses[gameLogic.currentPlayer].usedCombos) {
             if (shouldShowScores) {
                 gameLogic.calculatePossibleScores(diceForScoring)
             } else {
@@ -398,8 +398,8 @@ class Composables {
                     val col = index % cols
                     val (comboKey, resId) = labels[row] // associa la key alla stringa localizzata
                     val label = stringResource(resId)
-                    val isUsed = gameLogic.currentUsedCombos.containsKey(comboKey)
-                    val score = if (isUsed) gameLogic.currentUsedCombos[comboKey] ?: 0 else scores[comboKey] ?: 0
+                    val isUsed = gameLogic.playerStatuses[gameLogic.currentPlayer].usedCombos.containsKey(comboKey)
+                    val score = if (isUsed) gameLogic.playerStatuses[gameLogic.currentPlayer].usedCombos[comboKey] ?: 0 else scores[comboKey] ?: 0
                     //se ho già usato una combo ci mette il valore che ho salvato prima selezionando la combo nella tabella altrimenti mostro il nuovo punteggio generato
 
                     Box(
@@ -555,7 +555,7 @@ class Composables {
                         cardWidth = cardWidth,
                         cardHeight = cardHeight,
                         dice = gameLogic.dice,
-                        upperScores = gameLogic.currentUpperSectionScores,
+                        upperScores = gameLogic.playerStatuses[gameLogic.currentPlayer].upperSectionScores,
                     ) { label, score ->
                         gameLogic.confirmScore(label, score)
                     }

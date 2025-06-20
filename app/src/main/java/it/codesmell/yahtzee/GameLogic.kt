@@ -352,7 +352,7 @@ class GameLogic : ViewModel() {
                     //fine partita
                     if (roundsPlayed >= 13 * playerAmount) {
                         gameOver = true
-                        //savePlayerStatus(playerStatuses[currentPlayer])
+                        savePlayerStatus(playerStatuses[currentPlayer])
                         getWinner()
                         Log.d("roundplay", "sono nel gameover la partita è finita ?Bu) $gameOver")
                     }

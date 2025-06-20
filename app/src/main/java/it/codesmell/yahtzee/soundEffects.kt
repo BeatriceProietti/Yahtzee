@@ -4,6 +4,8 @@ import android.content.Context
 import android.media.SoundPool
 import android.util.Log
 
+var enableSounds = true
+
 var diceroll1 : Int = 0
 var diceroll2 : Int = 0
 var diceroll3 : Int = 0
@@ -26,13 +28,24 @@ class soundEffects {
 
 
     fun btnDown(){
-        Log.d("soundEffects", "btnDown")
-        soundPool.play(diceroll3, 1f, 1f, 0, 0, 1f)
+        if(enableSounds){
+            Log.d("soundEffects", "btnDown")
+            soundPool.play(diceroll3, 1f, 1f, 0, 0, 1f)
+        }
     }
 
     fun btnUp(){
-        Log.d("soundEffects", "btnUp")
-        soundPool.play(diceroll2, 1f, 1f, 0, 0, 1f)
+        if(enableSounds){
+            Log.d("soundEffects", "btnDown")
+            soundPool.play(diceroll2, 1f, 1f, 0, 0, 1f)
+        }
+    }
+
+    fun diceRoll(){
+        if(enableSounds){
+            Log.d("soundEffects", "btnDown")
+            soundPool.play(diceroll1, 1f, 1f, 0, 0, 1f)
+        }
     }
 
 }

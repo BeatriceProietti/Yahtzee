@@ -653,6 +653,7 @@ class Composables {
                             downEvent.changes.forEach {
                                 if (it.pressed) {
                                     hfx?.btnDown(depth)
+                                    sfx?.btnDown()
                                     onClick() //eseguo la funzione passata come argomento
                                 }
                             }
@@ -665,6 +666,7 @@ class Composables {
                                     allUp = true
                                     event.changes.forEach {
                                         hfx?.click(0.5f)
+                                        sfx?.btnUp()
                                     }
                                 }
                             }

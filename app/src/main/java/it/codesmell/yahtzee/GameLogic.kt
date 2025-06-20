@@ -350,7 +350,7 @@ class GameLogic : ViewModel() {
 
                     checkAndApplyUpperSectionBonus()
                     //fine partita
-                    if (roundsPlayed >= 1 * playerAmount) {
+                    if (roundsPlayed >= 13 * playerAmount) {
                         gameOver = true
                         //savePlayerStatus(playerStatuses[currentPlayer])
                         getWinner()

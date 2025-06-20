@@ -12,7 +12,6 @@ import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.awaitEachGesture
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -36,7 +35,6 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.rotate
@@ -61,6 +59,7 @@ import androidx.compose.foundation.interaction.collectIsPressedAsState
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.zIndex
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
@@ -70,6 +69,7 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.runtime.derivedStateOf
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Alignment.Companion.CenterHorizontally
 import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.graphics.drawscope.Fill
@@ -222,50 +222,68 @@ class Composables {
         val labels = listOf("Aces", "Twos", "Threes", "Fours", "Fives", "Sixes")
         val diceEmojis = listOf("⚀", "⚁", "⚂", "⚃", "⚄", "⚅")
 
-        BoxWithConstraints(
-            modifier = Modifier
-                .width(cardWidth)
-                .height(cardHeight)
-                .padding(padding)
-        ) {
-            val usableHeight = maxHeight - spacing * (rows - 1)
-            val tileHeight = usableHeight / rows
 
-            LazyVerticalGrid(
-                columns = GridCells.Fixed(cols),
-                modifier = Modifier.fillMaxSize(),
-                verticalArrangement = Arrangement.spacedBy(spacing),
-                horizontalArrangement = Arrangement.spacedBy(spacing),
-                userScrollEnabled = false
+
+        Column(
+            modifier = Modifier.padding(4.dp),
+            horizontalAlignment = Alignment.CenterHorizontally
+        ){
+            Text(
+                text = stringResource(R.string.lowersection),
+                fontSize = 18.sp,
+                fontFamily = font_Squarewise,
+                color = Color(0xFF414B3A),
+            )
+            BoxWithConstraints(
+                modifier = Modifier
+                    .width(cardWidth)
+                    .height(cardHeight)
+                    .padding(padding)
             ) {
-                items(labels.size) { index ->
-                    val label = labels[index]
-                    val confirmedScore = upperScores[label]
-                    // Calcolo punteggio attuale in base ai dadi correnti
-                    val potentialScore = gameLogic.calculateUpperSectionScore(label, dice)
+                val usableHeight = maxHeight - spacing * (rows - 1)
+                val tileHeight = usableHeight / rows
 
-                    Box(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .height(tileHeight)
-                            //.clip(RoundedCornerShape(8.dp))
-                            .background(Color.DarkGray)
-                            .clickable(enabled = confirmedScore == null && dice.isNotEmpty()) {
-                                onScoreConfirmed(label, potentialScore)
-                            },
-                        contentAlignment = Alignment.Center
-                    ) {
-                        Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                            Text(
-                                text = diceEmojis.getOrNull(index) ?: "🎲",
-                                fontSize = 30.sp
-                            )
-                            Spacer(modifier = Modifier.height(4.dp))
-                            Text(
-                                text = confirmedScore?.toString() ?: "$potentialScore",
-                                color = Color.White,
-                                fontSize = 20.sp
-                            )
+                LazyVerticalGrid(
+                    columns = GridCells.Fixed(cols),
+                    modifier = Modifier.fillMaxSize(),
+                    verticalArrangement = Arrangement.spacedBy(spacing),
+                    horizontalArrangement = Arrangement.spacedBy(spacing),
+                    userScrollEnabled = false
+                ) {
+                    items(labels.size) { index ->
+                        val label = labels[index]
+                        val isUsed = gameLogic.playerStatuses[gameLogic.currentPlayer].usedCombos.containsKey(label)
+                        val confirmedScore = upperScores[label]
+                        // Calcolo punteggio attuale in base ai dadi correnti
+                        val potentialScore = gameLogic.calculateUpperSectionScore(label, dice)
+
+                        Box(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .height(tileHeight)
+                                //.clip(RoundedCornerShape(8.dp))
+                                .background(Color(0xFF475447))
+                                .clickable(enabled = confirmedScore == null && dice.isNotEmpty()) {
+                                    onScoreConfirmed(label, potentialScore)
+                                },
+                            contentAlignment = Alignment.Center
+                        ) {
+                            Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                                Text(
+                                    text = diceEmojis.getOrNull(index) ?: "🎲",
+                                    fontSize = 30.sp
+                                )
+                                Text(
+                                    text = confirmedScore?.toString() ?: "$potentialScore",
+                                    color = when {
+                                        isUsed -> Color.White
+                                        else -> Color(0xFF62775B)
+                                    },
+                                        fontSize = 32.sp,
+                                    fontFamily = font_handwriting,
+                                    fontWeight = FontWeight.ExtraBold
+                                )
+                            }
                         }
                     }
                 }
@@ -384,10 +402,12 @@ class Composables {
                                 Text(
                                     text = score.toString(),
                                     color = when {
-                                        isUsed -> Color.DarkGray
-                                        else -> Color.White
+                                        isUsed -> Color.White
+                                        else -> Color(0xFF707070)
                                     },
-                                    fontSize = 16.sp
+                                    fontSize = 32.sp,
+                                    fontFamily = font_handwriting,
+                                    fontWeight = FontWeight.ExtraBold
                                 )
                             }
                         }
@@ -790,31 +810,29 @@ class Composables {
 
     @Composable
     fun scoreDisplay(){
-        Column(){
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween
-            ) {
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.Bottom
+        ) {
+            Column(verticalArrangement = Arrangement.Center){
                 Text(
-                    text = stringResource(R.string.game_score) + ": ${gameLogic.playerStatuses[gameLogic.currentPlayer].totalScore}",
-                    fontSize = 18.sp,
+                    text = "${gameLogic.playerStatuses[gameLogic.currentPlayer].totalScore}",
+                    fontSize = 48.sp,
                     color = Color.White,
-                    modifier = Modifier.padding(8.dp)
+                    modifier = Modifier.padding(8.dp),
+                    fontFamily = font_Squarewise
                 )
-
                 Text(
                     text = stringResource(R.string.game_player) + " : " + gameLogic.currentPlayer + " / " + gameLogic.playerAmount,
                     fontSize = 18.sp,
                     color = Color.White,
-                    modifier = Modifier.padding(8.dp)
+                    modifier = Modifier.padding(8.dp),
+                    fontFamily = font_Hershey
                 )
             }
-            Spacer(modifier = Modifier.height(4.dp))
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween
-            ) {
 
+            Column(verticalArrangement = Arrangement.Center){
                 Text(
                     text = if (gameLogic.playerStatuses[gameLogic.currentPlayer].bonusJustAwarded) "Bonus Upper ottenuto" else "No bonus Upper",
                     fontSize = 14.sp,
@@ -831,6 +849,7 @@ class Composables {
         }
     }
 
+
     @Composable
     fun scoreDisplayLandscape(){
         Row(){
@@ -838,30 +857,36 @@ class Composables {
                 modifier = Modifier.fillMaxHeight(),
                 verticalArrangement = Arrangement.SpaceBetween
             ) {
-                Text(
-                    text = stringResource(R.string.game_score) + ": ${gameLogic.playerStatuses[gameLogic.currentPlayer].totalScore}",
-                    fontSize = 18.sp,
-                    color = Color.White,
-                    modifier = Modifier.padding(8.dp)
-                )
-                Text(
-                    text = if (gameLogic.playerStatuses[gameLogic.currentPlayer].bonusJustAwarded) "Bonus Upper ottenuto" else "No bonus Upper",
-                    fontSize = 14.sp,
-                    color = Color.LightGray,
-                    modifier = Modifier.padding(horizontal = 8.dp)
-                )
-                Text(
-                    text = "Yahtzee Bonus: " + gameLogic.playerStatuses[gameLogic.currentPlayer].YahtzeeBonusCount,
-                    fontSize = 14.sp,
-                    color = Color.LightGray,
-                    modifier = Modifier.padding(horizontal = 8.dp)
-                )
-                Text(
-                    text = stringResource(R.string.game_player) + " : " + gameLogic.currentPlayer + " / " + gameLogic.playerAmount,
-                    fontSize = 18.sp,
-                    color = Color.White,
-                    modifier = Modifier.padding(8.dp)
-                )
+                Column(){
+                    Text(
+                        text = "${gameLogic.playerStatuses[gameLogic.currentPlayer].totalScore}",
+                        fontSize = 22.sp,
+                        color = Color.White,
+                        modifier = Modifier.padding(8.dp),
+                        fontFamily = font_Squarewise
+                    )
+                    Text(
+                        text = stringResource(R.string.game_player) + " : " + gameLogic.currentPlayer + " / " + gameLogic.playerAmount,
+                        fontSize = 18.sp,
+                        color = Color.White,
+                        modifier = Modifier.padding(8.dp),
+                        fontFamily = font_Hershey
+                    )
+                }
+                Column(){
+                    Text(
+                        text = if (gameLogic.playerStatuses[gameLogic.currentPlayer].bonusJustAwarded) "Bonus Upper ottenuto" else "No bonus Upper",
+                        fontSize = 14.sp,
+                        color = Color.LightGray,
+                        modifier = Modifier.padding(horizontal = 8.dp)
+                    )
+                    Text(
+                        text = "Yahtzee Bonus: " + gameLogic.playerStatuses[gameLogic.currentPlayer].YahtzeeBonusCount,
+                        fontSize = 14.sp,
+                        color = Color.LightGray,
+                        modifier = Modifier.padding(horizontal = 8.dp)
+                    )
+                }
             }
         }
     }

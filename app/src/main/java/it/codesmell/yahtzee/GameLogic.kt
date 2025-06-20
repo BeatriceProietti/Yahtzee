@@ -333,7 +333,10 @@ class GameLogic : ViewModel() {
             //pausa per mostrare il punteggio
             //fa partire un altro thread, che attende e poi fa partire la seconda parte dell'effetto
             CoroutineScope(Dispatchers.IO).launch {
-                delay(1500)
+
+                sfx?.snare()
+                delay(1500) //attendo un po' per mostrare il punteggio prima di cambiare turno
+
                 if(playerAmount > 1) sfx?.bell()
                 withContext(Dispatchers.Main) {
                     // reset e passa al prossimo turno
@@ -356,7 +359,7 @@ class GameLogic : ViewModel() {
 
                     checkAndApplyUpperSectionBonus()
                     //fine partita
-                    if (roundsPlayed >= 1 * playerAmount) {
+                    if (roundsPlayed >= 13 * playerAmount) {
                         gameOver = true
                         savePlayerStatus(playerStatuses[currentPlayer])
                         getWinner()

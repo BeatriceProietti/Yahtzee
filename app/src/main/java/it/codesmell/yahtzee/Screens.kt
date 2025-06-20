@@ -337,10 +337,7 @@ fun GameScreen(gameLogic: GameLogic, navController: NavController) {
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Bottom
         ) {
-            Box(
-                modifier = Modifier //punteggio
-                    .padding(top = screenHeight * 0.05f, bottom = screenHeight * 0.05f)
-            ) {
+            Box() {
                 composables?.scoreDisplay()
             }
 

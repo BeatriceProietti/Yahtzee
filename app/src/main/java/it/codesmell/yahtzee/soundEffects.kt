@@ -14,6 +14,7 @@ var diceroll1 : Int = 0
 var diceroll2 : Int = 0
 var diceroll3 : Int = 0
 var bell : Int = 0
+var snare : Int = 0
 
 var rng = Random(System.currentTimeMillis())
 
@@ -34,6 +35,7 @@ class soundEffects {
         diceroll2 = soundPool.load(context, R.raw.diceroll2, 1)
         diceroll3 = soundPool.load(context, R.raw.diceroll3, 1)
         bell = soundPool.load(context, R.raw.bell1, 1)
+        snare = soundPool.load(context, R.raw.snare, 1)
     }
 
 
@@ -62,6 +64,13 @@ class soundEffects {
         if(enableSounds){
             Log.d("soundEffects", "bell")
             soundPool.play(bell, 0.5f, 0.5f, 0, 0, 1f)
+        }
+    }
+
+    fun snare(){
+        if(enableSounds){
+            Log.d("soundEffects", "snare")
+            soundPool.play(snare, 0.8f, 0.8f, 0, 0, 1f)
         }
     }
 

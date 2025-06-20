@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.BasicAlertDialog
 import androidx.compose.material3.Card
@@ -62,6 +63,34 @@ fun ScoresPopUp(
 
                     //table content
                     Text(text = "${tableScore.date} ${tableScore.finalScore}", fontSize = 20.sp)
+
+                    LazyColumn(
+                        modifier = Modifier
+                            .padding(horizontal = 16.dp)
+                            .weight(1f),
+                        verticalArrangement = Arrangement.spacedBy(4.dp)
+                    ) {
+                        item { Text("Upper", fontSize = 18.sp) }
+                        item { Text("Aces: ${tableScore.aces}") }
+                        item { Text("Twos: ${tableScore.twos}") }
+                        item { Text("Threes: ${tableScore.threes}") }
+                        item { Text("Fours: ${tableScore.fours}") }
+                        item { Text("Fives: ${tableScore.fives}") }
+                        item { Text("Sixes: ${tableScore.sixes}") }
+                        item { Text("Bonus: ${tableScore.bonusUpperSection}") }
+
+                        item { Text("Lower:", fontSize = 18.sp, modifier = Modifier.padding(top = 8.dp)) }
+                        item { Text("Three of a Kind: ${tableScore.threeOfAKind}") }
+                        item { Text("Four of a Kind: ${tableScore.fourOfAKind}") }
+                        item { Text("Full House: ${tableScore.fullHouse}") }
+                        item { Text("Small Straight: ${tableScore.smallStraight}") }
+                        item { Text("Large Straight: ${tableScore.largeStraight}") }
+                        item { Text("Chance: ${tableScore.chance}") }
+                        item { Text("Yahtzee: ${tableScore.yahtzee}") }
+                        item { Text("Yahtzee Bonus: ${tableScore.yahtzeeBonus}") }
+                        item { Text("Final Score: ${tableScore.finalScore}", fontSize = 18.sp, modifier = Modifier.padding(top = 8.dp)) }
+                    }
+
 
                     // delete button
                     composables?.funButton3D(

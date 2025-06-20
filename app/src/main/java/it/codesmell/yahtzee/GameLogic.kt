@@ -62,6 +62,7 @@ class GameLogic : ViewModel() {
     fun initGame(numOfPlayers: Int) {// si prende il player
         //variabili gamelogic
         gameOver = false
+        rollsLeft = 3
         canroll = true
         currentPlayer = 1
         roundsPlayed = 0

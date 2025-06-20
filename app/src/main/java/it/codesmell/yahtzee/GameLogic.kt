@@ -63,6 +63,7 @@ class GameLogic : ViewModel() {
         //variabili gamelogic
         gameOver = false
         currentPlayer = 1
+        roundsPlayed = 0
         selectedDice = mutableStateListOf<Boolean>(false, false, false, false, false)
         dice = List(diceAmount) { 0 }
         playerAmount = numOfPlayers

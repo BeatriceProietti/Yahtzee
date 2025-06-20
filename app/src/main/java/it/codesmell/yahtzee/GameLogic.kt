@@ -62,6 +62,7 @@ class GameLogic : ViewModel() {
     fun initGame(numOfPlayers: Int) {// si prende il player
         //variabili gamelogic
         gameOver = false
+        canroll = true
         currentPlayer = 1
         roundsPlayed = 0
         selectedDice = mutableStateListOf<Boolean>(false, false, false, false, false)
